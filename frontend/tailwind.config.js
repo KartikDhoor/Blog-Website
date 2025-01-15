@@ -18,7 +18,7 @@ export default {
       },
       screens: {
         sm: '480px',
-        belowSm: { max: '479px' }, // Target screens below 480px
+        belowSm: { max: '480px' }, // Target screens below 480px
       },
     },
   },
