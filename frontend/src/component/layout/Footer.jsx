@@ -5,8 +5,8 @@ export default function Footer() {
     return (
         <>
             <div className="h-full w-full bg-pureblack ">
-                <div className="h-[60vh] w-full bg-dark1">
-                    <div className="h-full w-[90%] mx-auto p-4">
+                <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-full sm:w-full belowSm:h-full belowSm:w-full bg-dark1">
+                    <div className="lg:h-full lg:w-[90%] md:h-full md:w-[90%] sm:h-full sm:w-[90%] belowSm:h-full belowSm:w-[90%] mx-auto p-4">
                         <div className="h-[30vh] w-full flex justify-center items-center">
                             <div className="h-full w-[20%] flex items-center justify-center">
                                 <GiRevolt className="text-9xl text-amber-400" />
@@ -16,8 +16,8 @@ export default function Footer() {
                                 <button className=" bg-gray1 px-2 border rounded border-gray-800">
                                     <p className="text-white">Learn,Connect and innovate</p>
                                 </button>
-                                <p className="text-5xl text-white font-medium my-2">Be part of the Future Tech Revloution</p>
-                                <p className="text-sm text-gray1 font-normal">immerse yourself in the world of future Technology.Explore Our comprehensive Resource,Connect with the fellow tech enthusiasts,and drive innovation in the industry.Join a Dynamic comunity of forward thinkers.</p>
+                                <p className="text-5xl text-white font-medium my-2 sm:hidden">Be part of the Future Tech Revloution</p>
+                                <p className="text-sm text-gray1 font-normal sm:hidden">immerse yourself in the world of future Technology.Explore Our comprehensive Resource,Connect with the fellow tech enthusiasts,and drive innovation in the industry.Join a Dynamic comunity of forward thinkers.</p>
                                 </div>
                             </div>
                         </div>
