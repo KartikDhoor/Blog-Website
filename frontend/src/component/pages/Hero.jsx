@@ -12,7 +12,7 @@ export default function Hero() {
                                     <p className="lg:text-base md:text-base font-normal my-2 sm:text-sm belowSm:text-sm">Welcome to the epicenter of Ai innovation.future Ai News is your Passport to a world where Machine thinks, Learn and reshape the Future.join Us on this Visinary expedition into the heart of Ai</p>
                                 </div>
                             </div>
-                            <div className="lg:h-[30vh] lg:w-full lg:flex lg:justify-center text-gray1 font-normal md:h-[30vh] md:w-full md:flex md:justify-center sm:h-[30vh] sm:w-full sm:flex sm:justify-center h-[30vh] w-full flex justify-center">
+                            <div className="lg:h-[30vh] lg:w-full lg:flex lg:justify-center text-gray1 font-normal md:h-[30vh] md:w-full md:flex md:justify-center sm:h-[30vh] sm:w-full sm:flex sm:justify-center h-[30vh] w-full flex justify-center border-y border-gray-800">
                                 <div className="lg:h-full lg:w-[30%] lg:text-5xl lg:flex lg:items-center lg:justify-center lg:border-r lg:border-gray-800 md:h-full md:w-[30%] md:flex md:items-center md:justify-center md:text-4xl md:border-r md:border-gray-800 sm:h-full sm:w-[30%] sm:flex sm:items-center sm:justify-center sm:text-3xl sm:border-r sm:border-gray-800 belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl belowSm:border-r belowSm:border-gray-800">
                                     <div>
                                         <p className="text-white">300<span className="text-amber-400">+</span></p>
@@ -34,7 +34,7 @@ export default function Hero() {
                             </div>
                         </div>
                     </div>
-                    <div className="lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[90vh] belowSm:w-full">
+                    <div className="lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full">
 
                     </div>
                 </div>
