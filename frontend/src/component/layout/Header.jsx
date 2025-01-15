@@ -34,14 +34,16 @@ export default function Header() {
                             <HiMiniBars4 className="text-gray-300 text-4xl" onClick={toggleNav} />
                         </div>
                         :
-                        <div className="lg:hidden md:hidden sm:fixed sm:top-0 sm:right-0 sm:bg-dark2 sm:h-[100vh] sm:w-[90%]">
+                        <div className="lg:hidden md:hidden sm:fixed sm:top-0 sm:right-0 sm:bg-dark2 sm:h-[100vh] sm:w-[90%] text-lg font-normal text-gray-400 p-4 ">
                             <div className="h-[10vh] w-full flex justify-end p-2 ">
                                 <RxCrossCircled className="text-gray-300 text-4xl" onClick={toggleNav}/>
                             </div>
-                            <Link to='/'  onClick={toggleNav}><p className="">Home</p></Link>
-                            <Link to='/blog' onClick={toggleNav}><p>Blog</p></Link>
-                            <Link to='/news' onClick={toggleNav}><p>News</p></Link>
-                            <Link to='/inspire' onClick={toggleNav}><p>Insite</p></Link>
+                            <div className="border-y border-gray-800">
+                            <Link to='/'  onClick={toggleNav}><p className="border-y border-gray-800 py-2">Home</p></Link>
+                            <Link to='/blog' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Blog</p></Link>
+                            <Link to='/news' onClick={toggleNav}><p className="border-b border-gray-800 py-2">News</p></Link>
+                            <Link to='/inspire' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Insite</p></Link>
+                            </div>
                         </div>
                     }
 
