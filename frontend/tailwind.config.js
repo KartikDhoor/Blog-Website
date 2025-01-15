@@ -17,6 +17,7 @@ export default {
         customGradientEnd: "#ff4500",   // For gradient end
       },
       screens: {
+        sm: '480px',
         belowSm: { max: '479px' }, // Target screens below 480px
       },
     },

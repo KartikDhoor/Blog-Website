@@ -16,7 +16,7 @@ import NewsPanel from "./NewsPanel";
 export default function Home() {
     return (
         <>
-            <div className="h-full w-full bg-pureblack">
+            <div className="h-full w-full bg-pureblack m-0 p-0">
                 <Hero />
                 <div className="lg:h-full lg:w-full border-y border-gray-800 md:h-full md:w-full sm:h-full sm:w-full">
                     <div className="lg:h-full lg:w-[90%] md:h-full md-full sm:h-full sm:w-full mx-auto lg:flex lg:justify-center md:flex md:justify-center">

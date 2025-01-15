@@ -7,7 +7,7 @@ export default function Hero() {
                         <div className='lg:h-full lg:w-full md:h-full md:w-full sm:h-full sm:w-full'>
                             <div className="lg:h-[60vh] lg:w-full lg:text-gray1 lg:flex lg:items-center lg:border-r lg:border-b lg:border-gray-800 md:h-[60vh] md:w-full md:text-gray1 md:flex md:items-center md:border-r md:border-b md:border-gray-800 sm:h-[60vh] sm:w-full sm:text-gray1 sm:flex sm:items-center sm:border-r sm:border-b sm:border-gray-800">
                                 <div>
-                                    <p className="text-3xl font-normal my-2">Your journey to Tomorrow Begin Here</p>
+                                    <p className="text-3xl font-normal mb-2">Your journey to Tomorrow Begin Here</p>
                                     <p className="text-6xl font-normal my-5 text-white">Explore the Frontiers of<br /> Artificial Intelligence</p>
                                     <p className="text-base font-normal my-2">Welcome to the epicenter of Ai innovation.future Ai News is your Passport to a world where Machine thinks, Learn and reshape the Future.join Us on this Visinary expedition into the heart of Ai</p>
                                 </div>
