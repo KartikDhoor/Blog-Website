@@ -7,16 +7,16 @@ export default function NewsPanel(){
     return(
         <>
         <div className="h-full w-full bg-pureblack">
-                            <div className="h-[30vh] w-full bg-dark1">
-                                <div className="h-full w-[90%] mx-auto flex justify-between flex items-center">
-                                    <div className=" w-[80%] p-6">
-                                        <button className=" bg-gray1 px-2 border rounded border-gray-800">
+                            <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[40vh] belowSm:w-full bg-dark1">
+                                <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between lg:items-center md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between md:items-center sm:h-full sm:w-[90%] sm:mx-auto sm:px-4 sm:flex sm:items-center sm:flex-wrap belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:px-4 belowSm:flex belowSm:items-center belowSm:flex-wrap">
+                                    <div className="lg:w-[85%] md:w-[85%] sm:w-full belowSm:w-full b">
+                                        <button className="bg-gray1 px-2 border rounded border-gray-800">
                                             <p className="text-white">Unlock the Power of</p>
                                         </button>
                                         <p className="text-5xl text-white font-medium">FutureTech Feature</p>
                                     </div>
-                                    <div className="w[20%] flex items-center">
-                                        <div className="p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Blogs</p><LuArrowUpRight className="text-xl text-amber-400" /></div>
+                                    <div className="lg:h-[8vh] lg:w-[15%] lg:flex lg:justify-end lg:items-center md:h-[8vh] md:w-[15%] md:flex md:justify-end md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-center sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-center">
+                                        <button className="sm:w-full belowSm:w-full p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Blogs</p><LuArrowUpRight className="text-xl text-amber-400" /></button>
                                     </div>
                                 </div>
                             </div>

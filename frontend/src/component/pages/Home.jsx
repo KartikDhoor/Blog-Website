@@ -20,8 +20,8 @@ export default function Home() {
                 <Hero />
                 <div className="lg:h-full lg:w-full border-y border-gray-800 md:h-full md:w-full sm:h-full sm:w-full">
                     <div className="lg:h-full lg:w-[90%] md:h-full md-full sm:h-full sm:w-full mx-auto lg:flex lg:justify-center md:flex md:justify-center">
-                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800">
-                            <div className="h-[25vh] w-full">
+                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:py-4 belowSm:px-8 belowSm:border-y belowSm:border-gray-800">
+                            <div className="h-auto w-full">
                                 <RiArticleFill className="text-amber-400 text-6xl " />
                                 <div className="h-[10vh] w-full flex justify-center">
                                     <div className="h-full w-[80%]">
@@ -32,12 +32,12 @@ export default function Home() {
                                         <BsArrowUpRightCircleFill className="text-5xl text-amber-400" />
                                     </div>
                                 </div>
-                                <div className="h-[5vh] w-full">
+                                <div className="h-auto w-full">
                                     <p className="text-base font-normal text-gray1">over 1000 articles published monthly </p>
                                 </div>
                             </div>
                         </div>
-                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 lg:border-x lg:border-gray-800 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8  md:border-x md:border-gray-800 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800">
+                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:py-4 belowSm:px-8 belowSm:border-y belowSm:border-gray-800">
                             <div className="h-[25vh] w-full">
                                 <HiUserGroup className="text-amber-400 text-6xl " />
                                 <div className="h-[10vh] w-full flex justify-center">
@@ -54,7 +54,7 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
-                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800">
+                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:py-4 belowSm:px-8 belowSm:border-y belowSm:border-gray-800">
                             <div className="h-[28vh] w-full">
                                 <GiWireframeGlobe className="text-amber-400 text-6xl " />
                                 <div className="h-[10vh] w-full flex justify-center">
@@ -81,20 +81,20 @@ export default function Home() {
                                 <button className=" bg-gray1 px-2 border rounded border-gray-800">
                                     <p className="text-white">Unlock the Power of</p>
                                 </button>
-                                <p className="text-5xl sm:text-4xl text-white font-medium">FutureTech Feature</p>
+                                <p className="text-5xl sm:text-4xl belowSm:text-3xl text-white font-medium">FutureTech Feature</p>
                             </div>
                         </div>
                     </div>
                     <div className="lg:h-[50vh] lg:w-full border-y border-gray-800 sm:h-[100vh] md:h-[50vh] md:w-full sm:w-full sm:border-y sm:border-gray-800">
                         <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center md:h-full md:w-full md:flex md:justify-center sm:h-full sm:w-full">
-                            <div className="lg:h-full lg:w-[40%] lg:border-r lg:border-gray-800 lg:flex lg:items-center p-4 md:h-full md:w-[40%] md:border-r md:border-gray-800 md:flex md:items-center sm:h-[30vh] sm:w-[90%] sm:mx-auto sm:flex sm:items-center">
+                            <div className="lg:h-full lg:w-[40%] lg:border-r lg:border-gray-800 lg:flex lg:items-center p-4 md:h-full md:w-[40%] md:border-r md:border-gray-800 md:flex md:items-center sm:h-[30vh] sm:w-[90%] sm:mx-auto sm:flex sm:items-center sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:px-8 belowSm:flex belowSm:items-center belowSm:border-y belowSm:border-gray-800">
                                 <div>
-                                    <FaPencilRuler className="text-6xl text-amber-400" />
-                                    <p className="text-4xl text-white font-medium my-1">Future Technology Blog</p>
+                                    <FaPencilRuler className="text-6xl belowSm:text-5xl text-amber-400" />
+                                    <p className="text-4xl belowSm:text-3xl text-white font-medium my-1">Future Technology Blog</p>
                                     <p className="text-base font-normal text-gray1">stayed informed with our blog section dedicated to the future technology</p>
                                 </div>
                             </div>
-                            <div className="lg:h-full lg:w-[60%] lg:grid lg:grid-cols-2 lg:gap-4 p-7 md:h-full md:w-[60%] md:grid md:grid-cols-2 md:gap-4 sm:h-[70vh] sm:w-full sm:grid sm:grid-cols-1 md:gap-y-2 sm:border-y sm:border-gray-800">
+                            <div className="lg:h-full lg:w-[60%] lg:grid lg:grid-cols-2 lg:gap-4 p-7 md:h-full md:w-[60%] md:grid md:grid-cols-2 md:gap-4 sm:h-[70vh] sm:w-full sm:grid sm:grid-cols-1 md:gap-y-2 sm:border-y sm:border-gray-800 belowSm:h-[70vh] belowSm:w-full belowSm:grid belowSm:grid-cols-1 belowSm:gap-y-2 belowSm:border-y belowSm:border-gray-800">
                                 <div className="lg:h-[15vh] lg:w-full rounded bg-dark1 p-4 border border-gray-800 md:h-[15vh] md:w-full sm:h-[12vh] sm:w-[90%] sm:mx-auto">
                                     <p className="text-xl font-normal text-white">Quantity</p>
                                     <p className="text-sm text-gray1">Over 1000, articles on emerging tech trends and breakthoughts</p>
@@ -116,14 +116,14 @@ export default function Home() {
                     </div>
                     <div className="lg:h-[50vh] lg:w-full border-y border-gray-800 sm:h-[100vh] md:h-[50vh] md:w-full sm:w-full sm:border-y sm:border-gray-800">
                         <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center md:h-full md:w-full md:flex md:justify-center sm:h-full sm:w-full">
-                            <div className="lg:h-full lg:w-[40%] lg:border-r lg:border-gray-800 lg:flex lg:items-center p-4 md:h-full md:w-[40%] md:border-r md:border-gray-800 md:flex md:items-center sm:h-[30vh] sm:w-[90%] sm:mx-auto sm:flex sm:items-center">
+                            <div className="lg:h-full lg:w-[40%] lg:border-r lg:border-gray-800 lg:flex lg:items-center p-4 md:h-full md:w-[40%] md:border-r md:border-gray-800 md:flex md:items-center sm:h-[30vh] sm:w-[90%] sm:mx-auto sm:flex sm:items-center sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:px-8 belowSm:flex belowSm:items-center belowSm:border-y belowSm:border-gray-800">
                                 <div>
-                                    <FaPencilRuler className="text-6xl text-amber-400" />
-                                    <p className="text-4xl text-white font-medium my-1">Research Insight blogs</p>
+                                    <FaPencilRuler className="text-6xl  belowSm:text-5xl text-amber-400" />
+                                    <p className="text-4xl belowSm:text-3xl text-white font-medium my-1">Research Insight blogs</p>
                                     <p className="text-base font-normal text-gray1">Dive deep into the future every technology concept with in the research section</p>
                                 </div>
                             </div>
-                            <div className="lg:h-full lg:w-[60%] lg:grid lg:grid-cols-2 lg:gap-4 p-7 md:h-full md:w-[60%] md:grid md:grid-cols-2 md:gap-4 sm:h-[70vh] sm:w-full sm:grid sm:grid-cols-1 md:gap-y-2 sm:border-y sm:border-gray-800">
+                            <div className="lg:h-full lg:w-[60%] lg:grid lg:grid-cols-2 lg:gap-4 p-7 md:h-full md:w-[60%] md:grid md:grid-cols-2 md:gap-4 sm:h-[70vh] sm:w-full sm:grid sm:grid-cols-1 md:gap-y-2 sm:border-y sm:border-gray-800 belowSm:h-[70vh] belowSm:w-full belowSm:grid belowSm:grid-cols-1 belowSm:gap-y-2 belowSm:border-y belowSm:border-gray-800">
                                 <div className="lg:h-[15vh] lg:w-full rounded bg-dark1 p-4 border border-gray-800 md:h-[15vh] md:w-full sm:h-[12vh] sm:w-[90%] sm:mx-auto">
                                     <p className="text-xl font-normal text-white">Depth</p>
                                     <p className="text-sm text-gray1">500+ research articles for n-depth understanding</p>
