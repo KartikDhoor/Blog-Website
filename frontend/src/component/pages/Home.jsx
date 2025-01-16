@@ -148,23 +148,35 @@ export default function Home() {
                    <NewsPanel/>
                 </div>
                 <div className="h-full w-full ">
-                    <div className="h-[40vh] w-full bg-dark1">
-                        <div className="h-full w-[90%] mx-auto flex justify-between items-center">
-                            <div className="w-[80%]">
-                                <button className=" bg-gray1 px-2 border rounded border-gray-800">
+                    <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">
+                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between lg:items-center
+                                        md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between md:items-center
+                                        sm:h-[40vh] sm:w-[90%] sm:mx-auto sm:p-4
+                                        belowSm:h-[40vh] belowSm:w-[90%] belowSm:mx-auto belowSm:p-4">
+                            <div className="lg:w-[80%] md:w-[80%] sm:w-full belowSm:w-full">
+                                <button className=" bg-gray1 px-2 border rounded border-gray-800 text-base sm:text-sm belowSm:text-sm">
                                     <p className="text-white">Your Gateway to the depth of information</p>
                                 </button>
-                                <p className="text-5xl text-white font-medium">Unlock Valuable Knowledge with <br />FutureTech Feature</p>
+                                <p className="lg:text-5xl md:text-5xl sm:lg:text-4xl belowSm:text-4xl text-white font-medium">Unlock Valuable Knowledge with <br className="sm-hidden belowSm:hidden lg:block md:block"/>FutureTech Feature</p>
                             </div>
-                            <div className="w[20%] flex items-center">
-                                <div className="p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Blogs</p><LuArrowUpRight className="text-xl text-amber-400" /></div>
-                            </div>
+                            <div className="lg:h-[8vh] lg:w-[15%] lg:flex lg:justify-end lg:items-center md:h-[8vh] md:w-[15%] md:flex md:justify-end md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-center sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-center">
+                            <button className="sm:w-full belowSm:w-full p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Blogs</p><LuArrowUpRight className="text-xl text-amber-400" /></button>
+                        </div>
                         </div>
 
                     </div>
-                    <div className="h-[60vh] w-full border-y border-gray-800">
-                        <div className="h-full w-[90%] mx-auto flex justify-center">
-                            <div className="h-full w-[40%] border-r border-gray-800 text-gray1 px-5 flex items-center">
+                    <div className="lg:h-[60vh] lg:w-full lg:border-y lg:border-gray-800
+                                    md:h-[60vh] md:w-full md:border-y md:border-gray-800
+                                    sm:h-[100vh] sm:w-full sm:border-y sm:border-gray-800
+                                    belowSm:h-[140vh] belowSm:w-full belowSm:border-y belowSm:border-gray-800">
+                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
+                                        md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
+                                        sm:h-full sm:w-full sm:mx-auto 
+                                        belowSm:h-full belowSm:w-full belowSm:mx-auto ">
+                            <div className="lg:h-full lg:w-[40%] lg:border-r 
+                                            md:h-full md:w-[40%] md:border-r 
+                                            sm:h-[60vh] sm:w-full sm:border-y 
+                                            belowSm:h-[60vh] belowSm:w-full belowSm:border-y border-gray-800 text-gray1 px-5 flex items-center">
                                 <div>
                                     <PiBookBookmarkFill className="text-amber-400 text-6xl" />
                                     <p className="text-white text-4xl font-medium my-2">Ebooks</p>
@@ -184,14 +196,17 @@ export default function Home() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-full w-[60%] p-4">
-                                <div className="h-[8vh] w-full p-2 ">
+                            <div className="lg:h-full lg:w-[60%] lg:p-4
+                                            md:h-full md:w-[60%] md:p-4
+                                            sm:h-[80vh] sm:w-full sm:p-4
+                                            belowSm:h-[80vh] belowSm:w-full belowSm:p-4">
+                                <div className="lg:h-[8vh] lg:w-full md:h-[8vh] md:w-full sm:h-[15vh] sm:w-full belowSm:h-[15vh] belowSm:w-full p-2 ">
                                     <div className="h-full w-[90%] mx-auto flex justify-center">
                                         <div className="h-full w-[30%]">
                                             <p className="text-white text-xl font-medium">Varity of topics</p>
                                         </div>
                                         <div className="h-full w-[70%]">
-                                            <p className="text-gray1 text-sm font-normal">
+                                            <p className="text-gray1 text-sm font-normal belowSm:line-clamp-4">
                                                 Topic include AI in Educaiton(25%),renewable Energy(20%),healthcare(15%),
                                                 space exloration(25%), and Biotechnology(15%)
                                             </p>
@@ -201,21 +216,27 @@ export default function Home() {
                                 <div className="h-[25vh] w-full ">
                                     <img className="rounded-xl h-full w-[90%] mx-auto" src="https://picsum.photos/1920/1080" />
                                 </div>
-                                <div className="h-[10vh] w-full my-2">
-                                    <div className="h-full w-[90%] mx-auto flex justify-between">
-                                        <div className="h-full w-[20%] border rounded-lg border-gray-800 bg-dark1 flex items-center p-2">
+                                <div className="lg:h-[10vh] lg:w-full lg:my-2
+                                                md:h-[10vh] md:w-full md:my-2
+                                                sm:h-[22vh] sm:w-full sm:my-2
+                                                belowSm:h-[22vh] belowSm:w-full belowSm:my-2">
+                                    <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between
+                                                    md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between
+                                                    sm:h-full sm:w-[90%] sm:mx-auto
+                                                    belowSm:h-full belowSm:w-[90%] belowSm:mx-auto">
+                                        <div className="lg:h-full lg:w-[20%] lg:h-full lg:w-[20%] sm:h-[10vh] sm:w-full belowSm:h-[10vh] belowSm:w-full belowSm:my-2 border rounded-lg border-gray-800 bg-dark1 flex items-center p-2">
                                             <div>
                                                 <p className="text-sm font-normal text-gray1">Total Ebooks</p>
                                                 <p className="text-base font-normal text-white">Over 100 ebooks</p>
                                             </div>
                                         </div>
-                                        <div className="h-full w-[75%] border rounded-lg border-gray-800 bg-dark1 flex justify-center items-center px-2">
-                                            <div className="w-[80%]">
+                                        <div className="lg:h-full lg:w-[75%] md:h-full md:w-[75%]  sm:h-[10vh] sm:w-full belowSm:h-[10vh] belowSm:w-full belowSm:my-2 border rounded-lg border-gray-800 bg-dark1 flex justify-center items-center px-2">
+                                            <div className="lg:w-[80%] md:w-[80%] sm:w-[60%] belowSm:w-[60%]">
                                                 <p className="text-sm font-normal text-gray1">Download Format</p>
                                                 <p className="text-base font-normal text-white">PDF format for Acess</p>
                                             </div>
-                                            <div className="w-[20%]">
-                                                <button className="p-2 text-base text-gray1 border rounded-lg border-gray-800 flex justify-center gap-1 bg-pureblack"><p>Preview</p><MdOutlineRemoveRedEye className="text-amber-400 text-2xl" /></button>
+                                            <div className="lg:w-[20%] md:w-[20%] sm:w-[40%] belowSm:w-[40%]">
+                                                <button className="p-2 sm:text-sm text-base text-gray1 border rounded-lg border-gray-800 flex justify-center gap-1 bg-pureblack"><p>Preview</p><MdOutlineRemoveRedEye className="text-amber-400 text-2xl" /></button>
                                             </div>
                                         </div>
                                     </div>
@@ -231,13 +252,22 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-                    <div className="h-[60vh] w-full border-y border-gray-800">
-                        <div className="h-full w-[90%] mx-auto flex justify-center">
-                            <div className="h-full w-[40%] border-r border-gray-800 text-gray1 px-5 flex items-center">
+                    <div className="lg:h-[60vh] lg:w-full lg:border-y lg:border-gray-800
+                                    md:h-[60vh] md:w-full md:border-y md:border-gray-800
+                                    sm:h-[100vh] sm:w-full sm:border-y sm:border-gray-800
+                                    belowSm:h-[140vh] belowSm:w-full belowSm:border-y belowSm:border-gray-800">
+                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
+                                        md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
+                                        sm:h-full sm:w-full sm:mx-auto 
+                                        belowSm:h-full belowSm:w-full belowSm:mx-auto ">
+                            <div className="lg:h-full lg:w-[40%] lg:border-r 
+                                            md:h-full md:w-[40%] md:border-r 
+                                            sm:h-[60vh] sm:w-full sm:border-y 
+                                            belowSm:h-[60vh] belowSm:w-full belowSm:border-y border-gray-800 text-gray1 px-5 flex items-center">
                                 <div>
                                     <PiBookBookmarkFill className="text-amber-400 text-6xl" />
                                     <p className="text-white text-4xl font-medium my-2">Ebooks</p>
-                                    <p className="text-sm my-2 font-normal">Explore Our collection of ebooks convering a wide spectrum of future technology topics.</p>
+                                    <p className="text-sm my-2">Explore Our collection of ebooks convering a wide spectrum of future technology topics.</p>
                                     <button className="w-full p-1 border border-gray-800 rounded flex justify-center bg-dark1 my-4"><p>Download Ebook Now </p><LuArrowUpRight className="text-amber-400 text-xl" /></button>
                                     <div className="h-[8vh] w-[80%] flex justify-center items-center rounded border border-gray-800 bg-dark1">
                                         <div className="h-full w[50%] p-2">
@@ -253,14 +283,17 @@ export default function Home() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-full w-[60%] p-4">
-                                <div className="h-[8vh] w-full p-2 ">
+                            <div className="lg:h-full lg:w-[60%] lg:p-4
+                                            md:h-full md:w-[60%] md:p-4
+                                            sm:h-[80vh] sm:w-full sm:p-4
+                                            belowSm:h-[80vh] belowSm:w-full belowSm:p-4">
+                                <div className="lg:h-[8vh] lg:w-full md:h-[8vh] md:w-full sm:h-[15vh] sm:w-full belowSm:h-[15vh] belowSm:w-full p-2 ">
                                     <div className="h-full w-[90%] mx-auto flex justify-center">
                                         <div className="h-full w-[30%]">
                                             <p className="text-white text-xl font-medium">Varity of topics</p>
                                         </div>
                                         <div className="h-full w-[70%]">
-                                            <p className="text-gray1 text-sm font-normal">
+                                            <p className="text-gray1 text-sm font-normal belowSm:line-clamp-4">
                                                 Topic include AI in Educaiton(25%),renewable Energy(20%),healthcare(15%),
                                                 space exloration(25%), and Biotechnology(15%)
                                             </p>
@@ -270,27 +303,33 @@ export default function Home() {
                                 <div className="h-[25vh] w-full ">
                                     <img className="rounded-xl h-full w-[90%] mx-auto" src="https://picsum.photos/1920/1080" />
                                 </div>
-                                <div className="h-[10vh] w-full my-2">
-                                    <div className="h-full w-[90%] mx-auto flex justify-between">
-                                        <div className="h-full w-[20%] border rounded-lg border-gray-800 bg-dark1 flex items-center p-2">
+                                <div className="lg:h-[10vh] lg:w-full lg:my-2
+                                                md:h-[10vh] md:w-full md:my-2
+                                                sm:h-[22vh] sm:w-full sm:my-2
+                                                belowSm:h-[22vh] belowSm:w-full belowSm:my-2">
+                                    <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between
+                                                    md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between
+                                                    sm:h-full sm:w-[90%] sm:mx-auto
+                                                    belowSm:h-full belowSm:w-[90%] belowSm:mx-auto">
+                                        <div className="lg:h-full lg:w-[20%] lg:h-full lg:w-[20%] sm:h-[10vh] sm:w-full belowSm:h-[10vh] belowSm:w-full belowSm:my-2 border rounded-lg border-gray-800 bg-dark1 flex items-center p-2">
                                             <div>
                                                 <p className="text-sm font-normal text-gray1">Total Ebooks</p>
                                                 <p className="text-base font-normal text-white">Over 100 ebooks</p>
                                             </div>
                                         </div>
-                                        <div className="h-full w-[75%] border rounded-lg border-gray-800 bg-dark1 flex justify-center items-center px-2">
-                                            <div className="w-[80%]">
+                                        <div className="lg:h-full lg:w-[75%] md:h-full md:w-[75%]  sm:h-[10vh] sm:w-full belowSm:h-[10vh] belowSm:w-full belowSm:my-2 border rounded-lg border-gray-800 bg-dark1 flex justify-center items-center px-2">
+                                            <div className="lg:w-[80%] md:w-[80%] sm:w-[60%] belowSm:w-[60%]">
                                                 <p className="text-sm font-normal text-gray1">Download Format</p>
                                                 <p className="text-base font-normal text-white">PDF format for Acess</p>
                                             </div>
-                                            <div className="w-[20%]">
-                                                <button className="p-2 text-base text-gray1 border rounded-lg border-gray-800 flex justify-center gap-1 bg-pureblack"><p>Preview</p><MdOutlineRemoveRedEye className="text-amber-400 text-2xl" /></button>
+                                            <div className="lg:w-[20%] md:w-[20%] sm:w-[40%] belowSm:w-[40%]">
+                                                <button className="p-2 sm:text-sm text-base text-gray1 border rounded-lg border-gray-800 flex justify-center gap-1 bg-pureblack"><p>Preview</p><MdOutlineRemoveRedEye className="text-amber-400 text-2xl" /></button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="h-[10vh] w-full">
-                                    <div className="h-full w-[90%] p-2 mx-auto my-1 rounded border border-gray-800 flex items-center bg-dark1">
+                                    <div className="h-full w-[90%] p-2 mx-auto my-1 rounded-lg border border-gray-800 flex items-center bg-dark1">
                                         <div>
                                             <p className="text-sm text-gray1 font-normal">Authoer</p>
                                             <p className="text-white text-base font normal">text should be here</p>
@@ -302,33 +341,43 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="h-full w-full">
-                    <div className="h-[30vh] w-full bg-dark1">
-                        <div className="h-full w-[90%] mx-auto flex justify-between items-center">
-                            <div className="w-[80%]">
-                                <button className=" bg-gray1 px-2 border rounded border-gray-800">
+                    <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">
+                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between lg:items-center
+                                        md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between md:items-center
+                                        sm:h-[30vh] sm:w-[90%] sm:mx-auto
+                                        belowSm:h-[30vh] belowSm:w-[90%] belowSm:mx-auto">
+                            <div className="lg:w-[80%] md:w-[80%] sm:w-full belowSm:w-full">
+                                <button className="bg-gray1 px-2 border rounded border-gray-800 text-base sm:text-sm belowSm:text-sm">
                                     <p className="text-white">What Our Readers Say</p>
                                 </button>
-                                <p className="text-5xl text-white font-medium">Real words From Real Readers</p>
+                                <p className="lg:text-5xl md:text-5xl sm:lg:text-4xl belowSm:text-4xl text-white font-medium">Real words From Real Readers</p>
                             </div>
-                            <div className="w[20%] flex items-center">
-                                <div className="p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Testimonials</p><LuArrowUpRight className="text-xl text-amber-400" /></div>
+                            <div className="lg:h-[8vh] lg:w-[15%] lg:flex lg:justify-end lg:items-center md:h-[8vh] md:w-[15%] md:flex md:justify-end md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-center sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-center">
+                            <button className="sm:w-full belowSm:w-full p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All testimonials</p><LuArrowUpRight className="text-xl text-amber-400" /></button>
+                             
+                             </div>
+                        </div>
+                    </div>
+                    <div className="lg:h-[40vh] lg:w-full lg:border-y lg:border-gray-800
+                                    md:h-[40vh] md:w-full md:border-y md:border-gray-800
+                                    sm:h-[120vh] sm:w-full sm:border-y sm:border-gray-800
+                                    belowSm:h-[120vh] belowSm:w-full belowSm:border-y belowSm:border-gray-800">
+                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
+                                        md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
+                                        sm:h-full sm:w-full sm:mx-auto
+                                        belowSm:h-full belowSm:w-full belowSm:mx-auto">
+                            <div className="lg:h-full lg:w-[33%] md:h-full md:w-[33%] sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full">
+
+                            </div>
+                            <div className="lg:h-full lg:w-[33%] md:h-full md:w-[33%] sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full lg:border-x md:border-x sm:border-y belowSm:border-y border-gray-800">
+
+                            </div>
+                            <div className="lg:h-full lg:w-[33%] md:h-full md:w-[33%] sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full">
+
                             </div>
                         </div>
                     </div>
-                    <div className="h-[40vh] w-full border-y border-gray-800">
-                        <div className="h-full w-[90%] mx-auto flex justify-center">
-                            <div className="h-full w-[33%]">
-
-                            </div>
-                            <div className="h-full w-[33%] border-x border-gray-800">
-
-                            </div>
-                            <div className="h-full w-[33%]">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-[40vh] w-full border-y border-gray-800">
+                    <div className="h-[40vh] w-full border-y border-gray-800 lg:block md:block sm:hidden belowSm:hidden">
                         <div className="h-full w-[90%] mx-auto flex justify-center">
                             <div className="h-full w-[33%]">
                             </div>

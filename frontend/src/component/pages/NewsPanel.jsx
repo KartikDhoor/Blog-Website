@@ -26,7 +26,7 @@ export default function NewsPanel() {
                             <p className="text-center text-base sm:text-sm belowSm:text-sm h-full font-normal text-gray1 py-2 bg-dark1">All</p>
                         </div>
                         <div className="lg:h-[6vh] lg:w-[15%] md:h-[6vh] md:w-[15%] sm:h-[6vh] sm:w-[25%] belowSm:h-[6vh] belowSm:w-[50%] rounded border border-gray-800 ">
-                            <p className="text-center text-base font-normal text-gray1 py-2">Quantam Computing</p>
+                            <p className="text-center text-base md:text-base font-normal text-gray1 py-2">Quantam Computing</p>
                         </div>
                         <div className="lg:h-[6vh] lg:w-[15%] md:h-[6vh] md:w-[15%] sm:h-[6vh] sm:w-[25%] lg:block md:block belowSm:hidden rounded border border-gray-800 ">
                             <p className="text-center text-base font-normal text-gray1 py-2">All Ethics</p>
@@ -53,25 +53,24 @@ export default function NewsPanel() {
                                                         sm:h-[10vh] sm:w-full sm:flex sm:items-center
                                                         belowSm:h-[10vh] belowSm:w-full belowSm:flex belowSm:items-center">
                                 <div className="lg:h-[8vh] lg:w-full lg:flex lg:justify-center
-                                                            md:h-[8vh] md:w-full md:flex md:justify-center
-                                                            sm:h-full sm:w-full sm:flex sm:justify-center
-                                                            belowSm:h-full belowSm:w-full belowSm:flex belowSm:justify-center">
-                                    <div className="lg:h-full lg:w-[15%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-[7vh] belowSm:w-[20%]">
-                                        <div className="h-full w-full aspect-square rounded-full overflow-hidden">
-                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full object-cover" />
-                                        </div>
+                                                md:h-[8vh] md:w-full md:flex md:justify-center
+                                                sm:h-full sm:w-full sm:flex sm:justify-center
+                                                belowSm:h-full belowSm:w-full belowSm:flex belowSm:justify-center">
+                                    <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:w-[20%] aspect-square flex items-center justify-center">
+                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-full object-cover" />
                                     </div>
                                     <div className="lg:h-full lg:w-[60%] md:h-full md:w-[60%] sm:h-full sm:w-[60%] belowSm:h-full belowSm:w-[60%]">
                                         <p className="text-white text-base font-normal">John Techson</p>
-                                        <p className="text-gray1 font-normal text-sm ">Quantam Computing</p>
+                                        <p className="text-gray1 font-normal text-sm ">Quantum Computing</p>
                                     </div>
-                                    <div className="lg:hidden md:hidden sm:block belowSm:block ">
+                                    <div className="lg:hidden md:hidden sm:block belowSm:block">
                                         <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
                                             <p>View Blogs</p>
                                             <LuArrowUpRight className="text-xl text-amber-400" />
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                             <div className="lg:h-full lg:w-[55%] lg:flex lg:items-center
                                             md:h-full md:w-[55%] md:flex md:items-center
@@ -122,7 +121,7 @@ export default function NewsPanel() {
                                                             md:h-[8vh] md:w-full md:flex md:justify-center
                                                             sm:h-full sm:w-full sm:flex sm:justify-center
                                                             belowSm:h-full belowSm:w-full belowSm:flex belowSm:justify-center">
-                                    <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-full belowSm:w-[20%]">
+                                    <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-[7vh] belowSm:w-[20%] aspect-square">
                                         <img src="https://picsum.photos/1920/1080" className="h-full w-[90%] rounded-full" />
                                     </div>
                                     <div className="lg:h-full lg:w-[60%] md:h-full md:w-[60%] sm:h-full sm:w-[60%] belowSm:h-full belowSm:w-[60%]">
@@ -186,7 +185,7 @@ export default function NewsPanel() {
                                                             md:h-[8vh] md:w-full md:flex md:justify-center
                                                             sm:h-full sm:w-full sm:flex sm:justify-center
                                                             belowSm:h-full belowSm:w-full belowSm:flex belowSm:justify-center">
-                                    <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-full belowSm:w-[20%]">
+                                    <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-[7vh] belowSm:w-[20%] aspect-square">
                                         <img src="https://picsum.photos/1920/1080" className="h-full w-[90%] rounded-full" />
                                     </div>
                                     <div className="lg:h-full lg:w-[60%] md:h-full md:w-[60%] sm:h-full sm:w-[60%] belowSm:h-full belowSm:w-[60%]">
