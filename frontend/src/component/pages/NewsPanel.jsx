@@ -20,24 +20,24 @@ export default function NewsPanel(){
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-[10vh] w-full border-y border-gray-800">
-                                <div className="h-full w-[90%] mx-auto flex justify-around items-center gap-2">
-                                    <div className="h-[6vh] w-[15%] rounded border border-gray-800 ">
-                                        <p className="text-center text-base font-normal text-gray1 py-2 bg-dark1">All</p>
+                            <div className="lg:h-[10vh] lg:w-full md:h-[10vh] md:w-full sm:h-[10vh] sm:w-full belowSm:h-[10vh] belowSm:w-full border-y border-gray-800">
+                                <div className="lg:h-full lg:w-[90%] lg:mx-auto md:h-full md:w-[90%] md:mx-auto sm:h-full sm:w-full belowSm:h-full belowSm:w-full flex justify-around items-center gap-2">
+                                    <div className="lg:h-[6vh] lg:w-[15%] md:h-[6vh] md:w-[15%] sm:h-[6vh] sm:w-[25%] belowSm:h-[6vh] belowSm:w-[50%] rounded border border-gray-800 ">
+                                        <p className="text-center text-base sm:text-sm belowSm:text-sm h-full font-normal text-gray1 py-2 bg-dark1">All</p>
                                     </div>
-                                    <div className="h-[6vh] w-[15%] rounded border border-gray-800 ">
+                                    <div className="lg:h-[6vh] lg:w-[15%] md:h-[6vh] md:w-[15%] sm:h-[6vh] sm:w-[25%] belowSm:h-[6vh] belowSm:w-[50%] rounded border border-gray-800 ">
                                         <p className="text-center text-base font-normal text-gray1 py-2">Quantam Computing</p>
                                     </div>
-                                    <div className="h-[6vh] w-[15%] rounded border border-gray-800 ">
+                                    <div className="lg:h-[6vh] lg:w-[15%] md:h-[6vh] md:w-[15%] sm:h-[6vh] sm:w-[25%] lg:block md:block belowSm:hidden rounded border border-gray-800 ">
                                         <p className="text-center text-base font-normal text-gray1 py-2">All Ethics</p>
                                     </div>
-                                    <div className="h-[6vh] w-[15%] rounded border border-gray-800 ">
+                                    <div className="lg:h-[6vh] lg:w-[15%] md:h-[6vh] md:w-[15%] sm:h-[6vh] sm:w-[25%] lg:block md:block belowSm:hidden rounded border border-gray-800 ">
                                         <p className="text-center text-base font-normal text-gray1 py-2">Space Exploration</p>
                                     </div>
-                                    <div className="h-[6vh] w-[15%] rounded border border-gray-800 ">
+                                    <div className="lg:h-[6vh] lg:w-[15%] md:h-[6vh] md:w-[15%] lg:block md:block sm:hidden belowSm:hidden rounded border border-gray-800 ">
                                         <p className="text-center text-base font-normal text-gray1 py-2">Biotechnology</p>
                                     </div>
-                                    <div className="h-[6vh] w-[15%] rounded border border-gray-800">
+                                    <div className="lg:h-[6vh] lg:w-[15%] md:h-[6vh] md:w-[15%] lg:block md:block sm:hidden belowSm:hidden rounded border border-gray-800">
                                         <p className="text-center text-base font-normal text-gray1 py-2">Renewable Energy</p>
                                     </div>
                                 </div>

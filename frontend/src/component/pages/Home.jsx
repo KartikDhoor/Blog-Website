@@ -20,7 +20,7 @@ export default function Home() {
                 <Hero />
                 <div className="lg:h-full lg:w-full border-y border-gray-800 md:h-full md:w-full sm:h-full sm:w-full">
                     <div className="lg:h-full lg:w-[90%] md:h-full md-full sm:h-full sm:w-full mx-auto lg:flex lg:justify-center md:flex md:justify-center">
-                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:py-4 belowSm:px-8 belowSm:border-y belowSm:border-gray-800">
+                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 sm:h-[30vh]  sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:py-4 belowSm:px-8 belowSm:border-y belowSm:border-gray-800">
                             <div className="h-auto w-full">
                                 <RiArticleFill className="text-amber-400 text-6xl " />
                                 <div className="h-[10vh] w-full flex justify-center">
@@ -37,7 +37,7 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
-                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:py-4 belowSm:px-8 belowSm:border-y belowSm:border-gray-800">
+                        <div className="lg:h-[40vh] lg:w-[30%] lg:py-4 lg:px-8 lg:border-x lg:border-gray-800 flex items-center md:h-[40vh] md:w-[-30%] md:py-4 md:px-8 md:border-x md:border-gray-800 sm:h-[30vh] sm:w-full sm:py-4 sm:px-8 sm:border-y sm:border-gray-800 belowSm:h-[30vh] belowSm:w-full belowSm:py-4 belowSm:px-8 belowSm:border-y belowSm:border-gray-800">
                             <div className="h-[25vh] w-full">
                                 <HiUserGroup className="text-amber-400 text-6xl " />
                                 <div className="h-[10vh] w-full flex justify-center">
