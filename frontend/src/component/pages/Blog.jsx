@@ -7,7 +7,7 @@ export default function Blog() {
         <>
             <div className="h-full w-full bg-pureblack">
                 <div className="h-[50vh] w-full bg-[url('https://picsum.photos/1920/1080')] flex items-end">
-                    <div className="h-[10vh] w-full backdrop-blur-sm p-4 text-center text-4xl font-medium text-white">
+                    <div className="h-[10vh] w-full backdrop-blur-xl p-4 text-center text-4xl font-medium text-white">
                         <p>The Rise of Artificial Intellegence in the Health Care </p>
                     </div>
                 </div>
