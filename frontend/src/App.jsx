@@ -7,6 +7,7 @@ import Blog from './component/pages/Blog'
 import Inspire from './component/pages/Inspire'
 import Contact from './component/pages/Contact'
 import News from './component/pages/News'
+import Podcasts from './component/pages/Podcasts'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
       <Route path='/' element={<Home/>}></Route>
       <Route path='/blog' element={<Blog/>}></Route>
       <Route path='/news' element={<News/>}></Route>
+      <Route path='/podcast' element={<Podcasts/>}></Route>
       <Route path='/inspire' element={<Inspire/>}></Route>
       <Route path='/Contact' element={<Contact/>}></Route>
       </Route>

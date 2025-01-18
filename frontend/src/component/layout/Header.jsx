@@ -18,8 +18,8 @@ export default function Header() {
                     </div>
                     <div className="lg:h-full lg:w-[40%] lg:flex lg:justify-center lg:items-center lg:gap-6 text-lg font-normal text-gray-400 md:h-full md:w-[40%] md:flex md:justify-center md:items-center md:gap-6 sm:hidden belowSm:hidden">
                         <Link to='/'><p className="">Home</p></Link>
-                        <Link to='/blog'><p>Blog</p></Link>
                         <Link to='/news'><p>News</p></Link>
+                        <Link to='/podcast'><p>Podcast</p></Link>
                         <Link to='/inspire'><p>Insite</p></Link>
                     </div>
                     <div className="lg:h-full lg:w-[30%] lg:flex lg:items-center lg:justify-end p-4 md:h-full md:w-[30%] md:flex md:items-center md:justify-end sm:hidden belowSm:hidden">
@@ -40,8 +40,8 @@ export default function Header() {
                             </div>
                             <div className="border-y border-gray-800">
                             <Link to='/'  onClick={toggleNav}><p className="border-y border-gray-800 py-2">Home</p></Link>
-                            <Link to='/blog' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Blog</p></Link>
                             <Link to='/news' onClick={toggleNav}><p className="border-b border-gray-800 py-2">News</p></Link>
+                            <Link to='/podcast' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Podcast</p></Link>
                             <Link to='/inspire' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Insite</p></Link>
                             </div>
                         </div>
