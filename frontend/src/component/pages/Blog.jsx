@@ -8,7 +8,7 @@ export default function Blog() {
         <>
             <div className="h-full w-full bg-pureblack">
                 <div className="lg:h-[50vh] lg:w-full md:h-[50vh] md:w-full sm:h-[50vh] sn:w-full belowSm:h-[50vh] belowSm:w-full bg-[url('https://picsum.photos/1920/1080')] flex items-end">
-                    <div className="lg:h-[10vh] lg:w-full md:h-[10vh] md:w-full sm:h-[20vh] sm:w-full belowSm:h-[20vh] belowSm:w-full backdrop-blur-xl p-4 text-center text-4xl font-medium text-white">
+                    <div className="lg:h-[10vh] lg:w-full md:h-[10vh] md:w-full sm:h-[20vh] sm:w-full belowSm:h-[20vh] belowSm:w-full backdrop-blur-xl z-0 p-4 text-center text-4xl font-medium text-white">
                         <p>The Rise of Artificial Intellegence in the Health Care </p>
                     </div>
                 </div>
@@ -132,13 +132,13 @@ export default function Blog() {
                     <div className="lg:hidden md:hidden
                                     sm:h-auto lg:w-full lg:border-y lg:border-gray-800 
                                     belowSm:h-auto lg:w-full lg:border-y lg:border-gray-800  sm:overflow-y-hidden belowSm:overflow-y-hidden">
-                        <div className="h-[20vh] w-fullborder-y border-gray-800">
+                        <div className="h-[20vh] w-full  sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800">
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">Introduction</p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid aut qui, molestias quisquam voluptatum odit ratione culpa officiis minus dolore accusamus recusandae, est velit nemo ipsa tempore perferendis asperiores similique?</p>
                             </div>
                         </div>
-                        <div className="h-[80vh] w-full">
+                        <div className="h-[80vh] w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full">
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">AI things</p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!

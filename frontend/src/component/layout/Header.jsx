@@ -34,7 +34,7 @@ export default function Header() {
                             <HiMiniBars4 className="text-gray-300 sm:text-3xl belowSm:text-2xl" onClick={toggleNav} />
                         </div>
                         :
-                        <div className="lg:hidden md:hidden sm:fixed sm:top-0 sm:right-0 sm:bg-dark2 sm:h-[100vh] sm:w-[90%] text-lg font-normal text-gray-400 p-4 belowSm:fixed belowSm:top-0 belowSm:right-0 belowSm:bg-dark2 belowSm:h-[100vh] belowSm:w-[90%]">
+                        <div className="lg:hidden md:hidden sm:fixed sm:top-0 sm:right-0 sm:bg-dark2 sm:h-[100vh] sm:w-[90%] text-lg font-normal text-gray-400 p-4 belowSm:fixed belowSm:top-0 belowSm:right-0 belowSm:bg-dark2 belowSm:h-[100vh] belowSm:w-[90%] z-10">
                             <div className="h-[10vh] w-full flex justify-end p-2 ">
                                 <RxCrossCircled className="text-gray-300 text-4xl sm:text-4xl belowSm:text-3xl" onClick={toggleNav}/>
                             </div>
