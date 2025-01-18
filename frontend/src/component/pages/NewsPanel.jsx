@@ -56,8 +56,8 @@ export default function NewsPanel() {
                                                 md:h-[8vh] md:w-full md:flex md:justify-center
                                                 sm:h-full sm:w-full sm:flex sm:justify-center
                                                 belowSm:h-full belowSm:w-full belowSm:flex belowSm:justify-center">
-                                    <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:w-[20%] aspect-square flex items-center justify-center">
-                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-full object-cover" />
+                                     <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-[7vh] belowSm:w-[20%] aspect-square">
+                                        <img src="https://picsum.photos/1920/1080" className="h-full w-[90%] rounded-full" />
                                     </div>
                                     <div className="lg:h-full lg:w-[60%] md:h-full md:w-[60%] sm:h-full sm:w-[60%] belowSm:h-full belowSm:w-[60%]">
                                         <p className="text-white text-base font-normal">John Techson</p>
