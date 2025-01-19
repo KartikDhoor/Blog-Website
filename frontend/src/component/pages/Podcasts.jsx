@@ -7,59 +7,7 @@ export default function Podcasts() {
     return (
         <>
             <div className="h-full w-full bg-pureblack">
-                <div className="h-full w-full">
-                    <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full bg-dark1 flex items-center">
-                        <div className="lg:h-[25vh] lg:w-[90%] lg:mx-auto lg:p-2
-                                    md:h-[25vh] md:w-[90%] md:mx-auto md:p-2
-                                    sm:h-[30vh] sm:w-full sm:mx-auto sm:p-2
-                                    belowSm:h-[30vh] belowSm:w-full belowSm:mx-auto belowSm:p-2 ">
-                            <div className="lg:h-[8vh] lg:w-full lg:text-5xl lg:text-white lg:font-medium
-                                        md:h-[8vh] md:w-full md:text-3xl md:text-white md:font-medium
-                                        sm:h-[10vh] sm:w-full sm:text-4xl sm:text-white sm:font-medium
-                                        belowSm:h-[10vh] belowSm:w-full belowSm:text-3xl belowSm:text-white belowSm:font-medium
-                                        ">
-                                <p>Unlock A world of</p>
-                                <p className="lg:hidden md:hidden sm:block belowSm:block">Knowledge</p>
-                            </div>
-                            <div className="h-[10vh] w-full flex justify-center gap-2 my-2">
-                                <div className="h-full w-[30%] lg:text-5xl md:text-3xl text-white font-medium lg:block md:block sm:hidden belowSm:hidden">
-                                    <p>Knowleldge</p>
-                                </div>
-                                <div className="h-full w-[70%] text-base text-gray1 font-normal sm:w-full belowSm:w-full">
-                                    <p>Explore the latest news from around the world.We bring you Up-To-The-Minutes update on the most significant event,trend,Stories,Discover the word throught our News Coverage.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-[30vh] w-full">
-                        <div className="h-full w-[90%] mx-auto flex justify-center">
-                            <div className="h-full w-[25%] flex justify-center items-center">
-                                <div className="h-[15vh] w-[50%] mx-auto text-5xl text-center text-white">
-                                    <p>300<spam className='text-amber-400'>+</spam></p>
-                                    <p className="text-base text-gray1">Resource Available</p>
-                                </div>
-                            </div>
-                            <div className="h-full w-[25%] flex justify-center items-center">
-                                <div className="h-[15vh] w-[50%] mx-auto text-5xl text-center text-white">
-                                    <p>12K<spam className='text-amber-400'>+</spam></p>
-                                    <p className="text-base text-gray1">Total Downloads</p>
-                                </div>
-                            </div>
-                            <div className="h-full w-[25%] flex justify-center items-center">
-                                <div className="h-[15vh] w-[50%] mx-auto text-5xl text-center text-white">
-                                    <p>10K<spam className='text-amber-400'>+</spam></p>
-                                    <p className="text-base text-gray1">Active Users</p>
-                                </div>
-                            </div>
-                            <div className="h-full w-[25%] flex justify-center items-center">
-                                <div className="h-[15vh] w-[50%] mx-auto text-5xl text-center text-white">
-                                    <p>100<spam className='text-amber-400'>+</spam></p>
-                                    <p className="text-base text-gray1">Countries Usability</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                 <div className="h-full w-full">
                     <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[40vh] belowSm:w-full bg-dark1">
                         <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between lg:items-center md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between md:items-center sm:h-full sm:w-[90%] sm:mx-auto sm:px-4 sm:flex sm:items-center sm:flex-wrap belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:px-4 belowSm:flex belowSm:items-center belowSm:flex-wrap">
@@ -90,7 +38,7 @@ export default function Podcasts() {
                     </div>
                     <div className="h-[70vh] w-full border-y border-gray-800">
                         <div className="h-full w-[90%] mx-auto flex justify-center">
-                        <div className="h-full w-[40%] border-r border-gray-800 flex items-center">
+                            <div className="h-full w-[40%] border-r border-gray-800 flex items-center">
                                 <div className="h-auto w-[90%] mx-auto">
                                     <TbBulbFilled className="text-8xl text-amber-400" />
                                     <div className="h-auto w-full flex justify-between my-2">
@@ -113,7 +61,7 @@ export default function Podcasts() {
                                             <p>Dr.Sarah Mitchall</p>
                                         </div>
                                         <div className="h-auto w-[50%] p-2">
-                                            <button className="h-full w-full flex justify-center border border-gray-800 items-center rounded-xl text-gray1 bg-dark1">Listen Podcast<LuArrowUpRight className="text-xl text-amber-400"/></button>
+                                            <button className="h-full w-full flex justify-center border border-gray-800 items-center rounded-xl text-gray1 bg-dark1">Listen Podcast<LuArrowUpRight className="text-xl text-amber-400" /></button>
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +69,7 @@ export default function Podcasts() {
                             <div className="h-full w-[60%] ">
                                 <div className="h-auto w-[90%] mx-auto">
                                     <div className="h-auto w-full p-4">
-                                        <img src="https://picsum.photos/1920/1080" className="h-[40vh] w-full rounded-xl"/>
+                                        <img src="https://picsum.photos/1920/1080" className="h-[40vh] w-full rounded-xl" />
                                     </div>
                                     <div className="h-auto w-full text-white text-lg ">
                                         <p className="font-medium">Delves into the transformative impact of AI</p>
@@ -170,7 +118,7 @@ export default function Podcasts() {
                                             <p>Mark Anderson</p>
                                         </div>
                                         <div className="h-auto w-[50%] p-2">
-                                            <button className="h-full w-full flex justify-center border border-gray-800 items-center rounded-xl text-gray1 bg-dark1">Listen Podcast<LuArrowUpRight className="text-xl text-amber-400"/></button>
+                                            <button className="h-full w-full flex justify-center border border-gray-800 items-center rounded-xl text-gray1 bg-dark1">Listen Podcast<LuArrowUpRight className="text-xl text-amber-400" /></button>
                                         </div>
                                     </div>
                                 </div>
@@ -178,7 +126,7 @@ export default function Podcasts() {
                             <div className="h-full w-[60%] ">
                                 <div className="h-auto w-[90%] mx-auto">
                                     <div className="h-auto w-full p-4">
-                                        <img src="https://picsum.photos/1920/1080" className="h-[40vh] w-full rounded-xl"/>
+                                        <img src="https://picsum.photos/1920/1080" className="h-[40vh] w-full rounded-xl" />
                                     </div>
                                     <div className="h-auto w-full text-white text-lg ">
                                         <p className="font-medium">Delves into the transformative impact of AI</p>
@@ -202,13 +150,97 @@ export default function Podcasts() {
                             </div>
                         </div>
                     </div>
-                    <div className="h-[50vh] w-full border-y border-gray-800">
+                </div>
+                <div className="h-full w-full ">
+                    <div className="h-[30vh] w-full bg-dark1 border-y border-gray-800">
                         <div className="h-full w-[90%] mx-auto flex items-center">
-                        <div className="h-auto w-full">
+                            <div className="h-auto w-full">
                                 <button className=" bg-gray1 px-2 border rounded border-gray-800">
                                     <p className="text-white">Unlock the Power of</p>
                                 </button>
-                                <p className="text-5xl sm:text-4xl belowSm:text-3xl text-white font-medium">FutureTech Feature</p>
+                                <p className="text-5xl sm:text-4xl belowSm:text-3xl text-white font-medium">Latest podcast Episode</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="h-auto w-full">
+                    <div className="h-[50vh] w-full border-y border-gray-800">
+                        <div className="h-full w-[90%] mx-auto flex justify-center">
+                                <div className="h-full w-[30%] p-2">
+                                    <div className="h-[30vh] w-full">
+                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded"/>
+                                    </div>
+                                    <div className="h-auto w-full text-base text-white">
+                                        <p>Ai in HealthCare</p>
+                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore sunt ipsa, atque soluta consequuntur fugiat neque! Illum, eos architecto! Ex eos quasi recusandae exercitationem minus aperiam, adipisci corporis distinctio laboriosam?</p>
+                                        <div className="h-auto w-full my-1">
+                                            <button className="flex justify-center p-2 border border-gray-800 rounded-lg text-white text-base">Learn More<LuArrowUpRight className="text-amber-400 text-xl"/></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="h-full w-[30%] p-2 border-x border-gray-800">
+                                <div className="h-[30vh] w-full">
+                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded"/>
+                                    </div>
+                                    <div className="h-auto w-full text-base text-white">
+                                        <p>Ai in HealthCare</p>
+                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore sunt ipsa, atque soluta consequuntur fugiat neque! Illum, eos architecto! Ex eos quasi recusandae exercitationem minus aperiam, adipisci corporis distinctio laboriosam?</p>
+                                        <div className="h-auto w-full my-1">
+                                            <button className="flex justify-center p-2 border border-gray-800 rounded-lg text-white text-base">Learn More<LuArrowUpRight className="text-amber-400 text-xl"/></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="h-full w-[30%] p-2">
+                                <div className="h-[30vh] w-full">
+                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded"/>
+                                    </div>
+                                    <div className="h-auto w-full text-base text-white">
+                                        <p>Ai in HealthCare</p>
+                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore sunt ipsa, atque soluta consequuntur fugiat neque! Illum, eos architecto! Ex eos quasi recusandae exercitationem minus aperiam, adipisci corporis distinctio laboriosam?</p>
+                                        <div className="h-auto w-full my-1">
+                                            <button className="flex justify-center p-2 border border-gray-800 rounded-lg text-white text-base">Learn More<LuArrowUpRight className="text-amber-400 text-xl"/></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="h-[50vh] w-full border-y border-gray-800">
+                        <div className="h-full w-[90%] mx-auto flex justify-center">
+                                <div className="h-full w-[30%] p-2">
+                                    <div className="h-[30vh] w-full">
+                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded"/>
+                                    </div>
+                                    <div className="h-auto w-full text-base text-white">
+                                        <p>Ai in HealthCare</p>
+                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore sunt ipsa, atque soluta consequuntur fugiat neque! Illum, eos architecto! Ex eos quasi recusandae exercitationem minus aperiam, adipisci corporis distinctio laboriosam?</p>
+                                        <div className="h-auto w-full my-1">
+                                            <button className="flex justify-center p-2 border border-gray-800 rounded-lg text-white text-base">Learn More<LuArrowUpRight className="text-amber-400 text-xl"/></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="h-full w-[30%] p-2 border-x border-gray-800">
+                                <div className="h-[30vh] w-full">
+                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded"/>
+                                    </div>
+                                    <div className="h-auto w-full text-base text-white">
+                                        <p>Ai in HealthCare</p>
+                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore sunt ipsa, atque soluta consequuntur fugiat neque! Illum, eos architecto! Ex eos quasi recusandae exercitationem minus aperiam, adipisci corporis distinctio laboriosam?</p>
+                                        <div className="h-auto w-full my-1">
+                                            <button className="flex justify-center p-2 border border-gray-800 rounded-lg text-white text-base">Learn More<LuArrowUpRight className="text-amber-400 text-xl"/></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="h-full w-[30%] p-2">
+                                <div className="h-[30vh] w-full">
+                                        <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded"/>
+                                    </div>
+                                    <div className="h-auto w-full text-base text-white">
+                                        <p>Ai in HealthCare</p>
+                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore sunt ipsa, atque soluta consequuntur fugiat neque! Illum, eos architecto! Ex eos quasi recusandae exercitationem minus aperiam, adipisci corporis distinctio laboriosam?</p>
+                                        <div className="h-auto w-full my-1">
+                                            <button className="flex justify-center p-2 border border-gray-800 rounded-lg text-white text-base">Learn More<LuArrowUpRight className="text-amber-400 text-xl"/></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

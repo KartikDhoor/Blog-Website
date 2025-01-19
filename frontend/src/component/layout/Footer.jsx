@@ -163,9 +163,9 @@ export default function Footer() {
                                     sm:h-[20vh] sm:w-[90%] sm:mx-auto
                                     belowSm:h-[20vh] belowSm:w-[90%] belowSm:mx-auto text-base font-base text-gray1">
                         <p className="text-xl text-gray-400 my-2 font-medium">Newsletters</p>
-                        <div className="h-[8vh] w-full rounded-xl flex justify-center items-center border border-gray-800">
-                            <input className="h-full w-[60%] bg-dark1 text-white rounded-l-xl p-1"/>
-                            <button className="h-full w-[40%] bg-amber-400 text-dark1 rounded-r-xl text-xl font-medium">subscribe</button>
+                        <div className="h-[7vh] w-full rounded-xl flex justify-center items-center border border-gray-800">
+                            <input className="h-full w-[60%] bg-dark1 text-white rounded-l-xl p-1 outline-none focus:border-2 focus:border-gray-800"/>
+                            <button className="h-full w-[40%] bg-amber-400 text-dark1 rounded-r-xl text-xl font-medium ">subscribe</button>
                         </div>
                         
                     </div>

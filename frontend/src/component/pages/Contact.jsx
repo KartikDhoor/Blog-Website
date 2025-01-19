@@ -61,11 +61,11 @@ export default function Contact(){
                     </div>
                 </div>
             </div>
-            <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-full sm:w-full belowSm:h-full belowSm:w-full">
-                <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center lg:border-y lg:border-gray-800
-                                md:h-full md:w-full md:mx-auto md:flex md:justify-center md:border-y md:border-gray-800
-                                sm:h-[120vh] sm:w-full sm:mx-auto sm:border-y sm:border-gray-800
-                                belowSm:h-[120vh] belowSm:w-full belowSm:mx-auto belowSm:border-y belowSm:border-gray-800">
+            <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-full sm:w-full belowSm:h-full belowSm:w-full border-y border-gray-800">
+                <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
+                                md:h-full md:w-full md:mx-auto md:flex md:justify-center 
+                                sm:h-[120vh] sm:w-full sm:mx-auto 
+                                belowSm:h-[120vh] belowSm:w-full belowSm:mx-auto ">
                     <div className="lg:h-full lg:w-[40%] lg:border-r lg:border-gray-800 lg:flex lg:items-center
                                     md:h-full md:w-[40%] md:border-r md:border-gray-800 md:flex md:items-center
                                     sm:h-[50vh] sm:w-full sm:border-b sm:border-gray-800 sm:flex sm:items-center
