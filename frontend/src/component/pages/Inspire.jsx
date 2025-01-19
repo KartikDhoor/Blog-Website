@@ -31,27 +31,27 @@ export default function Inspire() {
                     </div>
                 </div>
                 <div className="h-[30vh] w-full">
-                    <div className="h-full w-[90%] mx-auto flex justify-center">
-                        <div className="h-full w-[25%] flex justify-center items-center border-r border-gray-800">
-                            <div className="h-[15vh] w-[50%] mx-auto text-5xl text-center text-white">
+                    <div className="h-full w-[90%] mx-auto grid  md:grid-cols-4 sm:grid-cols-2 belowSm:grid-cols-2">
+                        <div className="h-full w-full flex justify-center items-center md:border-r sm:border-r sm:border-b belowSm:border-r belowSm:border-b border-gray-800">
+                            <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
                                 <p>300<spam className='text-amber-400'>+</spam></p>
                                 <p className="text-base text-gray1">Resource Available</p>
                             </div>
                         </div>
-                        <div className="h-full w-[25%] flex justify-center items-center border-r border-gray-800">
-                            <div className="h-[15vh] w-[50%] mx-auto text-5xl text-center text-white">
+                        <div className="h-full w-full flex justify-center items-center md:border-r sm:border-r belowSm:border-b  border-gray-800">
+                            <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
                                 <p>12K<spam className='text-amber-400'>+</spam></p>
                                 <p className="text-base text-gray1">Total Downloads</p>
                             </div>
                         </div>
-                        <div className="h-full w-[25%] flex justify-center items-center border-r border-gray-800">
-                            <div className="h-[15vh] w-[50%] mx-auto text-5xl text-center text-white">
+                        <div className="h-full w-full flex justify-center items-center md:border-r sm:border-b belowSm:border-r belowSm:border-b  border-gray-800">
+                            <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
                                 <p>10K<spam className='text-amber-400'>+</spam></p>
                                 <p className="text-base text-gray1">Active Users</p>
                             </div>
                         </div>
-                        <div className="h-full w-[25%] flex justify-center items-center">
-                            <div className="h-[15vh] w-[50%] mx-auto text-5xl text-center text-white">
+                        <div className="h-full w-full flex justify-center items-center">
+                            <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
                                 <p>100<spam className='text-amber-400'>+</spam></p>
                                 <p className="text-base text-gray1">Countries Usability</p>
                             </div>
@@ -86,9 +86,9 @@ export default function Inspire() {
                             </div>
                         </div>
                     </div>
-                    <div className="h-[70vh] w-full border-y border-gray-800">
-                        <div className="h-full w-[90%] mx-auto flex justify-center">
-                            <div className="h-full w-[40%] border-r border-gray-800 flex items-center">
+                    <div className="h-[70vh] w-full border-y border-gray-800 md:h-[70vh] sm:h-auto belowSm:h-auto">
+                        <div className="h-full w-[90%] mx-auto md:flex md:justify-center">
+                            <div className="md:h-full md:w-[40%] md:border-r border-gray-800 flex items-center sm:w-full sm:border-b sm:h-[50vh] belowSm:h-[50vh] belowSm:border-b belowSm:w-full ">
                                 <div className="h-auto w-[90%] mx-auto">
                                     <TbBulbFilled className="text-8xl text-amber-400" />
                                     <div className="h-auto w-full my-2">
@@ -101,31 +101,31 @@ export default function Inspire() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-full w-[60%] ">
+                            <div className="h-full md:w-[60%] sm:w-full belowSm:w-full">
                                 <div className="h-auto w-[90%] mx-auto">
                                     <div className="h-auto w-full p-4">
-                                        <img src="https://picsum.photos/1920/1080" className="h-[40vh] w-full rounded-xl" />
+                                        <img src="https://picsum.photos/1920/1080" className="md:h-[40vh] sm:h-[30vh] belowSm:h-[30vh] w-full rounded-xl" />
                                     </div>
                                     <div className="h-auto w-full text-white text-lg ">
-                                        <div className="h-auto w-full flex justify-center gap-2">
-                                            <div className="h-full w-[70%]">
+                                        <div className="h-auto w-full grid md:grid-cols-3 sm:grid-cols-1 belowSm:grid-cols-1 gap-2">
+                                            <div className="h-full w-full col-span-2 ">
                                                 <p className="font-medium">Delves into the transformative impact of AI</p>
                                                 <p className="text-sm text-gray1 line-clamp-2">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo laboriosam aliquam et quidem nemo doloribus temporibus, consequatur placeat? Iure corrupti esse nostrum at quis. Laudantium dicta natus aliquam quae exercitationem?</p>
                                             </div>
-                                            <div className="h-full w-[30%] p-2 text-base">
+                                            <div className="h-full w-full p-2 text-base">
                                                 <button className="h-full w-full rounded-lg border border-gray-800 flex justify-center bg-dark1 py-2 px-2">Download PDF Now<LuArrowUpRight className="text-amber-400 text-xl" /></button>
                                             </div>
                                         </div>
-                                        <div className="h-auto w-full rounded-lg bg-pureblack border my-2 p-2 border-gray-800 flex justify-around gap-2">
-                                            <div className="h-full w-[33%] rounded-lg border border-gray-800 bg-dark1 p-2">
+                                        <div className="h-auto w-full rounded-lg bg-pureblack border my-2 p-2 border-gray-800 grid md:grid-cols-3 sm:grid-cols-1 gap-2">
+                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
                                                 <p className="text-sm text-gray1">Total Episode</p>
                                                 <p className="text-base text-white">50</p>
                                             </div>
-                                            <div className="h-full w-[33%] rounded-lg border border-gray-800 bg-dark1 p-2">
+                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
                                                 <p className="text-sm text-gray1">Average Episode Length</p>
                                                 <p className="text-base text-white">30 Min</p>
                                             </div>
-                                            <div className="h-full w-[33%] rounded-lg border border-gray-800 bg-dark1 p-2">
+                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
                                                 <p className="text-sm text-gray1">Release Frequence</p>
                                                 <p className="text-base text-white">Weekly</p>
                                             </div>
@@ -135,12 +135,11 @@ export default function Inspire() {
                             </div>
                         </div>
                     </div>
-                    <div className="h-[70vh] w-full border-y border-gray-800">
-                        <div className="h-full w-[90%] mx-auto flex justify-center">
-                            <div className="h-full w-[40%] border-r border-gray-800 flex items-center">
+                    <div className="h-[70vh] w-full border-y border-gray-800 md:h-[70vh] sm:h-auto belowSm:h-auto">
+                        <div className="h-full w-[90%] mx-auto md:flex md:justify-center">
+                            <div className="md:h-full md:w-[40%] md:border-r border-gray-800 flex items-center sm:w-full sm:border-b sm:h-[50vh] belowSm:h-[50vh] belowSm:border-b belowSm:w-full ">
                                 <div className="h-auto w-[90%] mx-auto">
                                     <GiConversation className="text-8xl text-amber-400" />
-
                                     <div className="h-auto w-full my-2">
                                         <div className="h-full w-full text-3xl text-white font-medium">
                                             <p>Ai Conversation</p>
@@ -151,31 +150,31 @@ export default function Inspire() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-full w-[60%] ">
+                            <div className="h-full md:w-[60%] sm:w-full belowSm:w-full">
                                 <div className="h-auto w-[90%] mx-auto">
-                                    <div className="h-auto w-full p-4">
-                                        <img src="https://picsum.photos/1920/1080" className="h-[40vh] w-full rounded-xl" />
+                                    <div className="h-auto w-full p-2">
+                                        <img src="https://picsum.photos/1920/1080" className="md:h-[40vh] sm:h-[30vh] belowSm:h-[30vh] w-full rounded-xl" />
                                     </div>
                                     <div className="h-auto w-full text-white text-lg ">
-                                        <div className="h-auto w-full flex justify-center gap-2">
-                                            <div className="h-full w-[70%]">
+                                        <div className="h-auto w-full grid md:grid-cols-3 sm:grid-cols-1 belowSm:grid-cols-1 gap-2">
+                                            <div className="h-full w-full col-span-2 ">
                                                 <p className="font-medium">Delves into the transformative impact of AI</p>
                                                 <p className="text-sm text-gray1 line-clamp-2">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo laboriosam aliquam et quidem nemo doloribus temporibus, consequatur placeat? Iure corrupti esse nostrum at quis. Laudantium dicta natus aliquam quae exercitationem?</p>
                                             </div>
-                                            <div className="h-full w-[30%] p-2 text-base">
+                                            <div className="h-full w-full p-2 text-base">
                                                 <button className="h-full w-full rounded-lg border border-gray-800 flex justify-center bg-dark1 py-2 px-2">Download PDF Now<LuArrowUpRight className="text-amber-400 text-xl" /></button>
                                             </div>
                                         </div>
-                                        <div className="h-auto w-full rounded-lg bg-pureblack border my-2 p-2 border-gray-800 flex justify-around gap-2">
-                                            <div className="h-full w-[33%] rounded-lg border border-gray-800 bg-dark1 p-2">
+                                        <div className="h-auto w-full rounded-lg bg-pureblack border my-2 p-2 border-gray-800 grid md:grid-cols-3 sm:grid-cols-1 gap-2">
+                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
                                                 <p className="text-sm text-gray1">Total Episode</p>
                                                 <p className="text-base text-white">50</p>
                                             </div>
-                                            <div className="h-full w-[33%] rounded-lg border border-gray-800 bg-dark1 p-2">
+                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
                                                 <p className="text-sm text-gray1">Average Episode Length</p>
                                                 <p className="text-base text-white">30 Min</p>
                                             </div>
-                                            <div className="h-full w-[33%] rounded-lg border border-gray-800 bg-dark1 p-2">
+                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
                                                 <p className="text-sm text-gray1">Release Frequence</p>
                                                 <p className="text-base text-white">Weekly</p>
                                             </div>
@@ -185,9 +184,9 @@ export default function Inspire() {
                             </div>
                         </div>
                     </div>
-                    <div className="h-[50vh] w-full border-y border-gray-800">
-                        <div className="h-full w-[90%] mx-auto flex justify-center items-center">
-                            <div className="h-full w-[30%] flex items-center">
+                    <div className="md:h-[50vh] sm:h-auto w-full border-y border-gray-800">
+                        <div className="h-full w-[90%] mx-auto grid md:grid-cols-3 sm:grid-cols-1 belowSm:grid-cols-1 items-center">
+                            <div className="h-full w-full flex items-center">
                                 <div className="h-auto w-full p-2">
                                     <div className="h-auto w-full">
                                         <img src="https://picsum.photos/1920/1080" className="h-[25vh] w-full rounded-xl" />
@@ -197,12 +196,12 @@ export default function Inspire() {
                                         <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque odio distinctio eaque perferendis laudantium labore nulla nemo deserunt, omnis aperiam quod laboriosam ipsa culpa sit obcaecati consectetur dolorem perspiciatis quas!</p>
                                         <div className="h-[8vh] w-full flex justify-center gap-4 p-2 text-gray1 ">
                                             <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">View Details</button>
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download PDF Now</button>
+                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download Now</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-full w-[30%] flex items-center border-gray-800 border-x">
+                            <div className="h-full w-full flex items-center border-gray-800 md:border-x sm:border-y belowSm:border-y">
                                 <div className="h-auto w-full p-2">
                                     <div className="h-auto w-full">
                                         <img src="https://picsum.photos/1920/1080" className="h-[25vh] w-full rounded-xl" />
@@ -212,12 +211,12 @@ export default function Inspire() {
                                         <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque odio distinctio eaque perferendis laudantium labore nulla nemo deserunt, omnis aperiam quod laboriosam ipsa culpa sit obcaecati consectetur dolorem perspiciatis quas!</p>
                                         <div className="h-[8vh] w-full flex justify-center gap-4 p-2 text-gray1 ">
                                             <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">View Details</button>
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download PDF Now</button>
+                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download Now</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-full w-[30%] flex items-center">
+                            <div className="h-full w-full flex items-center">
                                 <div className="h-auto w-full p-2">
                                     <div className="h-auto w-full">
                                         <img src="https://picsum.photos/1920/1080" className="h-[25vh] w-full rounded-xl" />
@@ -227,7 +226,7 @@ export default function Inspire() {
                                         <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque odio distinctio eaque perferendis laudantium labore nulla nemo deserunt, omnis aperiam quod laboriosam ipsa culpa sit obcaecati consectetur dolorem perspiciatis quas!</p>
                                         <div className="h-[8vh] w-full flex justify-center gap-4 p-2 text-gray1 ">
                                             <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">View Details</button>
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download PDF Now</button>
+                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download Now</button>
                                         </div>
                                     </div>
                                 </div>

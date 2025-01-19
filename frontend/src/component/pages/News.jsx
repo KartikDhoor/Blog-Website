@@ -1,4 +1,5 @@
 import NewsPanel from "./NewsPanel";
+import { Link } from "react-router-dom";
 import { FiMessageCircle } from "react-icons/fi";
 import { PiPaperPlaneTiltBold } from "react-icons/pi";
 import { LuArrowUpRight } from "react-icons/lu";
@@ -34,10 +35,11 @@ export default function News() {
                                 md:h-[50vh] md:w-full md:border-y md:border-gray-800
                                 sm:h-[80vh] sm:w-full sm:border-y sm:border-gray-800
                                 belowSm:h-[80vh] belowSm:w-full belowSm:border-y belowSm:border-gray-800">
-                    <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
+                                    <Link to='/blog' className="">
+                    <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center 
                                     md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
                                     sm:h-[30vh] sm:w-full 
-                                    belowSm:h-[30vh] belowSm:w-full">
+                                    belowSm:h-[30vh] belowSm:w-full cursor-pointer">
                         <div className="lg:h-full lg:w-[40%] p-4 
                                         md:h-full md:w-[40%] p-4 
                                         sm:h-full sm:w-full 
@@ -81,6 +83,7 @@ export default function News() {
                             </div>
                         </div>
                     </div>
+                    </Link>
                 </div>
                 <div className="lg:h-[50vh] lg:w-full lg:border-y lg:border-gray-800
                                 md:h-[50vh] md:w-full md:border-y md:border-gray-800

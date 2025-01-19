@@ -12,21 +12,21 @@ export default function Blog() {
                         <p>The Rise of Artificial Intellegence in the Health Care </p>
                     </div>
                 </div>
-                <div className="lg:h-[100vh] lg:w-full lg:border-y lg:border-gray-800 lg:flex lg:justify-center
+                <div className="lg:h-auto lg:w-full lg:border-y lg:border-gray-800 lg:flex lg:justify-center
                                 md:h-[100vh] md:w-full md:border-y md:border-gray-800 md:flex md:justify-center
                                 sm:h-full sm:w-full sm:border-y sm:border-gray-800
                                 belowSm:h-full belowSm:w-full belowSm:border-y belowSm:border-gray-800">
-                    <div className="lg:h-full lg:w-[60%] lg:border-r lg:border-gray-800 lg:block
+                    <div className="lg:h-auto lg:w-[60%] lg:border-r lg:border-gray-800 lg:block
                                     md:h-full md:w-[60%] md:border-r md:border-gray-800 md:block
                                     sm:hidden
                                     belowSm:hidden">
-                        <div className="h-[20vh] w-fullborder-y border-gray-800">
+                        <div className="h-[20vh] w-full border-y border-gray-800">
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">Introduction</p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid aut qui, molestias quisquam voluptatum odit ratione culpa officiis minus dolore accusamus recusandae, est velit nemo ipsa tempore perferendis asperiores similique?</p>
                             </div>
                         </div>
-                        <div className="h-[80vh] w-full">
+                        <div className="h-auto w-full">
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">AI things</p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
@@ -41,15 +41,13 @@ export default function Blog() {
                                 </p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
                                 </p>
-                                <div className="">
-
-                                </div>
+                               
                             </div>
                         </div>
                     </div>
-                    <div className="lg:h-full lg:w-[40%] md:h-full md:w-[40%] sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full sm:overflow-y-hidden belowSm:overflow-y-hidden">
-                        <div className="h-[10vh] w-full border-y border-gray-800">
-                            <div className="h-full w-[90%] mx-auto flex items-center">
+                    <div className="lg:h-auto lg:w-[40%] md:h-full md:w-[40%] sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full sm:overflow-y-hidden belowSm:overflow-y-hidden">
+                        <div className="h-auto w-full border-y border-gray-800">
+                            <div className="h-[10vh] w-[90%] mx-auto flex items-center">
                                 <div className="h-[5vh] my-1 w-full flex justify-start gap-4 ">
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                         <FaHeart className="text-amber-400" />
@@ -66,7 +64,7 @@ export default function Blog() {
                                 </div>
                             </div>
                         </div>
-                        <div className="h-[90vh] w-full">
+                        <div className="h-auto w-full">
                             <div className="h-[20vh] w-full">
                                 <div className="h-full w-[90%] mx-auto flex justify-center">
                                     <div className="h-full w-[50%]">
@@ -131,15 +129,28 @@ export default function Blog() {
                     </div>
                     <div className="lg:hidden md:hidden
                                     sm:h-auto lg:w-full lg:border-y lg:border-gray-800 
-                                    belowSm:h-auto lg:w-full lg:border-y lg:border-gray-800  sm:overflow-y-hidden belowSm:overflow-y-hidden">
+                                    belowSm:h-auto lg:w-full lg:border-y lg:border-gray-800  sm:overflow-y-hidden ">
                         <div className="h-[20vh] w-full  sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800">
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">Introduction</p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid aut qui, molestias quisquam voluptatum odit ratione culpa officiis minus dolore accusamus recusandae, est velit nemo ipsa tempore perferendis asperiores similique?</p>
                             </div>
                         </div>
-                        <div className="h-[80vh] w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full">
+                        <div className="h-auto w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full">
                             <div className="h-full w-[90%] mx-auto text-white py-4">
+                                <p className="text-xl font-medium">AI things</p>
+                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?
+                                </p>
+                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
+                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro impedit at, quae eligendi optio libero quibusdam quo illum officiis fuga praesentium sed provident in. Et accusamus ex modi iusto. Laborum!
+                                </p>
+                                <p className="text-xl font-medium">AI things</p>
+                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?
+                                </p>
+                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
+                                </p>
                                 <p className="text-xl font-medium">AI things</p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
                                     Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?

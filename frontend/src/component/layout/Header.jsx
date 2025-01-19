@@ -43,6 +43,7 @@ export default function Header() {
                             <Link to='/news' onClick={toggleNav}><p className="border-b border-gray-800 py-2">News</p></Link>
                             <Link to='/podcast' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Podcast</p></Link>
                             <Link to='/inspire' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Insite</p></Link>
+                            <Link to='/contact' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Contact</p></Link>
                             </div>
                         </div>
                     }
