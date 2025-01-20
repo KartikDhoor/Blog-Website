@@ -19,7 +19,7 @@ export default function Hero() {
                             <div className="lg:h-[60vh] lg:w-full lg:text-gray1 lg:flex lg:items-center lg:border-r lg:border-b lg:border-gray-800 
                                             md:h-[60vh] md:w-full md:text-gray1 md:flex md:items-center md:border-r md:border-b md:border-gray-800 
                                             sm:h-[60vh] sm:w-full sm:text-gray1 sm:flex sm:items-center sm:border-r sm:border-b sm:border-gray-800
-                                            belowSm:border-b belowSm:border-gray-800 text-gray1 "
+                                            belowSm:border-b belowSm:border-gray-800 text-gray1 p-4 "
                             >
                                 <div>
                                     <p className="lg:text-3xl 
