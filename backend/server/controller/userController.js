@@ -62,7 +62,7 @@ const profilePasswordChange=(req,res)=>{
     if(!req.body.password){
         validation+="old password is required "
     }
-    if(!req.body.newpassword){
+    if(!req.body.newPassword){
         validation+="new password is required "
     }
     if(!!validation){
@@ -71,7 +71,21 @@ const profilePasswordChange=(req,res)=>{
     else{
         User.findOne({_id:req.body._id}).exec()
         .then((data)=>{
-
+            if(data==null){
+                res.send({success:false,status:400,message:"user od this _id not exists"})
+            }
+            else{
+                if(data.password==req.body.password){
+                    data.password=req.body.newPassword
+                    data.save()
+                    .then((updatedData)=>{
+                        res.send({success:true,status:200,message:"the password is changed"})
+                    })
+                    .catch((err)=>{
+                        res.send({success:false,status:400,message:err.message})
+                    })
+                }
+            }
         })
         .catch((err)=>{
             res.send({success:false,status:400,message:err.message})
@@ -81,4 +95,4 @@ const profilePasswordChange=(req,res)=>{
 
 
 
-module.exports={register,login};
+module.exports={register,login,profilePasswordChange};

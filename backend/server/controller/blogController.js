@@ -131,7 +131,24 @@ const findBlog = (req, res) => {
 
         })
 }
-const findOneBLog=
+const findOneBlog= (req,res) =>{
+    let validation=''
+    if(!req.body._id){
+        validation+="_id is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Blog.findOne({_id:req.body._id}).populate("category","comment","like").exec()
+        .then((data)=>{
+            res.send({success:true,status:200,message:"here is the blog",data:data})
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
 const deleteBlog = (req, res) => {
     let validation = ""
     if (!req.body._id) {
@@ -167,4 +184,4 @@ const deleteBlog = (req, res) => {
     }
 }
 
-module.exports = { createBlog, updateBlog, findBlog, deleteBlog };
+module.exports = { createBlog, updateBlog, findBlog, findOneBlog, deleteBlog };
