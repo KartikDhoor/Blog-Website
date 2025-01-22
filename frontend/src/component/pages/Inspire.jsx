@@ -10,7 +10,7 @@ export default function Inspire() {
                 <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full bg-dark1 flex items-center">
                     <div className="lg:h-[25vh] lg:w-[90%] lg:mx-auto lg:p-2
                                             md:h-[25vh] md:w-[90%] md:mx-auto md:p-2
-                                            sm:h-[30vh] sm:w-full sm:mx-auto sm:p-4
+                                            sm:h-[30vh] sm:w-full sm:mx-auto sm:p-4c  e
                                             belowSm:h-[30vh] belowSm:w-full belowSm:mx-auto belowSm:p-4 ">
                         <div className="lg:h-[8vh] lg:w-full lg:text-5xl lg:text-white lg:font-medium
                                                 md:h-[8vh] md:w-full md:text-3xl md:text-white md:font-medium
