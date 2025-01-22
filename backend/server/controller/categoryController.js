@@ -68,6 +68,37 @@ const updateCategory=(req,res)=>{
         })
     }
 }
+const findCategory=(req,res)=>{
+    let query={}
+    if(req.query.categoryName){
+        query.categoryName=req.query.categoryName
+    }
+    Category.find(query).exec()
+    .then((data)=>{
+        res.send({success:true,status:200,data:data})
+    })
+    .catch((err)=>{
+        res.send({success:false,status:400,message:err.message})
+    })
+}
+const findOneCategory=(req,res)=>{
+    let validation=''
+    if(!req.body._id){
+        validation+="_id is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Category.findOne({_id:req.body._id}).exec()
+        .then((data)=>{
+            res.send({success:true,status:200,data:data})
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
 const deleteCategory=(req,res)=>{
     let validation=""
     if(!req.body._id){
@@ -98,4 +129,4 @@ const deleteCategory=(req,res)=>{
         })
     }
 }
-module.exports={createCategory,updateCategory,deleteCategory};
+module.exports={createCategory,updateCategory,deleteCategory,findCategory,findOneCategory};

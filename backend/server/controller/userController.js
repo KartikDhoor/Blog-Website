@@ -92,7 +92,30 @@ const profilePasswordChange=(req,res)=>{
         })
     }
 }
+const findOneUser=(req,res)=>{
+    let validation=""
+    if(!req.body._id){
+        validation+="_id is requried"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        User.findOne({_id:req.body._id}).exec()
+        .then((data)=>{
+            if(data==null){
+                res.send({success:false,status:400,message:"no users Exists"})
+            }
+            else{
+                res.send({success:true,status:200,message:"user",data:data})
+            }
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+
+}
 
 
-
-module.exports={register,login,profilePasswordChange};
+module.exports={register,login,profilePasswordChange,findOneUser};

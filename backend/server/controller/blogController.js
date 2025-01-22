@@ -183,5 +183,28 @@ const deleteBlog = (req, res) => {
             })
     }
 }
+const slugFinder=(req,res)=>{
+    let validation=""
+    if(!req.params.slug){
+        validation+="slug is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Blog.findOne({slug:req.params.slug}).populate("category", "comment", "like").exec()
+        .then((data)=>{
+            if(data==null){
+                res.send({success:false,status:400,message:"no blog existed"})
+            }
+            else{
+            res.send({success:true,status:200,data:data})
+            }
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
 
-module.exports = { createBlog, updateBlog, findBlog, findOneBlog, deleteBlog };
+module.exports = { createBlog, updateBlog, findBlog, findOneBlog, deleteBlog ,slugFinder};
