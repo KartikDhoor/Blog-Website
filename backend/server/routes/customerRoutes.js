@@ -4,11 +4,19 @@ const userController=require('../controller/userController');
 const blogController=require('../controller/blogController');
 const categoryController=require('../controller/categoryController');
 
-router.post('/register',userController.register)
-router.post('/login',userController.login)
-router.get('/blogs',blogController.findBlog)
-router.get('/blogs/:slug',blogController.slugFinder)
-router.get('/category',categoryController.findCategory);
+
+//user registration
+router.post('/register',userController.register);
+//user login
+router.post('/login',userController.login);
+//blog list
+router.post('/blogs',blogController.findBlog);
+//blog slug finder
+router.post('/blogs/:slug',blogController.slugFinder);
+//category list
+router.post('/category',categoryController.findCategory);
+//category one finder
+router.post('/category/find',categoryController.findOneCategory);
 
 
 module.exports=router;
