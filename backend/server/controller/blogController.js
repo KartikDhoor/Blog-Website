@@ -6,19 +6,22 @@ const createBlog = async (req, res) => {
         validation += 'title is required for the blog '
     }
     if (!req.body.author) {
-        validation += "Author is required for the blog"
+        validation += "Author is required for the blog "
+    }
+    if(!req.body.readingTime){
+        validation += "reading time is required for the blog "
     }
     if (!req.body.sections) {
-        validation += "section is required"
+        validation += "section is required "
     }
     if (!req.body.category) {
-        validation += 'category is required'
+        validation += 'category is required '
     }
     if (!req.body.publishAt) {
-        validation += 'publishing time is required'
+        validation += 'publishing time is required '
     }
     if (!req.body.slug) {
-        validation += 'slug is required'
+        validation += 'slug is required '
     }
     if (!!validation) {
         res.send({ success: false, status: 400, message: validation })
@@ -192,7 +195,7 @@ const slugFinder=(req,res)=>{
         res.send({success:false,status:400,message:validation})
     }
     else{
-        Blog.findOne({slug:req.params.slug}).populate("category", "comment", "like").exec()
+        Blog.findOne({slug:req.params.slug}).populate("category").exec()
         .then((data)=>{
             if(data==null){
                 res.send({success:false,status:400,message:"no blog existed"})

@@ -9,7 +9,7 @@ const createCategory=(req,res)=>{
         validation+="description is required "
     }
     if(!req.body.categoryImage){
-        validation+="image is required "
+        validation+="Category image is required "
     }
     if(!!validation){
         res.send({success:false,status:400,message:validation})
@@ -19,7 +19,7 @@ const createCategory=(req,res)=>{
         category.categoryName=req.body.categoryName
         category.description=req.body.description
         category.categoryImage=req.body.categoryImage
-        category.createdAt=Date.now
+        category.createdAt=Date.now()
         category.save()
         .then((data)=>{
             res.send({success:true,status:200,message:"the category is created",data:data})

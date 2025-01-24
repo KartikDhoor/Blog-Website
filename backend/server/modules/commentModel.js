@@ -13,6 +13,10 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  status:{
+    type: Boolean,
+    default: true,
+  },
   blogId:{
     type:mongoose.Schema.Types.ObjectId, ref: 'blog'
   },

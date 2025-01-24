@@ -3,6 +3,9 @@ const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
     let validation = '';
+    if (!req.body.name) {
+        validation += "name is required "
+    }
     if (!req.body.email) {
         validation += "email is required "
     }
@@ -20,16 +23,26 @@ const register = async (req, res) => {
                 }
                 else {
                     const saltRounds = 10;
-                    const user = new User()
-                    user.email = req.body.email,
-                    user.password = bcrypt.hash(req.body.password, saltRounds),
-                    user.save()
-                    .then((savedUser) => {
-                        res.send({ success: true, status: 200, message: "New user is created", data: savedUser });
-                    })
-                    .catch((err) => {
-                        res.send({ success: false, status: 500, message: err.message });
-                    });
+                    bcrypt.hash(req.body.password, saltRounds)
+                        .then((hashedPassword) => {
+                            const user = new User({
+                                name: req.body.name,
+                                email: req.body.email,
+                                password: hashedPassword,
+                            });
+
+                            user.save()
+                                .then((savedUser) => {
+                                    res.send({ success: true, status: 200, message: "New user is created", data: savedUser });
+                                })
+                                .catch((err) => {
+                                    res.send({ success: false, status: 500, message: err.message });
+                                });
+                        })
+                        .catch((err) => {
+                            res.send({ success: false, status: 500, message: "Error checking user: " + err.message });
+                        });
+
                 }
             })
             .catch((err) => {
@@ -37,50 +50,64 @@ const register = async (req, res) => {
             });
     }
 }
-const login = async (req, res) => {
+const login = (req, res) => {
     let validation = '';
     if (!req.body.email) {
-        validation += "email is required "
+        validation += "email is required ";
     }
     if (!req.body.password) {
-        validation += "password is required "
+        validation += "password is required ";
     }
-    if (!!validation) {
-        res.send({ success: false, status: 400, message: validation })
-    }
-    else {
+    if (validation) {
+        res.send({ success: false, status: 400, message: validation });
+    } else {
         User.findOne({ email: req.body.email }).exec()
-            .then(
-                (data) => {
-                    if (data == null) {
-                        res.send({
-                            success: false,
-                            status: 500,
-                            message: "user is not register"
+            .then((user) => {
+                if (!user) {
+                    res.send({
+                        success: false,
+                        status: 500,
+                        message: "User is not registered",
+                    });
+                } else {
+                    // Compare passwords using bcrypt.compare
+                    bcrypt.compare(req.body.password, user.password)
+                        .then((isPasswordValid) => {
+                            if (isPasswordValid) {
+                                res.send({
+                                    success: true,
+                                    status: 200,
+                                    message: "Login Successful",
+                                    data: user,
+                                });
+                            } else {
+                                res.send({
+                                    success: false,
+                                    status: 400,
+                                    message: "The credentials are wrong",
+                                });
+                            }
                         })
-                    }
-                    else {
-                        if(data.email==req.body.email){
-                            if(data.password== bcrypt.compare(req.body.password, data.password)){
-                                res.send({success:true,status:200,message:"login Successfull", data:data})
-                            }
-                            else{  
-                            res.send({ success: false, status: 400, message:"the credentail is Wrong" })
-                            }
-                        }
-                        else{
-                            res.send({ success: false, status: 400, message:"the credentail is Wrong" })
-                        }
-
-                    }
+                        .catch((err) => {
+                            res.send({
+                                success: false,
+                                status: 500,
+                                message: "Error during password validation: " + err.message,
+                            });
+                        });
                 }
-            )
-            .catch((err) => {
-                res.send({ success: false, status: 400, message: err.message })
             })
-
+            .catch((err) => {
+                res.send({
+                    success: false,
+                    status: 500,
+                    message: "Error during user lookup: " + err.message,
+                });
+            });
     }
-}
+};
+
+
 const profilePasswordChange = (req, res) => {
     let validation = ''
     if (!req.body.password) {
