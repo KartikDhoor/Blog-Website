@@ -1,6 +1,7 @@
 const mongoose=require('mongoose');
 const likeSchema=new mongoose.Schema({
     userId:{type:mongoose.Schema.Types.ObjectId, ref: "user"},
-    blog:{type:mongoose.Schema.Types.ObjectId, ref: 'blog'},
+    blogId:{type:mongoose.Schema.Types.ObjectId, ref: 'blog'},
+    status:{type:Boolean,required:true,default:true},
 })
 module.exports=mongoose.model('like',likeSchema);
