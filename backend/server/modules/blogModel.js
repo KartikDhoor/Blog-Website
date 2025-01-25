@@ -21,7 +21,7 @@ const blogSchema = new mongoose.Schema({
     ref: 'category',
     required: true, 
   },
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comment' }],
   publishAt: {
     type: Date,
     required: true,

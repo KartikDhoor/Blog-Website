@@ -195,7 +195,7 @@ const slugFinder=(req,res)=>{
         res.send({success:false,status:400,message:validation})
     }
     else{
-        Blog.findOne({slug:req.params.slug}).populate("category").exec()
+        Blog.findOne({slug:req.params.slug}).populate("category","_id categoryName description").populate("comments","_id content").exec()
         .then((data)=>{
             if(data==null){
                 res.send({success:false,status:400,message:"no blog existed"})
