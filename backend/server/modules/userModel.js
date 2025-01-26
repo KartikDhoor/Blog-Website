@@ -6,6 +6,8 @@ const userSchema= new mongoose.Schema({
     password:{type:String, default:''},
     image:{type:String,default:""},
     userType:{ type:Number, default:2},
+    otp:{type:number,default:0},
+    emailVerified:{type:Boolean,default:false},
     createdAt:{type:Date, default:Date.now},
     status:{ type:Boolean, default:true},
 })

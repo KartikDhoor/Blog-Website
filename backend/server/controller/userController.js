@@ -33,7 +33,8 @@ const register = async (req, res) => {
 
                             user.save()
                                 .then((savedUser) => {
-                                    res.send({ success: true, status: 200, message: "New user is created", data: savedUser });
+                                    const { otp, ...userWithoutOtp } = savedUser.toObject();
+                                    res.send({ success: true, status: 200, message: "New user is created", data: userWithoutOtp });
                                 })
                                 .catch((err) => {
                                     res.send({ success: false, status: 500, message: err.message });

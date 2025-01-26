@@ -1,6 +1,5 @@
 const Like=require("../modules/likeModel");
 const Blog=require("../modules/blogModel");
-const User=require("../modules/userModel")
 
 const likeBlog=(req,res)=>{
     let validation=""
@@ -106,5 +105,22 @@ const findBlogFalseLike=(req,res)=>{
         })
     }
 }
-
-module.exports={likeBlog,findBlogLike,findBlogFalseLike };
+const findUserLike=(req,res)=>{
+    let validation=""
+    if(!req.body.userId){
+        validation+="user id is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Like.find({userId:req.body.userId}).populate("blogId","title author").populate("userId","_id name").exec()
+        .then((data)=>{
+            res.send({success:true,status:200,total:data.length,data:data})
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
+module.exports={likeBlog,findBlogLike,findBlogFalseLike,findUserLike};
