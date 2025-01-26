@@ -70,5 +70,41 @@ const likeBlog=(req,res)=>{
         })
     }
 }
+const findBlogLike=(req,res)=>{
+    let validation=""
+    if(!req.body.blogId){
+        validation+="blog id is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Like.find({blogId:req.body.blogId, status: true }).populate("blogId","title author").populate("userId","_id name").exec()
+        .then((data)=>{
+            res.send({success:true,status:200,total:data.length,data:data})
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
+const findBlogFalseLike=(req,res)=>{
+    let validation=""
+    if(!req.body.blogId){
+        validation+="blog id is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Like.find({blogId:req.body.blogId, status: false }).populate("blogId","title author").populate("userId","_id name").exec()
+        .then((data)=>{
+            res.send({success:true,status:200,total:data.length,data:data})
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
 
-module.exports={likeBlog};
+module.exports={likeBlog,findBlogLike,findBlogFalseLike };
