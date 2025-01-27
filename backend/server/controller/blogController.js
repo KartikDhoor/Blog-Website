@@ -47,7 +47,7 @@ const createBlog = async (req, res) => {
 const updateBlog = (req, res) => {
     let validation = ""
     if (!req.body._id) {
-        validation
+        validation+='id is required'
     }
     if (!!validation) {
         res.send({ success: false, status: 400, message: validation })
@@ -73,6 +73,9 @@ const updateBlog = (req, res) => {
                     }
                     if (req.body.category) {
                         data.category = req.body.category
+                    }
+                    if(req.body.image){
+                        data.image=req.body.image
                     }
                     data.updatedAt = Date.now()
                     data.save()
@@ -121,10 +124,12 @@ const findBlog = (req, res) => {
         page = 1;
     }
 
-    Blog().find()
+    Blog.find()
         .sort({ [sortBy]: order })
         .limit(limit)
-        .populate("category", "comment", "like")
+        .populate("category", "categoryName description status")
+        .populate("comments","content userId ")
+        // .populate( "likes", 'userId status')
         .exec()
         .then((data) => {
             res.send({ success: true, staus: 200, message: 'there is blogs', data: data })

@@ -4,6 +4,8 @@ const blogSchema = new mongoose.Schema({
   title: { type: String, required: true },
   author: { type: String, required: true },
   readingTime: { type: Number, default: 0 },
+  image: {type:String,default:""},
+  introduction:{type:String,default:''},
   slug: {
     type: String,
     required:true,

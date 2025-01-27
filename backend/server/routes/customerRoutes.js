@@ -11,9 +11,9 @@ router.post('/register',userController.register);
 //user login
 router.post('/login',userController.login);
 //blog list
-router.post('/blogs',blogController.findBlog);
+router.get('/blogs',blogController.findBlog);
 //blog slug finder
-router.post('/blogs/:slug',blogController.slugFinder);
+router.get('/blogs/:slug',blogController.slugFinder);
 //category list
 router.post('/category',categoryController.findCategory);
 //category one finder

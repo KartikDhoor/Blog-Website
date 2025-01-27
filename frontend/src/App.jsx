@@ -17,7 +17,7 @@ function App() {
     <Routes>
       <Route path='/' element={<Master/>}>
       <Route path='/' element={<Home/>}></Route>
-      <Route path='/blog' element={<Blog/>}></Route>
+      <Route path='/blog/:slug' element={<Blog/>}></Route>
       <Route path='/news' element={<News/>}></Route>
       <Route path='/podcast' element={<Podcasts/>}></Route>
       <Route path='/inspire' element={<Inspire/>}></Route>

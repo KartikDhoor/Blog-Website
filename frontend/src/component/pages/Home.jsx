@@ -145,7 +145,7 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="h-full w-full">
-                   <NewsPanel/>
+                   <NewsPanel headline="Explore the Future Tech In-Depth Blog Posts"/>
                 </div>
                 <div className="h-full w-full ">
                     <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">
@@ -392,3 +392,7 @@ export default function Home() {
         </>
     )
 }
+
+
+
+

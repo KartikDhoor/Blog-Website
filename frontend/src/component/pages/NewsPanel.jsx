@@ -3,7 +3,7 @@ import { FaHeart } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 import { PiPaperPlaneTiltBold } from "react-icons/pi";
 
-export default function NewsPanel() {
+export default function NewsPanel({headline}) {
     return (
         <>
             <div className="h-full w-full bg-pureblack">
@@ -13,7 +13,7 @@ export default function NewsPanel() {
                             <button className="bg-gray1 px-2 border rounded border-gray-800">
                                 <p className="text-white">Unlock the Power of</p>
                             </button>
-                            <p className="text-5xl text-white font-medium">FutureTech Feature</p>
+                            <p className="text-5xl text-white font-medium">{headline}</p>
                         </div>
                         <div className="lg:h-[8vh] lg:w-[15%] lg:flex lg:justify-end lg:items-center md:h-[8vh] md:w-[15%] md:flex md:justify-end md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-center sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-center">
                             <button className="sm:w-full belowSm:w-full p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Blogs</p><LuArrowUpRight className="text-xl text-amber-400" /></button>

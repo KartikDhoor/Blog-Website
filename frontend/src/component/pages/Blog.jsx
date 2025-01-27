@@ -2,16 +2,71 @@ import { FiMessageCircle } from "react-icons/fi";
 import { PiPaperPlaneTiltBold } from "react-icons/pi";
 import { LuArrowUpRight } from "react-icons/lu";
 import { FaHeart } from "react-icons/fa";
+import AxiosInstance from "../utils/AxiosInstance";
+import { format } from 'date-fns';
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export default function Blog() {
+    const { slug } = useParams();
+    const [blogData, setBlogData] = useState(null);
+    const [loading, setLoading] = useState(true); // Add a loading state
+    useEffect(() => {
+        if (slug) {
+          fetchBlogDetails(slug);
+        }
+      }, [slug]);
+      const fetchBlogDetails = async (slug) => {
+        try {
+          const response = await AxiosInstance.get(`/customer/blogs/${slug}`);
+          setBlogData(response.data.data);// Set the fetched blog data
+          setLoading(null); // Reset the error state in case of a successful fetch
+        } catch (error) {
+          console.error("Error fetching blog details:", error.message);
+          setLoading("Blog not found or an error occurred.");
+          setBlogData(null); // Reset blog data in case of an error
+        }
+      };
+    // useEffect(() => {
+    //     // API call to fetch blog data based on the slug
+    //     AxiosInstance
+    //         .post(`/customer/blogs/${blogSlug}`)
+    //         .then((response) => {
+    //             if (response.data.success) {
+    //                 setBlogData(response.data.data); // Store the entire blog data
+    //                 console.log(response.data.data);
+    //             }
+    //             setLoading(false);
+    //         })
+    //         .catch((error) => {
+    //             console.error("Error fetching blog details:", error);
+    //             setLoading(false);
+    //         });
+    // }, [blogSlug]);
+    if (loading) {
+        return <div className="h-full w-full flex items-center justify-center text-black">Loading...</div>;
+    }
+
+    if (!blogData) {
+        return <div className="h-full w-full flex items-center justify-center text-black">No data found</div>;
+    }
     return (
         <>
-            <div className="h-full w-full bg-pureblack">
-                <div className="lg:h-[50vh] lg:w-full md:h-[50vh] md:w-full sm:h-[50vh] sn:w-full belowSm:h-[50vh] belowSm:w-full bg-[url('https://picsum.photos/1920/1080')] flex items-end">
+            <div className="h-full w-full bg-pureblack" key={blogData._id}>
+                {/* title */}
+                {/* bg-[url('https://picsum.photos/1920/1080')] */}
+
+                <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-[60vh] sn:w-full belowSm:h-[60vh] belowSm:w-full  flex items-end bg-center bg-fixed"
+                style={{
+                    backgroundImage: `url('${blogData.image|| 'https://picsum.photos/1920/1080'}')`,
+                    backgroundSize: 'cover',
+                  }}
+                >
                     <div className="lg:h-[10vh] lg:w-full md:h-[10vh] md:w-full sm:h-[20vh] sm:w-full belowSm:h-[20vh] belowSm:w-full backdrop-blur-xl z-0 p-4 text-center text-4xl font-medium text-white">
-                        <p>The Rise of Artificial Intellegence in the Health Care </p>
+                        <p>{blogData.title}</p>
                     </div>
                 </div>
+
                 <div className="lg:h-auto lg:w-full lg:border-y lg:border-gray-800 lg:flex lg:justify-center
                                 md:h-[100vh] md:w-full md:border-y md:border-gray-800 md:flex md:justify-center
                                 sm:h-full sm:w-full sm:border-y sm:border-gray-800
@@ -20,43 +75,39 @@ export default function Blog() {
                                     md:h-full md:w-[60%] md:border-r md:border-gray-800 md:block
                                     sm:hidden
                                     belowSm:hidden">
+                        {/* //Introduction */}
                         <div className="h-[20vh] w-full border-y border-gray-800">
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">Introduction</p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid aut qui, molestias quisquam voluptatum odit ratione culpa officiis minus dolore accusamus recusandae, est velit nemo ipsa tempore perferendis asperiores similique?</p>
                             </div>
                         </div>
+
                         <div className="h-auto w-full">
-                            <div className="h-full w-[90%] mx-auto text-white py-4">
-                                <p className="text-xl font-medium">AI things</p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?
-                                </p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro impedit at, quae eligendi optio libero quibusdam quo illum officiis fuga praesentium sed provident in. Et accusamus ex modi iusto. Laborum!
-                                </p>
-                                <p className="text-xl font-medium">AI things</p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?
-                                </p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                </p>
-                               
-                            </div>
+                        {/* //sections */}
+                            {blogData.sections.map((section, index) => (
+                                <div key={index} className="h-full w-[90%] mx-auto text-white py-4">
+                                    <p className="text-xl font-medium">{section.title}</p>
+                                    <p className="text-base text-gray1">{section.content}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <div className="lg:h-auto lg:w-[40%] md:h-full md:w-[40%] sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full sm:overflow-y-hidden belowSm:overflow-y-hidden">
                         <div className="h-auto w-full border-y border-gray-800">
                             <div className="h-[10vh] w-[90%] mx-auto flex items-center">
                                 <div className="h-[5vh] my-1 w-full flex justify-start gap-4 ">
+                                    {/* //total likes */}
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                         <FaHeart className="text-amber-400" />
-                                        <p>24.5K</p>
+                                        {/* <p>{blogData.Likes}</p> */}
                                     </button>
+                                    {/* //total message */}
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                         <FiMessageCircle className="text-gray-1" />
-                                        <p>50</p>
+                                        <p>{blogData.comments.length}</p>
                                     </button>
+                                    {/* //total share */}
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                         <PiPaperPlaneTiltBold className="text-gray-1" />
                                         <p>20</p>
@@ -68,59 +119,43 @@ export default function Blog() {
                             <div className="h-[20vh] w-full">
                                 <div className="h-full w-[90%] mx-auto flex justify-center">
                                     <div className="h-full w-[50%]">
+                                        {/* // Created Date */}
                                         <div className="h-[10vh] w-full p-2">
                                             <p className="text-sm text-gray1">Publication date</p>
-                                            <p className="text-sm text-white">October 10,2025</p>
+                                            <p className="text-sm text-white">{format(new Date(blogData.createdAt), 'MMMM dd, yyyy')}</p>
                                         </div>
+                                        {/* //Reading time */}
                                         <div className="h-[10vh] w-full p-2">
                                             <p className="text-sm text-gray1">Reading Time</p>
-                                            <p className="text-sm text-white">10 Min</p>
+                                            <p className="text-sm text-white">{blogData.readingTime}</p>
                                         </div>
                                     </div>
                                     <div className="h-full w-[50%]">
+                                        {/* //category */}
                                         <div className="h-[10vh] w-full p-2">
                                             <p className="text-sm text-gray1">Category</p>
-                                            <p className="text-sm text-white">HealthCare</p>
+                                            <p className="text-sm text-white">{blogData.category.categoryName}</p>
                                         </div>
+                                        {/* //Author */}
                                         <div className="h-[10vh] w-full p-2">
                                             <p className="text-sm text-gray1">Author Name</p>
-                                            <p className="text-sm text-white">Dr.Emily Walker</p>
+                                            <p className="text-sm text-white">{blogData.author}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-[70vh] w-full">
+                            <div className="md:h-[70vh] w-full sm:h-auto sm:my-4 belowSm:h-auto belowSm:my-4">
                                 <div className="h-full w-[90%] mx-auto text-white">
                                     <p>Table of Contents</p>
                                     <div className="rounded-xl bg-dark1 px-2 py-4 flex items-center">
                                         <ul className="w-[90%] mx-auto list-disc text-base text-gray1 font-normal">
-                                            <li className="my-2">
-                                                <p>Introduction</p>
-                                            </li>
-                                            <li className="my-2">
-                                                <p>Ai in Dignositic Imagine</p>
-                                            </li>
-                                            <li className="my-2">
-                                                <p>Predictive Analytics and Disease Prevention</p>
-                                            </li>
-                                            <li className="my-2">
-                                                <p>Personlized treatment plans</p>
-                                            </li>
-                                            <li className="my-2">
-                                                <p>Drug discovery and Research</p>
-                                            </li>
-                                            <li className="my-2">
-                                                <p>Ai in Telemedicine</p>
-                                            </li>
-                                            <li className="my-2">
-                                                <p>Ethical Considrations</p>
-                                            </li>
-                                            <li className="my-2">
-                                                <p>Future of AI in HealthCare</p>
-                                            </li>
-                                            <li className="my-2">
-                                                <p>Conclusion</p>
-                                            </li>
+                                            {/* //section title */}
+                                            {blogData.sections.map((element) => (
+                                                <li className="my-2" key={element._id} >
+                                                    <p>{element.title}</p>
+                                                </li>
+                                            ))
+                                            }
                                         </ul>
                                     </div>
                                 </div>
@@ -131,43 +166,20 @@ export default function Blog() {
                                     sm:h-auto lg:w-full lg:border-y lg:border-gray-800 
                                     belowSm:h-auto lg:w-full lg:border-y lg:border-gray-800  sm:overflow-y-hidden ">
                         <div className="h-[20vh] w-full  sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800">
+                            {/* //Introduction */}
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">Introduction</p>
                                 <p className="text-base text-gray1">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid aut qui, molestias quisquam voluptatum odit ratione culpa officiis minus dolore accusamus recusandae, est velit nemo ipsa tempore perferendis asperiores similique?</p>
                             </div>
                         </div>
                         <div className="h-auto w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full">
-                            <div className="h-full w-[90%] mx-auto text-white py-4">
-                                <p className="text-xl font-medium">AI things</p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?
-                                </p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro impedit at, quae eligendi optio libero quibusdam quo illum officiis fuga praesentium sed provident in. Et accusamus ex modi iusto. Laborum!
-                                </p>
-                                <p className="text-xl font-medium">AI things</p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?
-                                </p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                </p>
-                                <p className="text-xl font-medium">AI things</p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?
-                                </p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro impedit at, quae eligendi optio libero quibusdam quo illum officiis fuga praesentium sed provident in. Et accusamus ex modi iusto. Laborum!
-                                </p>
-                                <p className="text-xl font-medium">AI things</p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eligendi recusandae odio quidem eos fuga, similique explicabo unde quibusdam. Rem, odio accusantium odit eum sapiente quas autem sit nemo voluptatem?
-                                </p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus saepe tempora sequi voluptate laborum maxime nesciunt animi consequatur aliquid tenetur sit, voluptatibus obcaecati asperiores mollitia! Temporibus adipisci quibusdam voluptates error!
-                                </p>
-                                <div className="">
-
+                            {/* //sections */}
+                            {blogData.sections.map((section) => (
+                                <div key={section._id} className="h-full w-[90%] mx-auto text-white py-4">
+                                    <p className="text-xl font-medium">{section.title}</p>
+                                    <p className="text-base text-gray1">{section.content}</p>
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -207,7 +219,7 @@ export default function Blog() {
                             </div>
                         </div>
                         <div className="h-full w-[30%] p-4 flex items-center justify-center sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full">
-                        <div>
+                            <div>
                                 <div className="h-[25vh] w-full">
                                     <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
                                 </div>
@@ -234,7 +246,7 @@ export default function Blog() {
                             </div>
                         </div>
                         <div className="h-full w-[30%] p-4 flex items-center justify-center sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full">
-                        <div>
+                            <div>
                                 <div className="h-[25vh] w-full">
                                     <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
                                 </div>
