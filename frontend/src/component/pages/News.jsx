@@ -18,6 +18,18 @@ export default function News() {
             limit: 10,
             page: 1,
         };
+        const latestParam={
+            sortBy: 'createdAt',
+            order: 'desc',
+            limit: 10,
+            page: 1,
+        }
+        const popularParams={
+            sortBy: 'likes',
+            order: 'desc',
+            limit: 10,
+            page: 1,
+        }
 
         const loadBlogs = async () => {
             setLoading(true);
@@ -46,6 +58,45 @@ export default function News() {
             return [];
         }
     };
+    const fetchLatestBlog = async (latestParams) => {
+        try {
+            const response = await AxiosInstance.get("", {
+                params: latestParams
+            });
+            if (response.data.success) {
+                return response.data.data
+            }
+            else {
+                console.error('API Error:', response.data.message);
+                return [];
+            }
+        }
+        catch (err) {
+            console.error('Request Error:', err.message);
+            return [];
+        }
+    }
+    const fetchPopularBlogs = async (popularParams) => {
+        try {
+            const response = await AxiosInstance.get("", {
+                params: popularParams
+            });
+            if (response.data.success) {
+                return response.data.data
+            }
+            else {
+                console.error('API Error:', response.data.message);
+                return [];
+            }
+        }
+        catch (err) {
+            console.error('Request Error:', err.message);
+            return [];
+        }
+    }
+
+
+
     if (loading) return <p className="text-black text-xl">Loading blogs...</p>;
     return (
         <>
@@ -92,8 +143,8 @@ export default function News() {
                                         md:h-full md:w-[60%] 
                                         sm:h-[50vh] sm:w-full 
                                         belowSm:h-[50vh] belowSm:w-full">
-                                            <Link to={`/blog/${blogsData[0].slug}`} className="">
-                            <p className="text-2xl font-medium text-white my-4 sm:my-2 belowSm:my-2">{blogsData[0].title}</p>
+                            <Link to={`/blog/${blogsData[0].slug}`} className="">
+                                <p className="text-2xl font-medium text-white my-4 sm:my-2 belowSm:my-2">{blogsData[0].title}</p>
                             </Link>
                             <p className="text-base font-normal text-gray1 my-4 line-clamp-3 sm:my-2 belowSm:my-2">world leader gathered at the global climate summit to discuss, urgent climate action,emission reduction,and renewable energy targets.</p>
                             <div className="h-[10vh] w-full flex justify-center my-4 sm:my-2 belowSm:my-2 sm:text-sm belowSm:text-sm">
@@ -221,8 +272,8 @@ export default function News() {
                         </div>
                     </div>
                 </div>
-                <NewsPanel 
-                headline='Discover the world of Headline'
+                <NewsPanel
+                    headline='Discover the world of Headline'
                 />
                 <div className="h-full w-full">
                     <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">

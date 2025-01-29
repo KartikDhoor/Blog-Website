@@ -43,26 +43,23 @@ export default function NewsPanel({headline}) {
                     </div>
                 </div>
                 <div className="lg:h-[90vh] lg:w-full md:h-[90vh] md:w-full sm:h-full sm:w-full belowSm:h-full belowSm:w-full">
-                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full border-y border-gray-800 ">
+                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800 ">
                         <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
                                                     md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
                                                     sm:h-full sm:w-[90%] sm:mx-auto sm:py-6
                                                     belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:py-6 ">
                             <div className="lg:h-full lg:w-[25%] lg:flex lg:items-center
                                                         md:h-full md:w-[25%] md:flex md:items-center
-                                                        sm:h-[10vh] sm:w-full sm:flex sm:items-center
-                                                        belowSm:h-[10vh] belowSm:w-full belowSm:flex belowSm:items-center">
-                                <div className="lg:h-[8vh] lg:w-full lg:flex lg:justify-center
-                                                md:h-[8vh] md:w-full md:flex md:justify-center
-                                                sm:h-full sm:w-full sm:flex sm:justify-center
-                                                belowSm:h-full belowSm:w-full belowSm:flex belowSm:justify-center">
-                                     <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-[7vh] belowSm:w-[20%] aspect-square">
-                                        <img src="https://picsum.photos/1920/1080" className="h-full w-[90%] rounded-full" />
+                                                        sm:h-auto sm:w-full sm:flex sm:items-center
+                                                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:items-center">
+                                <div className="lg:h-auto lg:w-full lg:flex lg:justify-center
+                                                md:h-auto md:w-full md:flex md:justify-center
+                                                sm:h-fautoll sm:w-full sm:flex sm:justify-center
+                                                belowSm:h-auto belowSm:w-full">
+                                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full p-2">
+                                        <img src="https://picsum.photos/1920/1080" className="rounded-lg h-full w-full"/>
                                     </div>
-                                    <div className="lg:h-full lg:w-[60%] md:h-full md:w-[60%] sm:h-full sm:w-[60%] belowSm:h-full belowSm:w-[60%]">
-                                        <p className="text-white text-base font-normal">John Techson</p>
-                                        <p className="text-gray1 font-normal text-sm ">Quantum Computing</p>
-                                    </div>
+                                    
                                     <div className="lg:hidden md:hidden sm:block belowSm:block">
                                         <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
                                             <p>View Blogs</p>
@@ -75,7 +72,7 @@ export default function NewsPanel({headline}) {
                             <div className="lg:h-full lg:w-[55%] lg:flex lg:items-center
                                             md:h-full md:w-[55%] md:flex md:items-center
                                             sm:h-[20vh] sm:w-full sm:flex sm:items-center
-                                            belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center
+                                            belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center px-4
                                             ">
                                 <div className="text-gray1 font-normal ">
                                     <p className="my-2 font-medium">October 15,2023</p>
@@ -108,38 +105,36 @@ export default function NewsPanel({headline}) {
                             </div>
                         </div>
                     </div>
-                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full border-y border-gray-800 ">
+                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800 ">
                         <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
                                                     md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
                                                     sm:h-full sm:w-[90%] sm:mx-auto sm:py-6
                                                     belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:py-6 ">
                             <div className="lg:h-full lg:w-[25%] lg:flex lg:items-center
                                                         md:h-full md:w-[25%] md:flex md:items-center
-                                                        sm:h-[10vh] sm:w-full sm:flex sm:items-center
-                                                        belowSm:h-[10vh] belowSm:w-full belowSm:flex belowSm:items-center">
-                                <div className="lg:h-[8vh] lg:w-full lg:flex lg:justify-center
-                                                            md:h-[8vh] md:w-full md:flex md:justify-center
-                                                            sm:h-full sm:w-full sm:flex sm:justify-center
-                                                            belowSm:h-full belowSm:w-full belowSm:flex belowSm:justify-center">
-                                    <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-[7vh] belowSm:w-[20%] aspect-square">
-                                        <img src="https://picsum.photos/1920/1080" className="h-full w-[90%] rounded-full" />
+                                                        sm:h-auto sm:w-full sm:flex sm:items-center
+                                                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:items-center">
+                                <div className="lg:h-auto lg:w-full lg:flex lg:justify-center
+                                                md:h-auto md:w-full md:flex md:justify-center
+                                                sm:h-fautoll sm:w-full sm:flex sm:justify-center
+                                                belowSm:h-auto belowSm:w-full">
+                                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full p-2">
+                                        <img src="https://picsum.photos/1920/1080" className="rounded-lg h-full w-full"/>
                                     </div>
-                                    <div className="lg:h-full lg:w-[60%] md:h-full md:w-[60%] sm:h-full sm:w-[60%] belowSm:h-full belowSm:w-[60%]">
-                                        <p className="text-white text-base font-normal">John Techson</p>
-                                        <p className="text-gray1 font-normal text-sm ">Quantam Computing</p>
-                                    </div>
-                                    <div className="lg:hidden md:hidden sm:block belowSm:block ">
+                                    
+                                    <div className="lg:hidden md:hidden sm:block belowSm:block">
                                         <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
                                             <p>View Blogs</p>
                                             <LuArrowUpRight className="text-xl text-amber-400" />
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                             <div className="lg:h-full lg:w-[55%] lg:flex lg:items-center
                                             md:h-full md:w-[55%] md:flex md:items-center
                                             sm:h-[20vh] sm:w-full sm:flex sm:items-center
-                                            belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center
+                                            belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center px-4
                                             ">
                                 <div className="text-gray1 font-normal ">
                                     <p className="my-2 font-medium">October 15,2023</p>
@@ -172,38 +167,36 @@ export default function NewsPanel({headline}) {
                             </div>
                         </div>
                     </div>
-                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full border-y border-gray-800 ">
+                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800 ">
                         <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
                                                     md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
                                                     sm:h-full sm:w-[90%] sm:mx-auto sm:py-6
                                                     belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:py-6 ">
                             <div className="lg:h-full lg:w-[25%] lg:flex lg:items-center
                                                         md:h-full md:w-[25%] md:flex md:items-center
-                                                        sm:h-[10vh] sm:w-full sm:flex sm:items-center
-                                                        belowSm:h-[10vh] belowSm:w-full belowSm:flex belowSm:items-center">
-                                <div className="lg:h-[8vh] lg:w-full lg:flex lg:justify-center
-                                                            md:h-[8vh] md:w-full md:flex md:justify-center
-                                                            sm:h-full sm:w-full sm:flex sm:justify-center
-                                                            belowSm:h-full belowSm:w-full belowSm:flex belowSm:justify-center">
-                                    <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-full sm:w-[20%] belowSm:h-[7vh] belowSm:w-[20%] aspect-square">
-                                        <img src="https://picsum.photos/1920/1080" className="h-full w-[90%] rounded-full" />
+                                                        sm:h-auto sm:w-full sm:flex sm:items-center
+                                                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:items-center">
+                                <div className="lg:h-auto lg:w-full lg:flex lg:justify-center
+                                                md:h-auto md:w-full md:flex md:justify-center
+                                                sm:h-fautoll sm:w-full sm:flex sm:justify-center
+                                                belowSm:h-auto belowSm:w-full">
+                                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full p-2">
+                                        <img src="https://picsum.photos/1920/1080" className="rounded-lg h-full w-full"/>
                                     </div>
-                                    <div className="lg:h-full lg:w-[60%] md:h-full md:w-[60%] sm:h-full sm:w-[60%] belowSm:h-full belowSm:w-[60%]">
-                                        <p className="text-white text-base font-normal">John Techson</p>
-                                        <p className="text-gray1 font-normal text-sm ">Quantam Computing</p>
-                                    </div>
-                                    <div className="lg:hidden md:hidden sm:block belowSm:block ">
+                                    
+                                    <div className="lg:hidden md:hidden sm:block belowSm:block">
                                         <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
                                             <p>View Blogs</p>
                                             <LuArrowUpRight className="text-xl text-amber-400" />
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                             <div className="lg:h-full lg:w-[55%] lg:flex lg:items-center
                                             md:h-full md:w-[55%] md:flex md:items-center
                                             sm:h-[20vh] sm:w-full sm:flex sm:items-center
-                                            belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center
+                                            belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center px-4
                                             ">
                                 <div className="text-gray1 font-normal ">
                                     <p className="my-2 font-medium">October 15,2023</p>
@@ -236,6 +229,7 @@ export default function NewsPanel({headline}) {
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </>
