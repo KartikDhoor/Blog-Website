@@ -20,6 +20,8 @@ import Login from './component/pages/Login'
 import Register from './component/pages/Register'
 import OtpConformation from './component/pages/OtpConformation'
 import ProtectedDashboard from './component/dashboard/ProtectedDashboard'
+import Profile from './component/pages/Profile'
+import Security from './component/pages/Security'
 
 function App() {
 
@@ -34,6 +36,8 @@ function App() {
       <Route path='/podcast' element={<Podcasts/>}></Route>
       <Route path='/inspire' element={<Inspire/>}></Route>
       <Route path='contact' element={<Contact/>}></Route>
+      <Route path='profile' element={<Profile/>}></Route>
+      <Route path='security' element={<Security/>}></Route>
       </Route>
       <Route path='/dashboard' element={<ProtectedDashboard/>}>      
       <Route element={<DashboardMaster/>}>

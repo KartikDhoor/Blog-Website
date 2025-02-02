@@ -139,8 +139,10 @@ const profilePasswordChange = (req, res) => {
                     res.send({ success: false, status: 400, message: "user od this _id not exists" })
                 }
                 else {
-                    if (data.password == req.body.password) {
-                        data.password = req.body.newPassword
+                    if (bcrypt.compare(req.body.password,data.password)) {
+                        const saltRounds = 10;
+                    const hashedPassword=bcrypt.hash(req.body.newPassword, saltRounds)
+                        data.password = hashedPassword
                         data.save()
                             .then((updatedData) => {
                                 res.send({ success: true, status: 200, message: "the password is changed" })
@@ -158,7 +160,7 @@ const profilePasswordChange = (req, res) => {
 }
 const findOneUser = (req, res) => {
     
-        User.findOne({ decoded}).exec()
+        User.findOne({ _id:req.decoded._id}).exec()
             .then((data) => {
                 if (data == null) {
                     res.send({ success: false, status: 400, message: "no users Exists" })

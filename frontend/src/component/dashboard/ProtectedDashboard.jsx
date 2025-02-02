@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
+import AxiosInstance from "../utils/AxiosInstance";
 
 export default function ProtectedDashboard() {
-  const [isAuthorized, setIsAuthorized] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -16,12 +17,12 @@ export default function ProtectedDashboard() {
       }
 
       try {
-        const response = await axios.post("http://localhost:5000/api/auth/validate-token", {
+        const response = await AxiosInstance.post("/customer/find/user", {
           token,
         });
 
         // Check if the userType is valid (admin userType is 1)
-        if (response.data.isValid && response.data.userType === 1) {
+        if (response.data.success && response.data.data.userType === 1) {
           setIsAuthorized(true);
         } else {
           setIsAuthorized(false);

@@ -8,6 +8,7 @@ import AxiosInstance from "../utils/AxiosInstance";
 
 export default function Header() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [hovered,setHovered]=useState(false);
   const [userImage, setUserImage] = useState(null);
   const [Nav,setNav]=useState(true);
 
@@ -24,9 +25,9 @@ export default function Header() {
       const response = await AxiosInstance.post('/customer/find/user',{
         token,
       });
-      if (response.data.valid) {
+      if (response.data.data) {
         setIsAuthenticated(true);
-        setUserImage(response.data.userInfo?.imageUrl || null);
+        setUserImage(response.data.data?.image || null);
       } else {
         localStorage.removeItem('blogsite_jwt_token');
         setIsAuthenticated(false);
@@ -37,6 +38,12 @@ export default function Header() {
       setIsAuthenticated(false);
     }
   };
+  const handleLogout=()=>{
+    localStorage.removeItem('blogsite_jwt_token');
+  }
+  const handleDropDown=()=>{
+    setHovered((prevState) => !prevState)
+  }
     const toggleNav = () => {
         setNav((prevState) => !prevState);
     }
@@ -60,13 +67,29 @@ export default function Header() {
                                     src={userImage}
                                     alt="Profile"
                                     className="w-10 h-10 rounded-full cursor-pointer hover:opacity-80"
-                                    onClick={handleProfileClick}
+                                    
                                 />
                             ) : (
-                                <FaUserCircle
-                                    className="text-3xl cursor-pointer hover:text-gray-400"
-                                    onClick={handleProfileClick}
-                                />
+                                <div className="w-10 h-10 relative flex items-center justify-center"  onMouseEnter={handleDropDown}
+                                onMouseLeave={handleDropDown}
+                                >
+                                    <FaUserCircle
+                                    className="text-3xl text-dark1 cursor-pointer hover:text-gray-400"/>
+                                    <div className="h-2 w-2 rounded-full absolute right-2 bottom-1 bg-lime-600"></div>
+                                    {hovered?(
+                                        <div className="fixed h-[30vh] w-[20%] top-[8vh] right-3 text-white rounded-xl bg-dark1 p-4">
+                                            <Link to="/profile">
+                                            <p className="text-center text-lg my-2">Profile</p>
+                                            </Link>
+                                            <Link to='/security'>
+                                            <p className="text-center text-lg my-2">Security</p>
+                                            </Link>
+                                            <p className="text-center text-lg my-2" onClick={handleLogout}>LogOut</p>
+                                        </div>
+                                    ):""
+                                    }
+                                </div>
+                                
                             )
                         ) : (
                             <Link to='/login'>
