@@ -5,8 +5,8 @@ export default function Footer() {
     return (
         <>
             <div className="h-full w-full bg-pureblack ">
-                <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-full sm:w-full belowSm:h-full belowSm:w-full bg-dark1">
-                    <div className="lg:h-full lg:w-[90%] md:h-full md:w-[90%] sm:h-full sm:w-[90%] belowSm:h-full belowSm:w-[90%] mx-auto p-4">
+                <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full bg-dark1">
+                    <div className="lg:h-full lg:w-[90%] md:h-full md:w-[90%] sm:h-auto sm:w-[90%] belowSm:h-auto belowSm:w-[90%] mx-auto p-4">
                         <div className="h-[30vh] w-full flex justify-center items-center">
                             <div className="lg:h-full lg:w-[20%] lg:flex lg:items-center lg:justify-center
                                             md:h-full md:w-[20%] md:flex md:items-center md:justify-center
@@ -27,7 +27,7 @@ export default function Footer() {
                                 </div>
                             </div>
                         </div>
-                        <div className="lg:hidden md:hidden sm:h-[30vh] sm:w-full belowSm:h-[40vh] belowSm:w-full">
+                        <div className="lg:hidden md:hidden sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full my-2">
                             <p className="lg:hidden md:hidden text-5xl text-white font-medium my-2">Be part of the Future Tech Revloution</p>
                             <p className="lg:hidden md:hidden text-sm text-gray1 font-normal">immerse yourself in the world of future Technology.Explore Our comprehensive Resource,Connect with the fellow tech enthusiasts,and drive innovation in the industry.Join a Dynamic comunity of forward thinkers.</p>
 

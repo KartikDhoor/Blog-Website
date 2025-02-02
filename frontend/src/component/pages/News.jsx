@@ -11,26 +11,14 @@ import { TfiControlSkipForward } from "react-icons/tfi";
 export default function News() {
     const [blogsData, setBlogsData] = useState(null);
     const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        const queryParams = {
-            sortBy: 'createdAt',
-            order: 'desc',
-            limit: 10,
-            page: 1,
-        };
-        const latestParam={
-            sortBy: 'createdAt',
-            order: 'desc',
-            limit: 10,
-            page: 1,
-        }
-        const popularParams={
-            sortBy: 'likes',
-            order: 'desc',
-            limit: 10,
-            page: 1,
-        }
+    const [queryParams, setQueryParams] = useState({
+        sortBy: 'createdAt',
+        order: 'desc',
+        limit: 4,
+        page: 1,
+    });
 
+    useEffect(() => {
         const loadBlogs = async () => {
             setLoading(true);
             const blogs = await fetchBlogs(queryParams); // Fetch blogs using the function
@@ -38,7 +26,6 @@ export default function News() {
             setLoading(false);
             console.log(blogs);
         };
-
         loadBlogs();
     }, []);
     const fetchBlogs = async (queryParams) => {
@@ -58,44 +45,6 @@ export default function News() {
             return [];
         }
     };
-    const fetchLatestBlog = async (latestParams) => {
-        try {
-            const response = await AxiosInstance.get("", {
-                params: latestParams
-            });
-            if (response.data.success) {
-                return response.data.data
-            }
-            else {
-                console.error('API Error:', response.data.message);
-                return [];
-            }
-        }
-        catch (err) {
-            console.error('Request Error:', err.message);
-            return [];
-        }
-    }
-    const fetchPopularBlogs = async (popularParams) => {
-        try {
-            const response = await AxiosInstance.get("", {
-                params: popularParams
-            });
-            if (response.data.success) {
-                return response.data.data
-            }
-            else {
-                console.error('API Error:', response.data.message);
-                return [];
-            }
-        }
-        catch (err) {
-            console.error('Request Error:', err.message);
-            return [];
-        }
-    }
-
-
 
     if (loading) return <p className="text-black text-xl">Loading blogs...</p>;
     return (
@@ -146,7 +95,7 @@ export default function News() {
                             <Link to={`/blog/${blogsData[0].slug}`} className="">
                                 <p className="text-2xl font-medium text-white my-4 sm:my-2 belowSm:my-2">{blogsData[0].title}</p>
                             </Link>
-                            <p className="text-base font-normal text-gray1 my-4 line-clamp-3 sm:my-2 belowSm:my-2">world leader gathered at the global climate summit to discuss, urgent climate action,emission reduction,and renewable energy targets.</p>
+                            <p className="text-base font-normal text-gray1 my-4 line-clamp-3 sm:my-2 belowSm:my-2">{blogsData[0].introduction}</p>
                             <div className="h-[10vh] w-full flex justify-center my-4 sm:my-2 belowSm:my-2 sm:text-sm belowSm:text-sm">
                                 <div className="h-full w-[20%] sm:w-[20%] belowSm:w-[20%] lg:text-base font-normal">
                                     <p className="text-gray1">Category</p>
@@ -185,94 +134,49 @@ export default function News() {
                                 md:h-[50vh] md:w-full md:border-y md:border-gray-800
                                 sm:h-[150vh] sm:w-full sm:border-y sm:border-gray-800
                                 belowSm:h-[150vh] belowSm:w-full belowSm:border-y belowSm:border-gray-800  ">
-                    <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:grid lg:grid-cols-3
-                                    md:h-full md:w-[90%] md:mx-auto md:grid md:grid-cols-3
-                                    sm:h-full sm:w-[90%] sm:mx-auto
-                                    belowSm:h-full belowSm:w-[90%] belowSm:mx-auto">
-                        <div className="h-full w-[30%] p-4 flex items-center justify-center sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full">
-                            <div>
-                                <div className="h-[25vh] w-full">
-                                    <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
-                                </div>
-                                <div className="h-[20vh] w-full text-white text-base">
-                                    <p className="text-white">A Decisive Victory for Progressive Policies</p>
-                                    <p className="text-gray1 text-sm">Policies</p>
-                                    <div className="h-[8vh] w-full flex justify-start gap-4 my-4">
-                                        <button className="h-[6vh] w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <FiMessageCircle className="text-gray-1" />
-                                            <p>50</p>
-                                        </button>
-                                        <button className="h-[6vh] w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <PiPaperPlaneTiltBold className="text-gray-1" />
-                                            <p>20</p>
-                                        </button>
-                                        <div className="h-[6vh] w-[60%] flex justify-end">
-                                            <button className="px-4 py-2 text-base rounded-xl border border-gray-800 text-gray1">
-                                                Read More
-                                            </button>
+                    <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:grid lg:grid-cols-3 lg:gap-2
+                                    md:h-full md:w-[90%] md:mx-auto md:grid md:grid-cols-3 md:gap-2
+                                    sm:h-full sm:w-full
+                                    belowSm:h-full belowSm:w-full">
+                        {blogsData.slice(1).map((blog) => {
+                            return(
+                                <div key={blog._id} className="h-full w-full p-4 flex items-center justify-center sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full">
+                                    <div>
+                                        <div className="h-[25vh] w-full">
+                                            <Link to={`/blog/${blog.slug}`}>
+                                            <img src={blog.image} className="h-full w-full rounded-xl" />
+                                            </Link>
                                         </div>
+                                        <div className="h-[20vh] w-full text-white text-base">
+                                            <Link to={`/blog/${blog.slug}`}>
+                                            <p className="text-white">{blog.title}</p>
+                                            </Link>
+                                            <p className="text-gray1 text-sm">{blog.category.categoryName}</p>
+                                            <div className="h-[8vh] w-full flex justify-start gap-4 my-4">
+                                                <button className="h-[6vh] w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
+                                                    <FiMessageCircle className="text-gray-1" />
+                                                    <p>{blog.comments.length}</p>
+                                                </button>
+                                                <button className="h-[6vh] w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
+                                                    <PiPaperPlaneTiltBold className="text-gray-1" />
+                                                    <p>20</p>
+                                                </button>
+                                                <div className="h-[6vh] w-[60%] flex justify-end">
+                                                    <Link to={`/blog/${blog.slug}`}>
+                                                        <button className="px-4 py-2 text-base rounded-xl border border-gray-800 text-gray1">
+                                                            Read More
+                                                        </button>
+                                                    </Link>
+                                                </div>
 
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="h-full w-[30%] p-4 flex items-center justify-center sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full">
-                            <div>
-                                <div className="h-[25vh] w-full">
-                                    <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
-                                </div>
-                                <div className="h-[20vh] w-full text-white text-base">
-                                    <p className="text-white">A Decisive Victory for Progressive Policies</p>
-                                    <p className="text-gray1 text-sm">Policies</p>
-                                    <div className="h-[8vh] w-full flex justify-start gap-4 my-4">
-                                        <button className="h-[6vh] w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <FiMessageCircle className="text-gray-1" />
-                                            <p>50</p>
-                                        </button>
-                                        <button className="h-[6vh] w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <PiPaperPlaneTiltBold className="text-gray-1" />
-                                            <p>20</p>
-                                        </button>
-                                        <div className="h-[6vh] w-[60%] flex justify-end">
-                                            <button className="px-4 py-2 text-base rounded-xl border border-gray-800 text-gray1">
-                                                Read More
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="h-full w-[30%] p-4 flex items-center justify-center sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full">
-                            <div>
-                                <div className="h-[25vh] w-full">
-                                    <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
-                                </div>
-                                <div className="h-[20vh] w-full text-white text-base">
-                                    <p className="text-white">A Decisive Victory for Progressive Policies</p>
-                                    <p className="text-gray1 text-sm">Policies</p>
-                                    <div className="h-[8vh] w-full flex justify-start gap-4 my-4">
-                                        <button className="h-[6vh] w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <FiMessageCircle className="text-gray-1" />
-                                            <p>50</p>
-                                        </button>
-                                        <button className="h-[6vh] w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <PiPaperPlaneTiltBold className="text-gray-1" />
-                                            <p>20</p>
-                                        </button>
-                                        <div className="h-[6vh] w-[60%] flex justify-end">
-                                            <button className="px-4 py-2 text-base rounded-xl border border-gray-800 text-gray1">
-                                                Read More
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        )})}
                     </div>
                 </div>
-                <NewsPanel
+                <NewsPanel className='h-auto w-full'
                     headline='Discover the world of Headline'
                 />
                 <div className="h-full w-full">

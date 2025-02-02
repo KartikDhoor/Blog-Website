@@ -34,25 +34,25 @@ export default function Inspire() {
                     <div className="h-full w-[90%] mx-auto grid  md:grid-cols-4 sm:grid-cols-2 belowSm:grid-cols-2">
                         <div className="h-full w-full flex justify-center items-center md:border-r sm:border-r sm:border-b belowSm:border-r belowSm:border-b border-gray-800">
                             <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
-                                <p>300<spam className='text-amber-400'>+</spam></p>
+                                <p>300<span className='text-amber-400'>+</span></p>
                                 <p className="text-base text-gray1">Resource Available</p>
                             </div>
                         </div>
                         <div className="h-full w-full flex justify-center items-center md:border-r sm:border-r belowSm:border-b  border-gray-800">
                             <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
-                                <p>12K<spam className='text-amber-400'>+</spam></p>
+                                <p>12K<span className='text-amber-400'>+</span></p>
                                 <p className="text-base text-gray1">Total Downloads</p>
                             </div>
                         </div>
                         <div className="h-full w-full flex justify-center items-center md:border-r sm:border-b belowSm:border-r belowSm:border-b  border-gray-800">
                             <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
-                                <p>10K<spam className='text-amber-400'>+</spam></p>
+                                <p>10K<span className='text-amber-400'>+</span></p>
                                 <p className="text-base text-gray1">Active Users</p>
                             </div>
                         </div>
                         <div className="h-full w-full flex justify-center items-center">
                             <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
-                                <p>100<spam className='text-amber-400'>+</spam></p>
+                                <p>100<span className='text-amber-400'>+</span></p>
                                 <p className="text-base text-gray1">Countries Usability</p>
                             </div>
                         </div>

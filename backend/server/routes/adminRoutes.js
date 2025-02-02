@@ -3,6 +3,7 @@ const router=express.Router();
 const userController=require('../controller/userController');
 const blogController=require('../controller/blogController');
 const categoryController=require('../controller/categoryController');
+// const jwtChecker=require('../config/jwtChecker')
 
 //Admin registration
 
@@ -21,7 +22,15 @@ router.post('/create/categroy',categoryController.createCategory);
 router.post('/update/category',categoryController.updateCategory);
 //categroy delete
 router.post('/delete/category',categoryController.deleteCategory);
-
-
+// //chceker for the token
+// router.use("/",jwtChecker.check);
+//all the remaining address
+router.all('*',(req,res)=>{
+    res.send({
+        success:false,
+        status:404,
+        message:"Invalid Address"
+    })
+})
 
 module.exports=router;

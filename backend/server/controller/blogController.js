@@ -27,6 +27,10 @@ const createBlog = async (req, res) => {
         res.send({ success: false, status: 400, message: validation })
     }
     else {
+        let slugValidation=Blog.find({slug:req.body.slug}).exec()
+        if(slugValidation){
+            res.send({ success: false, status: 400, message:"same slug is in use before" })
+        }
         let blog = new Blog()
         blog.title = req.body.title
         blog.author = req.body.author
@@ -34,7 +38,9 @@ const createBlog = async (req, res) => {
         blog.sections = req.body.sections
         blog.category = req.body.category
         blog.publishAt = req.body.publishAt
+        blog.introduction=req.body.introduction
         blog.slug = req.body.slug
+        blog.status=req.body.status
         blog.save()
             .then((data) => {
                 res.send({ success: true, status: 200, message: "blog Added", data: data })
@@ -70,6 +76,12 @@ const updateBlog = (req, res) => {
                     }
                     if (req.body.sections) {
                         data.sections = req.body.sections
+                    }
+                    if(req.body.introduction){
+                        data.introduction=req.body.introduction
+                    }
+                    if(req.body.slug){
+                        data.slug=req.body.slug
                     }
                     if (req.body.category) {
                         data.category = req.body.category
@@ -132,7 +144,7 @@ const findBlog = (req, res) => {
         // .populate( "likes", 'userId status')
         .exec()
         .then((data) => {
-            res.send({ success: true, staus: 200, message: 'there is blogs', data: data })
+            res.send({ success: true,length:data.length , staus: 200, message: 'there is blogs', data: data})
         })
         .catch((err) => {
             res.send({ success: false, staus: 400, message: err.message })

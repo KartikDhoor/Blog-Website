@@ -1,10 +1,10 @@
-const express=require('express');
+const express=require("express");
 const router=express.Router();
 const userController=require('../controller/userController');
 const blogController=require('../controller/blogController');
 const categoryController=require('../controller/categoryController');
 const commentController=require("../controller/commentController");
-
+const jwtChecker=require("../config/jwtChecker");
 
 //user registration
 router.post('/register',userController.register);
@@ -28,5 +28,16 @@ router.post("/find/blog/comment",commentController.blogComment);
 router.post("/find/user/comment",commentController.userComment);
 //comment find CommentID
 router.post("/find/comment",commentController.findComment);
+//jwt token checker
+router.use(require("../config/jwtChecker"));
+router.post("/find/user",userController.findOneUser);
+//all the remaining address
+router.all('*',(req,res)=>{
+    res.send({
+        success:false,
+        status:404,
+        message:"Invalid Address"
+    })
+})
 
 module.exports=router;

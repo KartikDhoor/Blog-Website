@@ -98,8 +98,8 @@ export default function Contact(){
                             
                             </div>
                             <div className="h-full w-[50%]">
-                            <p className="text-base font-medium text-white">First Name</p>
-                                <input className="h-[6vh] w-full border border-gray-800 rounded-xl p-2 text-base text-white bg-pureblack outline-none focus:border-2"/>
+                            <p className="text-base font-medium text-white">phone no</p>
+                                <input type="number" className="h-[6vh] w-full border border-gray-800 rounded-xl p-2 text-base text-white bg-pureblack outline-none focus:border-2"/>
                             
                             </div>
                         </div>

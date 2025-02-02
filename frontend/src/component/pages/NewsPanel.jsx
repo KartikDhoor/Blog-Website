@@ -1,9 +1,57 @@
 import { LuArrowUpRight } from "react-icons/lu";
+import {Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 import { PiPaperPlaneTiltBold } from "react-icons/pi";
+import AxiosInstance from "../utils/AxiosInstance";
+import { useEffect, useState } from "react";
+import { format } from 'date-fns';
 
 export default function NewsPanel({headline}) {
+    const [popularBlog,setPopularBlog]=useState(null);
+    const [loading,setLoading]=useState(true);
+    const [filterQuery, setFilterQueryParams] = useState({
+            sortBy: '',
+            order: 'desc',
+            limit: 5,
+            page: 1,
+        });
+    useEffect(()=>{
+        const loadBlogs = async () => {
+            const blogs = await fetchDatablog(filterQuery); 
+            setLoading(false);
+            console.log(blogs);
+            setPopularBlog(blogs);
+        };
+        loadBlogs();
+    },[]);
+    const fetchDatablog= async (filterQuery) => {
+        try {
+            const response = await AxiosInstance.get('/customer/blogs', {
+                params: filterQuery, // Sending data in query string
+            });
+
+            if (response.data.success) {
+                return response.data.data; // Return the blogs data
+            } else {
+                console.error('API Error:', response.data.message);
+                return [];
+            }
+        } catch (err) {
+            console.error('Request Error:', err.message);
+            return [];
+        }
+    }
+    if(loading){
+        return(
+            <>
+            <div className="h-full w-full text-3xl text-black font-black">
+                <p>Loading..........</p>
+
+            </div>
+            </>
+        )
+    }
     return (
         <>
             <div className="h-full w-full bg-pureblack">
@@ -42,8 +90,10 @@ export default function NewsPanel({headline}) {
                         </div>
                     </div>
                 </div>
-                <div className="lg:h-[90vh] lg:w-full md:h-[90vh] md:w-full sm:h-full sm:w-full belowSm:h-full belowSm:w-full">
-                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800 ">
+                <div className="lg:h-auto lg:w-full md:h-[90vh] md:w-full sm:h-full sm:w-full belowSm:h-full belowSm:w-full">
+                    {popularBlog.map((blog)=>{
+                        return(
+                            <div key={blog._id} className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800 ">
                         <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
                                                     md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
                                                     sm:h-full sm:w-[90%] sm:mx-auto sm:py-6
@@ -57,14 +107,16 @@ export default function NewsPanel({headline}) {
                                                 sm:h-fautoll sm:w-full sm:flex sm:justify-center
                                                 belowSm:h-auto belowSm:w-full">
                                     <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full p-2">
-                                        <img src="https://picsum.photos/1920/1080" className="rounded-lg h-full w-full"/>
+                                        <img src={blog.image} className="rounded-lg h-full w-full"/>
                                     </div>
                                     
                                     <div className="lg:hidden md:hidden sm:block belowSm:block">
+                                        <Link to={`/blog/${blog.slug}`}>
                                         <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
                                             <p>View Blogs</p>
                                             <LuArrowUpRight className="text-xl text-amber-400" />
                                         </div>
+                                        </Link>
                                     </div>
                                 </div>
 
@@ -75,19 +127,19 @@ export default function NewsPanel({headline}) {
                                             belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center px-4
                                             ">
                                 <div className="text-gray1 font-normal ">
-                                    <p className="my-2 font-medium">October 15,2023</p>
-                                    <p className="text-white text-xl font-medium">The Quantum leap in the Computing</p>
-                                    <p className="line-clamp-1">Explore the revolution in Quantum computing,its Applications,and its potential impact on various industries.</p>
+                                    <p className="my-2 font-medium">{format(new Date(blog.createdAt), 'MMMM dd, yyyy')}</p>
+                                    <p className="text-white text-xl font-medium">{blog.title}</p>
+                                    <p className="line-clamp-1">{blog.introduction}</p>
                                     <div className="h-[5vh] my-1 w-full flex justify-start gap-4 ">
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
+                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2">
                                             <FaHeart className="text-amber-400" />
-                                            <p>24.5K</p>
+                                            <p>{blog.likes.length}</p>
                                         </button>
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
+                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2">
                                             <FiMessageCircle className="text-gray-1" />
-                                            <p>50</p>
+                                            <p>{blog.comments.length}</p>
                                         </button>
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
+                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2">
                                             <PiPaperPlaneTiltBold className="text-gray-1" />
                                             <p>20</p>
                                         </button>
@@ -98,138 +150,17 @@ export default function NewsPanel({headline}) {
                                             md:h-full md:w-[15%] md:flex md:items-center md:justify-end md:block
                                             sm:hidden
                                             belowSm:hidden">
-                                <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
+                                <div className="w-full p-2 rounded bg-dark1 text-base font-normal text-gray1">
+                                    <Link to={`/blog/${blog.slug}`} className=" flex justify-center">
                                     <p>View All Blogs</p>
                                     <LuArrowUpRight className="text-xl text-amber-400" />
+                                    </Link>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800 ">
-                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
-                                                    md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
-                                                    sm:h-full sm:w-[90%] sm:mx-auto sm:py-6
-                                                    belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:py-6 ">
-                            <div className="lg:h-full lg:w-[25%] lg:flex lg:items-center
-                                                        md:h-full md:w-[25%] md:flex md:items-center
-                                                        sm:h-auto sm:w-full sm:flex sm:items-center
-                                                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:items-center">
-                                <div className="lg:h-auto lg:w-full lg:flex lg:justify-center
-                                                md:h-auto md:w-full md:flex md:justify-center
-                                                sm:h-fautoll sm:w-full sm:flex sm:justify-center
-                                                belowSm:h-auto belowSm:w-full">
-                                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full p-2">
-                                        <img src="https://picsum.photos/1920/1080" className="rounded-lg h-full w-full"/>
-                                    </div>
-                                    
-                                    <div className="lg:hidden md:hidden sm:block belowSm:block">
-                                        <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
-                                            <p>View Blogs</p>
-                                            <LuArrowUpRight className="text-xl text-amber-400" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div className="lg:h-full lg:w-[55%] lg:flex lg:items-center
-                                            md:h-full md:w-[55%] md:flex md:items-center
-                                            sm:h-[20vh] sm:w-full sm:flex sm:items-center
-                                            belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center px-4
-                                            ">
-                                <div className="text-gray1 font-normal ">
-                                    <p className="my-2 font-medium">October 15,2023</p>
-                                    <p className="text-white text-xl font-medium">The Quantum leap in the Computing</p>
-                                    <p className="line-clamp-1">Explore the revolution in Quantum computing,its Applications,and its potential impact on various industries.</p>
-                                    <div className="h-[5vh] my-1 w-full flex justify-start gap-4 ">
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <FaHeart className="text-amber-400" />
-                                            <p>24.5K</p>
-                                        </button>
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <FiMessageCircle className="text-gray-1" />
-                                            <p>50</p>
-                                        </button>
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <PiPaperPlaneTiltBold className="text-gray-1" />
-                                            <p>20</p>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="lg:h-full lg:w-[15%] lg:flex lg:items-center lg:justify-end lg:block
-                                            md:h-full md:w-[15%] md:flex md:items-center md:justify-end md:block
-                                            sm:hidden
-                                            belowSm:hidden">
-                                <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
-                                    <p>View All Blogs</p>
-                                    <LuArrowUpRight className="text-xl text-amber-400" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800 ">
-                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
-                                                    md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
-                                                    sm:h-full sm:w-[90%] sm:mx-auto sm:py-6
-                                                    belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:py-6 ">
-                            <div className="lg:h-full lg:w-[25%] lg:flex lg:items-center
-                                                        md:h-full md:w-[25%] md:flex md:items-center
-                                                        sm:h-auto sm:w-full sm:flex sm:items-center
-                                                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:items-center">
-                                <div className="lg:h-auto lg:w-full lg:flex lg:justify-center
-                                                md:h-auto md:w-full md:flex md:justify-center
-                                                sm:h-fautoll sm:w-full sm:flex sm:justify-center
-                                                belowSm:h-auto belowSm:w-full">
-                                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full p-2">
-                                        <img src="https://picsum.photos/1920/1080" className="rounded-lg h-full w-full"/>
-                                    </div>
-                                    
-                                    <div className="lg:hidden md:hidden sm:block belowSm:block">
-                                        <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
-                                            <p>View Blogs</p>
-                                            <LuArrowUpRight className="text-xl text-amber-400" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div className="lg:h-full lg:w-[55%] lg:flex lg:items-center
-                                            md:h-full md:w-[55%] md:flex md:items-center
-                                            sm:h-[20vh] sm:w-full sm:flex sm:items-center
-                                            belowSm:h-[20vh] belowSm:w-full belowSm:flex belowSm:items-center px-4
-                                            ">
-                                <div className="text-gray1 font-normal ">
-                                    <p className="my-2 font-medium">October 15,2023</p>
-                                    <p className="text-white text-xl font-medium">The Quantum leap in the Computing</p>
-                                    <p className="line-clamp-1">Explore the revolution in Quantum computing,its Applications,and its potential impact on various industries.</p>
-                                    <div className="h-[5vh] my-1 w-full flex justify-start gap-4 ">
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <FaHeart className="text-amber-400" />
-                                            <p>24.5K</p>
-                                        </button>
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <FiMessageCircle className="text-gray-1" />
-                                            <p>50</p>
-                                        </button>
-                                        <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                            <PiPaperPlaneTiltBold className="text-gray-1" />
-                                            <p>20</p>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="lg:h-full lg:w-[15%] lg:flex lg:items-center lg:justify-end lg:block
-                                            md:h-full md:w-[15%] md:flex md:items-center md:justify-end md:block
-                                            sm:hidden
-                                            belowSm:hidden">
-                                <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
-                                    <p>View All Blogs</p>
-                                    <LuArrowUpRight className="text-xl text-amber-400" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
+                        )
+                    })}
                 </div>
             </div>
         </>

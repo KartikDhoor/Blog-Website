@@ -27,22 +27,6 @@ export default function Blog() {
           setBlogData(null); // Reset blog data in case of an error
         }
       };
-    // useEffect(() => {
-    //     // API call to fetch blog data based on the slug
-    //     AxiosInstance
-    //         .post(`/customer/blogs/${blogSlug}`)
-    //         .then((response) => {
-    //             if (response.data.success) {
-    //                 setBlogData(response.data.data); // Store the entire blog data
-    //                 console.log(response.data.data);
-    //             }
-    //             setLoading(false);
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error fetching blog details:", error);
-    //             setLoading(false);
-    //         });
-    // }, [blogSlug]);
     if (loading) {
         return <div className="h-full w-full flex items-center justify-center text-black">Loading...</div>;
     }
@@ -54,8 +38,6 @@ export default function Blog() {
         <>
             <div className="h-full w-full bg-pureblack" key={blogData._id}>
                 {/* title */}
-                {/* bg-[url('https://picsum.photos/1920/1080')] */}
-
                 <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-[60vh] sn:w-full belowSm:h-[60vh] belowSm:w-full  flex items-end bg-center bg-fixed"
                 style={{
                     backgroundImage: `url('${blogData.image|| 'https://picsum.photos/1920/1080'}')`,
@@ -76,10 +58,10 @@ export default function Blog() {
                                     sm:hidden
                                     belowSm:hidden">
                         {/* //Introduction */}
-                        <div className="h-[20vh] w-full border-y border-gray-800">
+                        <div className="h-auto w-full border-y border-gray-800">
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">Introduction</p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid aut qui, molestias quisquam voluptatum odit ratione culpa officiis minus dolore accusamus recusandae, est velit nemo ipsa tempore perferendis asperiores similique?</p>
+                                <p className="text-base text-gray1">{blogData.introduction}</p>
                             </div>
                         </div>
 
@@ -169,7 +151,7 @@ export default function Blog() {
                             {/* //Introduction */}
                             <div className="h-full w-[90%] mx-auto text-white py-4">
                                 <p className="text-xl font-medium">Introduction</p>
-                                <p className="text-base text-gray1">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid aut qui, molestias quisquam voluptatum odit ratione culpa officiis minus dolore accusamus recusandae, est velit nemo ipsa tempore perferendis asperiores similique?</p>
+                                <p className="text-base text-gray1">{blogData.introduction}</p>
                             </div>
                         </div>
                         <div className="h-auto w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full">
