@@ -45,15 +45,25 @@ export default function Profile(){
     }
     return(
         <>
-        <div className="h-screen w-full bg-dark2 flex justify-center items-center">
-            <div className="h-auto w-[70%] mx-auto top-0 bottom-0 rounded-xl bg-dark1 p-4">
+        <div className="md:h-screen md:w-full md:flex md:justify-center md:items-center 
+                        sm:h-auto sm:w-full sm:flex sm:justify-center sm:items-center sm:p-4
+                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:justify-center belowSm:items-center bg-dark2 belowSm:p-2 ">
+            <div className="md:h-auto md:w-[70%] md:mx-auto 
+                            sm:h-auto sm:w-[80%] sm:mx-auto
+                            belowSm:h-auto belowSm:w-[90%] belowSm:mx-auto rounded-xl bg-dark1 p-4">
                 <p className="text-3xl text-white font-medium">Profile</p>
                 <form className="p-4">
-                    <div className="h-auto w-full flex justify-center items-center">
-                        <div className="h-auto w-[30%] flex justify-center">
+                    <div className="md:h-auto md:w-full md:flex md:justify-center md:items-center
+                                    sm:h-auto sm:w-full
+                                    belowSm:h-auto belowSm:w-full">
+                        <div className="md:h-auto md:w-[30%] md:flex md:justify-center
+                                        sm:h-auto sm:w-full sm:flex sm:justify-center
+                                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:justify-center">
                             <img src="https://picsum.photos/1920/1080"name='image' className="h-64 w-64 rounded-full"></img>
                         </div>
-                        <div className="h-auto w-[70%] p-4">
+                        <div className="md:h-auto md:w-[70%]
+                                        sm:h-auto sm:w-full
+                                        belowSm:h-auto belowSm:w-full p-4">
                             <p className="text-lg text-gray1">fullName</p>
                             <input  type="type" name="name" value={userData.name} className="h-[8vh] w-full text-white rounded-lg border border-gray-800 bg-dark1 outline-none focus:border-2 p-2"/>
                             <p className="text-lg text-gray1">email</p>

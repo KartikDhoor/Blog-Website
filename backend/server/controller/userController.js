@@ -119,8 +119,7 @@ const login = (req, res) => {
                 });
             });
     }
-};
-
+}
 const profilePasswordChange = (req, res) => {
     let validation = ''
     if (!req.body.password) {
@@ -206,8 +205,63 @@ const deleteUser=(req,res)=>{
         })
     }
 }
+const profileUpdate=(req,res)=>{
+    let validation=''
+    if(req.decoded){
+        validation+="decoded data is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        User.findOne({_id:req.decoded._id}).exec()
+        .then((data)=>{
+            if(data==null){
+                res.send({success:false,status:400,message:"user does not exists"})
+            }
+            if(!req.body.name){
+                data.name=req.body.name
+            }
+            if(!req.body.email){
+                data.email=req.body.email
+            }
+            if(!req.body.phone){
+                data.phone=req.body.phone
+            }
+            if(!req.body.introduction){
+                data.introduction=req.body.introduction
+            }
+            if(!req.body.image){
+                data.image=req.body.image
+            }
+            data.save()
+            .then((updatedData)=>{
+                const token = jwt.sign(
+                    { _id: updatedData._id, email: updatedData.email ,image:updatedData.image,userType:updatedData.userType},
+                    JWT_SECRET,
+                    { expiresIn: "1h" }
+                );
+                const { password, ...userWithoutpassword } = updatedData.toObject();
+                res.send({success:false,status:400,message:"the update is done",data:userWithoutpassword,token:token})
+            })
+            .catch((err) => {
+                res.send({
+                    success: false,
+                    status: 500,
+                    message: "Error during user Update: " + err.message,
+                });
+            });
+        })
+        .catch((err) => {
+            res.send({
+                success: false,
+                status: 500,
+                message: "Error during user Update: " + err.message,
+            });
+        });
+    }
+}
 
 
 
-
-module.exports = { register, login, profilePasswordChange, findOneUser,};
+module.exports = { register, login, profilePasswordChange, findOneUser, profileUpdate};

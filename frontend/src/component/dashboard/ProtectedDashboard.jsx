@@ -41,6 +41,6 @@ export default function ProtectedDashboard() {
     return <div>Loading...</div>;
   }
 
-  return isAuthorized ? <Outlet /> : <Navigate to={isAuthorized === false ? "/" : "/login"} replace />;
+  return isAuthorized ? <Outlet /> : <Navigate to={isAuthorized === false ? "" : "/login"} replace />;
 };
 

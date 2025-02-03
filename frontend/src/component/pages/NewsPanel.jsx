@@ -63,9 +63,9 @@ export default function NewsPanel({headline}) {
                             </button>
                             <p className="text-5xl text-white font-medium">{headline}</p>
                         </div>
-                        <div className="lg:h-[8vh] lg:w-[15%] lg:flex lg:justify-end lg:items-center md:h-[8vh] md:w-[15%] md:flex md:justify-end md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-center sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-center">
+                        {/* <div className="lg:h-[8vh] lg:w-[15%] lg:flex lg:justify-end lg:items-center md:h-[8vh] md:w-[15%] md:flex md:justify-end md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-center sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-center">
                             <button className="sm:w-full belowSm:w-full p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Blogs</p><LuArrowUpRight className="text-xl text-amber-400" /></button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="lg:h-[10vh] lg:w-full md:h-[10vh] md:w-full sm:h-[10vh] sm:w-full belowSm:h-[10vh] belowSm:w-full border-y border-gray-800">

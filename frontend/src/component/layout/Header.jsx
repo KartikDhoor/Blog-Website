@@ -6,9 +6,11 @@ import { FaUserCircle } from "react-icons/fa";
 import AxiosInstance from "../utils/AxiosInstance";
 
 
+
 export default function Header() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [hovered,setHovered]=useState(false);
+    const[dashboardLink,setDashboardLink]=useState(false);
   const [userImage, setUserImage] = useState(null);
   const [Nav,setNav]=useState(true);
 
@@ -28,6 +30,9 @@ export default function Header() {
       if (response.data.data) {
         setIsAuthenticated(true);
         setUserImage(response.data.data?.image || null);
+        if(response.data.data.userType==1){
+            setDashboardLink(true);
+        }
       } else {
         localStorage.removeItem('blogsite_jwt_token');
         setIsAuthenticated(false);
@@ -77,13 +82,18 @@ export default function Header() {
                                     className="text-3xl text-dark1 cursor-pointer hover:text-gray-400"/>
                                     <div className="h-2 w-2 rounded-full absolute right-2 bottom-1 bg-lime-600"></div>
                                     {hovered?(
-                                        <div className="fixed h-[30vh] w-[20%] top-[8vh] right-3 text-white rounded-xl bg-dark1 p-4">
+                                        <div className="fixed h-[30vh] w-[20%] top-[7vh] right-3 text-white rounded-xl bg-dark1 p-4">
                                             <Link to="/profile">
                                             <p className="text-center text-lg my-2">Profile</p>
                                             </Link>
                                             <Link to='/security'>
                                             <p className="text-center text-lg my-2">Security</p>
                                             </Link>
+                                            {dashboardLink?(<Link to='/dashboard'>
+                                            <p className="text-center text-lg my-2">Dashboard</p>
+                                            </Link>):("")
+                                            }
+                                            
                                             <p className="text-center text-lg my-2" onClick={handleLogout}>LogOut</p>
                                         </div>
                                     ):""

@@ -1,7 +1,6 @@
 const Comment = require("../modules/commentModel");
 const Blog = require('../modules/blogModel');
 const User = require("../modules/userModel");
-const commentModel = require("../modules/commentModel");
 
 const createComment = (req, res) => {
     let validation = ''

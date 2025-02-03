@@ -22,11 +22,13 @@ import OtpConformation from './component/pages/OtpConformation'
 import ProtectedDashboard from './component/dashboard/ProtectedDashboard'
 import Profile from './component/pages/Profile'
 import Security from './component/pages/Security'
+import { AuthProvider } from './component/AuthContext'
 
 function App() {
 
   return (
     <>
+    <AuthProvider>
     <BrowserRouter>
     <Routes>
       <Route path='/' element={<Master/>}>
@@ -55,7 +57,7 @@ function App() {
       <Route path='/Otp' element={<OtpConformation/>}></Route>
     </Routes>
     </BrowserRouter>
-      
+    </AuthProvider>  
     </>
   )
 }

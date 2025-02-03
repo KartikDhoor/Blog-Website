@@ -163,7 +163,6 @@ export default function Home() {
                             <button className="sm:w-full belowSm:w-full p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Blogs</p><LuArrowUpRight className="text-xl text-amber-400" /></button>
                         </div>
                         </div>
-
                     </div>
                     <div className="lg:h-[60vh] lg:w-full lg:border-y lg:border-gray-800
                                     md:h-[60vh] md:w-full md:border-y md:border-gray-800
