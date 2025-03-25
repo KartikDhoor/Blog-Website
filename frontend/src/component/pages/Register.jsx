@@ -29,13 +29,12 @@ export default function Register() {
         e.preventDefault();
         try {
             const response = await AxiosInstance.post("/customer/register", userRegisterForm);
-            console.log(response.data);
-            const token= response.data;
+            
             if (response) {
-                if(response.data.data){
-                    
-                updateToken(token);
                 console.log(response.data);
+                const token= await response.data?.token;
+                    console.log(token);
+                updateToken(token);
                 setmessage(response.data.message);
                     navigate("/otp");
                 return;
@@ -46,7 +45,7 @@ export default function Register() {
                     setmessage(response.data.message);
                     return;
                 }
-            }
+            
         }
         catch (err) {
             console.log(err);

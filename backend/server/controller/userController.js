@@ -273,7 +273,6 @@ const profileUpdate=(req,res)=>{
     }
 }
 const otpConfirmation = (req, res) => {
-    console.log(req.body.otp)
     let validation = '';
     if (!req.body.otp){
         validation+='otp is required'
@@ -291,7 +290,6 @@ const otpConfirmation = (req, res) => {
             if (!user) {
                 return res.status(400).json({ success: false, message: "User does not exist" });
             }
-            console.log(user.otp,req.body.otp)
             if (user.otp !== req.body.otp) {
                 return res.status(400).json({ success: false, message: "Invalid OTP" });
             }

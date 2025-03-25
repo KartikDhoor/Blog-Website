@@ -43,7 +43,7 @@ const findOneCategory=(req,res)=>{
 
 //admin apis
 const createCategory = async (req, res) => {
-    console.log(req.file); // Check if file is being received
+     // Check if file is being received
     let validation = "";
   
     if (!req.body.categoryName) {
@@ -88,7 +88,6 @@ const createCategory = async (req, res) => {
   };
   
 const updateCategory=(req,res)=>{
-    console.log(req.files)
     let validation=""
     if(!req.body._id){
         validation+="_id is required"
