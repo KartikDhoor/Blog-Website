@@ -1,5 +1,6 @@
 import { Bar } from 'react-chartjs-2';
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { format } from 'date-fns';
 import { BiSolidLike } from "react-icons/bi";
 import { RiMessage2Fill } from "react-icons/ri";
@@ -14,6 +15,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { DiVim } from 'react-icons/di';
 
 ChartJS.register(
   CategoryScale,
@@ -43,6 +45,7 @@ export default function DashboardHome() {
   };
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
@@ -56,7 +59,7 @@ export default function DashboardHome() {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const blog = await AxiosInstance.get("/customer/blogs",);
+        const blog = await AxiosInstance.post("/customer/blogs",);
         if (blog) {
           setBlogsData(blog.data.data);
           setLoading(false);
@@ -112,56 +115,76 @@ export default function DashboardHome() {
         <div className="h-[60vh] w-[90%] mx-auto rounded-xl bg-dark1 my-3">
           <Bar data={data} options={options} />;
         </div>
-        <div className='h-auto w-full rounded-xl  bg-pureblack'>
+        <div className='h-auto w-[90%] mx-auto rounded-xl  bg-pureblack'>
           {blogsData.map((blog) => {
             return (
-              <div key={blog._id} className='md:h-full md:w-full flex justify-center bg-dark1 rounded-lg  rounded-lg border-gray-800 border my-4'>
-                <div className="h-[40vh] w-[30%]">
-                  <img src={blog.image} className="h-full w-full  rounded-l-lg" />
+              <div key={blog._id} className='md:h-full md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full md:flex md:justify-center bg-dark1 rounded-lg  rounded-lg border-gray-800 border my-4'>
+                <div className="md:h-[40vh] md:w-[30%] sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full">
+                  <img src={blog.image} className="h-full w-full md:rounded-l-lg sm:rounded-t-lg belowSm:rounded-t-lg" />
                 </div>
-                <div className="md:h-[40vh] md:w-[70%] p-2">
+                <div className="md:h-[40vh] md:w-[70%] sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full p-2">
                   <div className="md:h-[20vh] md:w-full">
                     <p className="text-2xl font-medium text-white">{blog.title}</p>
                     <p className="text-lg font-medium text-gray1">{blog.author}</p>
                     <p className="line-clamp-3 text-gray-400">{blog.introduction}
                     </p>
                   </div>
-                  <div className="md:h-[10vh] md:w-full flex justify-center">
-                    <div className="w-[20%]">
-                      <p className="font-medium text-lg text-gray1">Category</p>
-                      <p className="text-base font-medium text-gray-600">{blog.category.categoryName}</p>
+                  <div className="md:h-[10vh] md:w-full md:flex md:justify-center sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full">
+                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="font-medium text-lg text-gray1">Category</p>
+                      </div>
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="text-base font-medium text-gray-600">{blog.category.categoryName}</p>
+                      </div>
                     </div>
-                    <div className="w-[20%]">
-                      <p className="font-medium text-lg text-gray1">created At</p>
-                      <p className="text-base font-medium text-gray-600">{format(new Date(blog.createdAt), 'MMMM dd, yyyy')}</p>
+                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="font-medium text-lg text-gray1">Created At</p>
+                      </div>
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="text-base font-medium text-gray-600">{format(new Date(blog.createdAt), 'MMMM dd, yyyy')}</p>
+                      </div>
                     </div>
-                    <div className="w-[20%]">
-                      <p className="font-medium text-lg text-gray1">Status</p>
-                      <p className="text-base font-medium text-gray-600">{blog.status}</p>
+                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="font-medium text-lg text-gray1">Status</p>
+                      </div>
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="text-base font-medium text-gray-600">{blog.status}</p>
+                      </div>
                     </div>
-                    <div className="w-[20%]">
-                      <p className="font-medium text-lg text-gray1">published At</p>
-                      <p className="text-base font-medium text-gray-600">{format(new Date(blog.publishAt), 'MMMM dd, yyyy')}</p>
+                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="font-medium text-lg text-gray1">Published At</p>
+                      </div>
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="text-base font-medium text-gray-600">{format(new Date(blog.publishAt), 'MMMM dd, yyyy')}</p>
+                      </div>
                     </div>
-                    <div className="w-[20%]">
-                      <p className="font-medium text-lg text-gray1">Update At</p>
-                      <p className="text-base font-medium text-gray-600">{format(new Date(blog.updatedAt), 'MMMM dd, yyyy')}</p>
+                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="font-medium text-lg text-gray1">Update At</p>
+                      </div>
+                      <div className="sm:w-[50%] belowSm:w-[50%]">
+                        <p className="text-base font-medium text-gray-600">{format(new Date(blog.updatedAt), 'MMMM dd, yyyy')}</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="md:h-[8vh] md:w-full grid md:grid-cols-4 sm:grid-cols-2 belowSm:grid-cols-2 gap-4">
+                  <div className="md:h-[8vh] md:w-full grid md:grid-cols-3 sm:grid-cols-2 belowSm:grid-cols-2 gap-4">
                     <div className="h-full w-full py-2 px-4 rounded-lg border-2 border-gray-800 flex justify-center items-center bg-pureblack">
                       <BiSolidLike className="text-3xl text-amber-600" />
                       <p className="text-xl font-medium text-gray1"><span>{blog.likes.length}</span>Likes</p>
                     </div>
                     <div className="h-full w-full py-2 px-4 rounded-lg border-2 border-gray-800 flex justify-center items-center bg-pureblack">
                       <RiMessage2Fill className="text-3xl text-amber-600" />
-                      <p className="text-xl font-medium text-gray1"><span>{blog.comments.length}</span>Messages</p>
+                      <p className="text-lg font-medium text-gray1"><span>{blog.comments.length}</span>Messages</p>
                     </div>
-                    <button className="h-full w-full py-2 px-4 rounded-lg border-2 border-lime-800 flex justify-center items-center bg-pureblack" onClick={(e) => { updateButtonHandler(blog) }}>
-                      <p className="text-xl font-medium text-gray1"><span></span>Read Blog</p>
-                      <FaUpload className="text-3xl text-lime-700" />
-                    </button>
-
+                    <Link to={`/blog/${blog.slug}`} className='md:col-span-1 sm:col-span-2 belowSm:col-span-2'>
+                      <div className="md:col-span-1 sm:col-span-2 belowSm:col-span-2 h-full w-full py-2 px-4 rounded-lg border-2 border-lime-800 bg-pureblack text-center" onClick={(e) => { updateButtonHandler(blog) }}>
+                        <p className="text-xl font-medium text-gray1"><span></span>Read Blog</p>
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </div>

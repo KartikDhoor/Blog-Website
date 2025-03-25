@@ -1,17 +1,13 @@
 const express = require('express');
 const app = express();
-require("dotenv").config();
-const multer = require('multer');
-const db = require('./server/config/db')
+const path=require('path');
 
+app.use('/uploads', express.static(path.join(__dirname, './public/image')));
+require("dotenv").config();
+const db = require('./server/config/db')
 const customerRoutes = require('./server/routes/customerRoutes')
 const adminRoutes = require('./server/routes/adminRoutes')
-
-
 const cors = require("cors")
-
-
-
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors({
@@ -23,16 +19,10 @@ app.use(cors({
 app.use('/customer', customerRoutes);
 app.use('/admin', adminRoutes);
 
-
-
-
-
-
-
 app.listen(5000, (err) => {
     if (err) {
-        console.log("Error Occured:-", err)
+        console.log("Error Occurred:-", err);
+    } else {
+        console.log("Server is running on port 5000");
     }
-    else
-        console.log("Server is running in 5000")
-})
+});

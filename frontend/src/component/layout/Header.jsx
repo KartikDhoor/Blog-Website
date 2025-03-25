@@ -1,65 +1,79 @@
-import { Link,useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HiMiniBars4 } from "react-icons/hi2";
 import { RxCrossCircled } from "react-icons/rx";
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import AxiosInstance from "../utils/AxiosInstance";
+import {useAuth} from '../AuthContext'
 
 
 
 export default function Header() {
+    const {user,token}=useAuth();
+    const navigate = useNavigate()
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [hovered,setHovered]=useState(false);
-    const[dashboardLink,setDashboardLink]=useState(false);
-  const [userImage, setUserImage] = useState(null);
-  const [Nav,setNav]=useState(true);
+    const [hovered, setHovered] = useState(false);
+    const [dashboardLink, setDashboardLink] = useState(false);
+    const [userImage, setUserImage] = useState(null);
+    const [Nav, setNav] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem('blogsite_jwt_token');
-    if (token) {
-        console.log("Token:"+token);
-      validateAndFetchUserInfo(token);
-    }
-  }, []);
-
-  const validateAndFetchUserInfo = async (token) => {
-    try {
-      const response = await AxiosInstance.post('/customer/find/user',{
-        token,
-      });
-      if (response.data.data) {
-        setIsAuthenticated(true);
-        setUserImage(response.data.data?.image || null);
-        if(response.data.data.userType==1){
-            setDashboardLink(true);
+    useEffect(() => {
+        if (user) {
+            setIsAuthenticated(true);
+            setUserImage(user?.image || null);
+            setDashboardLink(user.userType === 1);
+        } else {
+            setIsAuthenticated(false);
         }
-      } else {
+    }, [user]); 
+    //     const token = localStorage.getItem('blogsite_jwt_token');
+    //     if (token) {
+    //         console.log("Token:" + token);
+    //         validateAndFetchUserInfo(token);
+    //     }
+    // }, []);
+
+    // const validateAndFetchUserInfo = async (token) => {
+    //     try {
+    //         const response = await AxiosInstance.post('/customer/find/user', {
+    //             token,
+    //         });
+    //         if (response.data.data) {
+    //             setIsAuthenticated(true);
+    //             setUserImage(response.data.data?.image || null);
+    //             if (response.data.data.userType == 1) {
+    //                 setDashboardLink(true);
+    //             }
+    //         } else {
+    //             localStorage.removeItem('blogsite_jwt_token');
+    //             setIsAuthenticated(false);
+    //         }
+    //     } catch (error) {
+    //         console.error('Token validation or user fetch failed:', error);
+    //         localStorage.removeItem('blogsite_jwt_token');
+    //         setIsAuthenticated(false);
+    //     }
+    // };
+    const handleLogout = () => {
         localStorage.removeItem('blogsite_jwt_token');
-        setIsAuthenticated(false);
-      }
-    } catch (error) {
-      console.error('Token validation or user fetch failed:', error);
-      localStorage.removeItem('blogsite_jwt_token');
-      setIsAuthenticated(false);
+        navigate(0);
     }
-  };
-  const handleLogout=()=>{
-    localStorage.removeItem('blogsite_jwt_token');
-  }
-  const handleDropDown=()=>{
-    setHovered((prevState) => !prevState)
-  }
+    const handleDropDown = () => {
+        setHovered((prevState) => !prevState)
+    }
     const toggleNav = () => {
         setNav((prevState) => !prevState);
     }
     return (
         <>
-            <div className="h-full w-full bg-pureblack m-0 p-0">
+        <div className="h-auto w-full ">
+        <div className=" top-0 h-full w-full bg-pureblack m-0 p-0">
                 <div className="lg:h-[10vh] lg:w-[95%] relative mx-auto p-4 flex justify-center items-center md:h-[10vh] md:w-[95%] sm:h-[10vh] sm:w-full belowSm:h-[10vh] belowSm:w-full">
                     <div className="lg:h-full lg:w-[30%] md:h-full md:w-[30%] sm:h-full w-[50%] belowSm:h-full">
-                        <p className="text-xl text-gray-200 font-medium uppercase">blog website</p>
+                    
+                        <p className="text-3xl stick-no-bills tracking-[.25rem] text-gray-200 font-blod uppercase">NEURADHOOR</p>
                     </div>
-                    <div className="lg:h-full lg:w-[40%] lg:flex lg:justify-center lg:items-center lg:gap-6 text-lg font-normal text-gray-400 md:h-full md:w-[40%] md:flex md:justify-center md:items-center md:gap-6 sm:hidden belowSm:hidden">
+                    <div className="roboto-condensed tracking-wider lg:h-full lg:w-[40%] lg:flex lg:justify-center lg:items-center lg:gap-6 text-lg font-normal text-gray-400 md:h-full md:w-[40%] md:flex md:justify-center md:items-center md:gap-6 sm:hidden belowSm:hidden">
                         <Link to='/'><p className="">Home</p></Link>
                         <Link to='/news'><p>News</p></Link>
                         <Link to='/inspire'><p>Inspire</p></Link>
@@ -72,40 +86,63 @@ export default function Header() {
                                     src={userImage}
                                     alt="Profile"
                                     className="w-10 h-10 rounded-full cursor-pointer hover:opacity-80"
-                                    
-                                />
-                            ) : (
-                                <div className="w-10 h-10 relative flex items-center justify-center"  onMouseEnter={handleDropDown}
-                                onMouseLeave={handleDropDown}
+                                    onMouseEnter={handleDropDown}
+                                    onMouseLeave={handleDropDown}
+
                                 >
                                     <FaUserCircle
-                                    className="text-3xl text-dark1 cursor-pointer hover:text-gray-400"/>
+                                        className="text-3xl text-dark1 cursor-pointer hover:text-gray-400" />
                                     <div className="h-2 w-2 rounded-full absolute right-2 bottom-1 bg-lime-600"></div>
-                                    {hovered?(
-                                        <div className="fixed h-[30vh] w-[20%] top-[7vh] right-3 text-white rounded-xl bg-dark1 p-4">
+                                    {hovered ? (
+                                        <div className="absolute z-10 h-[30vh] w-[20%] top-[7vh] right-3 text-white rounded-xl bg-dark1 p-4">
                                             <Link to="/profile">
-                                            <p className="text-center text-lg my-2">Profile</p>
+                                                <p className="text-center text-lg my-2">Profile</p>
                                             </Link>
                                             <Link to='/security'>
-                                            <p className="text-center text-lg my-2">Security</p>
+                                                <p className="text-center text-lg my-2">Security</p>
                                             </Link>
-                                            {dashboardLink?(<Link to='/dashboard'>
-                                            <p className="text-center text-lg my-2">Dashboard</p>
-                                            </Link>):("")
+                                            {dashboardLink ? (<Link to='/dashboard'>
+                                                <p className="text-center text-lg my-2">Dashboard</p>
+                                            </Link>) : ("")
                                             }
-                                            
+
                                             <p className="text-center text-lg my-2" onClick={handleLogout}>LogOut</p>
                                         </div>
-                                    ):""
+                                    ) : ""
+                                    }
+                                </img>
+                            ) : (
+                                <div className="w-10 h-10 relative flex items-center justify-center" onMouseEnter={handleDropDown}
+                                    onMouseLeave={handleDropDown}
+                                >
+                                    <FaUserCircle
+                                        className="text-3xl text-dark1 cursor-pointer hover:text-gray-400" />
+                                    <div className="h-2 w-2 rounded-full absolute z-30 right-2 bottom-1 bg-lime-600"></div>
+                                    {hovered ? (
+                                        <div className="absolute z-10 h-[30vh] w-[400%] top-[100%] right-0 text-white rounded-xl bg-dark1 p-4">
+                                            <Link to="/profile">
+                                                <p className="text-center text-lg my-2">Profile</p>
+                                            </Link>
+                                            <Link to='/security'>
+                                                <p className="text-center text-lg my-2">Security</p>
+                                            </Link>
+                                            {dashboardLink ? (<Link to='/dashboard'>
+                                                <p className="text-center text-lg my-2">Dashboard</p>
+                                            </Link>) : ("")
+                                            }
+
+                                            <p className="text-center text-lg my-2" onClick={handleLogout}>LogOut</p>
+                                        </div>
+                                    ) : ""
                                     }
                                 </div>
-                                
+
                             )
                         ) : (
                             <Link to='/login'>
-                            <button className="text-lg font-normal py-2 px-4 bg-amber-400 border-2 rounded-xl border-lime-400 hover:transition hover:scale-105 focus:bg-amber-600 focus:border-0">
-                                Login
-                            </button>
+                                <button className="roboto-condensed text-lg font-normal py-2 px-4 bg-amber-400 border-2 rounded-xl border-lime-400 hover:transition hover:scale-105 focus:bg-amber-600 focus:border-0">
+                                    Login
+                                </button>
                             </Link>
                         )}
                     </div>
@@ -123,6 +160,24 @@ export default function Header() {
                                 <Link to='/news' onClick={toggleNav}><p className="border-b border-gray-800 py-2">News</p></Link>
                                 <Link to='/podcast' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Podcast</p></Link>
                                 <Link to='/inspire' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Insite</p></Link>
+                                {isAuthenticated ? (
+                                    <>
+                                        <Link to='/profile' onClick={toggleNav}>
+                                            <p className="border-b border-gray-800 py-2">Profile</p>
+                                        </Link>
+
+                                        {dashboardLink && (
+                                            <Link to='/dashboard' onClick={toggleNav}>
+                                                <p className="border-b border-gray-800 py-2">Dashboard</p>
+                                            </Link>
+                                        )}
+                                    </>
+                                ) : <Link to='/login' onClick={toggleNav}>
+                                <p className="border-b border-gray-800 py-2">Login</p>
+                            </Link>}
+
+
+
                                 <Link to='/contact' onClick={toggleNav}><p className="border-b border-gray-800 py-2">Contact</p></Link>
                             </div>
                         </div>
@@ -130,6 +185,8 @@ export default function Header() {
 
                 </div>
             </div>
+        </div>
+            
         </>
     )
 }

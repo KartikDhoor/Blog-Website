@@ -1,7 +1,7 @@
 const Comment = require("../modules/commentModel");
 const Blog = require('../modules/blogModel');
 const User = require("../modules/userModel");
-
+//customer apis
 const createComment = (req, res) => {
     let validation = ''
     if (!req.body.blogId) {
@@ -93,6 +93,94 @@ const updateComment = (req, res) => {
             })
     }
 }
+
+const findComment=(req,res)=>{
+    let validation=''
+    if(!req.body._id){
+        validation+="_id is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Comment.findOne({_id:req.body._id}).populate("blog","user").exec()
+        .then((data)=>{
+            res.send({success:true,status:200,data:data})
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
+const blogComment=(req,res)=>{
+    let validation=""
+    if(!req.body.blogId){
+        validation+="blog id is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Comment.find({blogId:req.body.blogId}).populate("userId",'name email').populate("blogId",'title author')
+        .exec()
+        .then((data)=>{
+            res.send({success:true,status:200,total:data.length,data:data})
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
+const userComment=(req,res)=>{
+    let validation=""
+    if(req.body.userId){
+        validation+="user id is required"
+    }
+    if(!!validation){
+        res.send({success:false,status:400,message:validation})
+    }
+    else{
+        Comment.find({userId:req.body.userId}).populate("user","blog").exec()
+        .then((data)=>{
+            res.send({success:true,status:200,data:data})
+        })
+        .catch((err)=>{
+            res.send({success:false,status:400,message:err.message})
+        })
+    }
+}
+
+//admin apis
+const dashboardUpdateComment = (req, res) => {
+    let validation = ''
+    if (!req.body._id) {
+        validation += "_id is required"
+    }
+    if (!!validation) {
+        res.send({ success: false, status: 400, message: validation })
+    }
+    else {
+        Comment.findOne({ _id: req.body._id }).exec()
+            .then((data) => {
+                if (data == null) {
+                    res.send({ success: false, status: 400, message: "comment did not exists" })
+                }
+                else {
+                    data.content = req.body.content
+                    data.save()
+                        .then((updatedData) => {
+                            res.send({ success: true, status: 200, data: updatedData, message: "the message is uppdated" })
+                        })
+                        .catch((err) => {
+                            res.send({ success: false, status: 400, message: err.message })
+                        })
+                }
+            })
+            .catch((err) => {
+                res.send({ success: false, status: 400, message: err.message })
+            })
+    }
+}
 const deleteComment = (req, res) => {
     let validation = ""
     if (!req.body._id) {
@@ -123,7 +211,7 @@ const deleteComment = (req, res) => {
             })
     }
 }
-const findComment=(req,res)=>{
+const dashboardFindComment=(req,res)=>{
     let validation=''
     if(!req.body._id){
         validation+="_id is required"
@@ -141,7 +229,7 @@ const findComment=(req,res)=>{
         })
     }
 }
-const blogComment=(req,res)=>{
+const dashboardBlogComment=(req,res)=>{
     let validation=""
     if(!req.body.blogId){
         validation+="blog id is required"
@@ -150,7 +238,7 @@ const blogComment=(req,res)=>{
         res.send({success:false,status:400,message:validation})
     }
     else{
-        Comment.find({blogId:req.body.blogId}).populate("userId").populate("blogId")
+        Comment.find({blogId:req.body.blogId}).populate("userId",'name email').populate("blogId",'title author')
         .exec()
         .then((data)=>{
             res.send({success:true,status:200,total:data.length,data:data})
@@ -160,7 +248,7 @@ const blogComment=(req,res)=>{
         })
     }
 }
-const userComment=(req,res)=>{
+const dashboardUserComment=(req,res)=>{
     let validation=""
     if(req.body.userId){
         validation+="user id is required"

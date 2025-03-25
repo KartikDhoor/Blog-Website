@@ -1,7 +1,8 @@
+import { motion } from "framer-motion"
 export default function Hero() {
     return (
         <>
-            <div className="lg:h-[90vh] lg:w-full 
+            <div className="comme  lg:h-[90vh] lg:w-full 
                             md:h-full md:w-full bg-pureblack"
             >
                 <div className="lg:h-[90vh] lg:w-[95%] lg:mx-auto lg:flex lg:justify-center lg:items-center 
@@ -13,8 +14,9 @@ export default function Hero() {
                                     sm:h-[90vh] sm:w-full"
                     >
                         <div className='lg:h-full lg:w-full 
-                                        md:h-full md:w-full 
-                                        sm:h-full sm:w-full'
+                                        md:h-full md:w-full md:animate-slideLeftIn
+                                        sm:h-full sm:w-full sm:animate-slideBottomIn
+                                        belowSm:animate-slideBottomIn'
                         >
                             <div className="lg:h-[60vh] lg:w-full lg:text-gray1 lg:flex lg:items-center lg:border-r lg:border-b lg:border-gray-800 
                                             md:h-[60vh] md:w-full md:text-gray1 md:flex md:items-center md:border-r md:border-b md:border-gray-800 
@@ -31,8 +33,8 @@ export default function Hero() {
                                     </p>
                                     <p className="lg:text-6xl 
                                                   md:text-6xl
-                                                  sm:text-5xl 
-                                                  belowSm:text-4xl font-normal my-5 text-white "
+                                                  sm:text-4xl 
+                                                  belowSm:text-3xl font-semibold my-5 text-white "
                                     >
                                         Explore the Frontiers of Artificial Intelligence
                                     </p>
@@ -43,9 +45,9 @@ export default function Hero() {
                                     >
                                         Welcome to the epicenter of Ai innovation.future Ai News is your Passport to a world where Machine thinks, Learn and reshape the Future.join Us on this Visinary expedition into the heart of Ai
                                     </p>
-                                </div> 
+                                </div>
                             </div>
-                            <div className="lg:h-[30vh] lg:w-full lg:flex lg:justify-center 
+                            <div className=" lg:h-[30vh] lg:w-full lg:flex lg:justify-center 
                                             md:h-[30vh] md:w-full md:flex md:justify-center 
                                             sm:h-[30vh] sm:w-full sm:flex sm:justify-center 
                                             belowSm:h-[30vh] belowSm:w-full belowSm:flex belowSm:justify-center border-y border-r border-gray-800 text-gray1 font-normal "
@@ -53,7 +55,7 @@ export default function Hero() {
                                 <div className="lg:h-full lg:w-[30%] lg:text-5xl lg:flex lg:items-center lg:justify-center lg:border-r lg:border-gray-800 
                                                 md:h-full md:w-[30%] md:flex md:items-center md:justify-center md:text-4xl md:border-r md:border-gray-800 
                                                 sm:h-full sm:w-[30%] sm:flex sm:items-center sm:justify-center sm:text-3xl sm:border-r sm:border-gray-800 
-                                                belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl belowSm:border-r belowSm:border-gray-800"
+                                                belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl belowSm:border-r belowSm:border-gray-800 text-center"
                                 >
                                     <div>
                                         <p className="text-white">
@@ -65,7 +67,7 @@ export default function Hero() {
                                         <p className="lg:text-base 
                                                       md:text-base 
                                                       sm:text-base 
-                                                      belowSm:text-sm"
+                                                      belowSm:text-sm belowSm:tracking-wider"
                                         >
                                             Resources available
                                         </p>
@@ -77,7 +79,7 @@ export default function Hero() {
                                                 belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl belowSm:border-r belowSm:border-gray-800"
                                 >
                                     <div>
-                                        <p className="text-white">
+                                        <p className="text-white text-center">
                                             2K
                                             <span className="text-amber-400">
                                                 +
@@ -86,7 +88,7 @@ export default function Hero() {
                                         <p className="lg:text-base 
                                                       md:text-base 
                                                       sm:text-base 
-                                                      belowSm:text-sm"
+                                                      belowSm:text-sm text-center belowSm:tracking-wider"
                                         >
                                             Total Downloads
                                         </p>
@@ -95,7 +97,7 @@ export default function Hero() {
                                 <div className="lg:h-full lg:w-[30%] lg:text-5xl lg:flex lg:items-center lg:justify-center 
                                                 md:h-full md:w-[30%] md:flex md:items-center md:justify-center md:text-4xl 
                                                 sm:h-full sm:w-[30%] sm:flex sm:items-center sm:justify-center sm:text-3xl 
-                                                belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl "
+                                                belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl text-center"
                                 >
                                     <div>
                                         <p className="text-white">
@@ -107,15 +109,46 @@ export default function Hero() {
                                         <p className="lg:text-base 
                                                       md:text-base 
                                                       sm:text-base 
-                                                      belowSm:text-sm">Active Users</p>
+                                                      belowSm:text-sm belowSm:tracking-wider">Active  <br className="md:hidden sm:hidden belowSm:block"/>Users</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full">
+                   < motion.div
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true, amount: 0.5 }}
+                        transition={{
+                        duration: 0.4,
+                        scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+                        }}
+                        className="lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full"
+                    >
+            <div 
+            // className=" relative lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full p-4"
+            className=' relative h-full w-full p-4'
+            >
+                        <img src="./src/assets/hero.jpg" className="z-0 h-full w-full rounded-xl" />
+                        <div className="h-auto w-full absolute z-0 bg-transparent top-0">
+                            <div className='h-[2vh] w-full bg-pureblack'>
 
+                            </div>
+                            <div className="h-auto w-full flex justify-between">
+                                
+                                <div className="h-[6vh] w-[10%] bg-pureblack rounded-br-xl ">
+
+                                </div>
+                                <div className="h-[6vh] w-[40%] bg-transparent">
+
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
+
+        </motion.div>
+                    
                 </div>
             </div>
         </>

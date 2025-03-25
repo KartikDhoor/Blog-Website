@@ -18,7 +18,7 @@ export default function Blog() {
       }, [slug]);
       const fetchBlogDetails = async (slug) => {
         try {
-          const response = await AxiosInstance.get(`/customer/blogs/${slug}`);
+          const response = await AxiosInstance.post(`/customer/blogs/${slug}`);
           setBlogData(response.data.data);// Set the fetched blog data
           setLoading(null); // Reset the error state in case of a successful fetch
         } catch (error) {
@@ -27,6 +27,18 @@ export default function Blog() {
           setBlogData(null); // Reset blog data in case of an error
         }
       };
+    const handleLikeClick=async()=>{
+        try{
+            const response=await AxiosInstance.post();
+            if(''){ 
+
+            }
+
+        }
+        catch{
+
+        }
+    }
     if (loading) {
         return <div className="h-full w-full flex items-center justify-center text-black">Loading...</div>;
     }

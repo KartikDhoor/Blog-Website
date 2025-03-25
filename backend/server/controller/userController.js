@@ -1,6 +1,7 @@
 const User = require('../modules/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const emailService=require('../config/emailService');
 const JWT_SECRET=process.env.SECRET_KEY
 
 const register = async (req, res) => {
@@ -24,6 +25,8 @@ const register = async (req, res) => {
                     return res.send({ success: false, status: 400, message: "User already exists" });
                 }
                 else {
+                    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+                    const otpExpired = new Date(Date.now() + 5 * 60 * 1000); // 5 min expiration
                     const saltRounds = 10;
                     bcrypt.hash(req.body.password, saltRounds)
                         .then((hashedPassword) => {
@@ -31,16 +34,24 @@ const register = async (req, res) => {
                                 name: req.body.name,
                                 email: req.body.email,
                                 password: hashedPassword,
+                                otp:otp,
+                                otpExpired:otpExpired,
                             });
-
                             user.save()
-                            
                                 .then((savedUser) => {
-                                    const token = jwt.sign({ id: savedUser._id, email: savedUser.email },  process.env.SECRET_KEY, {
-                                        expiresIn: "1h",
-                                      });
+                                    const token = jwt.sign(
+                                        { _id: user._id, email: user.email ,image:user.image,userType:user.userType},
+                                        JWT_SECRET,
+                                        { expiresIn: "1d" }
+                                    );
                                     const { password, ...userWithoutpassword } = savedUser.toObject();
-                                    res.send({ success: true, status: 200, message: "New user is created", data: userWithoutpassword,token:token });
+                                    emailService.sendOtpEmailVerification(user.email,otp)
+                                    .then((send)=>{
+                                        res.send({ success: true, status: 200, message: "New user is created", data: userWithoutpassword,token:token,emailsend:send});
+                                     })
+                                     .catch((err) => {
+                                        res.send({ success: false, status: 500, message:' email for th emailservice'+err.message });
+                                    });
                                 })
                                 .catch((err) => {
                                     res.send({ success: false, status: 500, message: err.message });
@@ -84,7 +95,7 @@ const login = (req, res) => {
                                 const token = jwt.sign(
                                     { _id: user._id, email: user.email ,image:user.image,userType:user.userType},
                                     JWT_SECRET,
-                                    { expiresIn: "1h" }
+                                    { expiresIn: "1d" }
                                 );
                                 const { password, ...userWithoutpassword } = user.toObject();
                                 res.send({
@@ -261,7 +272,57 @@ const profileUpdate=(req,res)=>{
         });
     }
 }
+const otpConfirmation = (req, res) => {
+    console.log(req.body.otp)
+    let validation = '';
+    if (!req.body.otp){
+        validation+='otp is required'
+    }
+    if (!req.body._id){
+        validation+="_id is required"
+    }
+
+    if (!!validation) {
+        return res.status(400).json({ success: false, message:validation });
+    }
+
+    User.findOne({ _id: req.body._id }).exec()
+        .then((user) => {
+            if (!user) {
+                return res.status(400).json({ success: false, message: "User does not exist" });
+            }
+            console.log(user.otp,req.body.otp)
+            if (user.otp !== req.body.otp) {
+                return res.status(400).json({ success: false, message: "Invalid OTP" });
+            }
+
+            if (new Date(user.otpExpired) < new Date()) {
+                // OTP expired, generate a new one
+                const otp = Math.floor(100000 + Math.random() * 900000).toString();
+                const otpExpired = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
+
+                user.otp = otp;
+                user.otpExpired = otpExpired;
+
+                return user.save().then(() => {
+                    emailService.sendOtpEmailVerification(user.email, otp);
+                    res.status(400).json({ success: false, message: "OTP expired, a new OTP has been sent" });
+                });
+            }
+
+            // OTP is valid, mark email as verified
+            user.emailVerified = true;
+            return user.save()
+                .then((savedUser) => {
+                    res.status(200).json({ success: true, message: "Email is verified", data: savedUser });
+                });
+        })
+        .catch((err) => {
+            res.status(500).json({ success: false, message: "Server error: " + err.message });
+        });
+};
 
 
 
-module.exports = { register, login, profilePasswordChange, findOneUser, profileUpdate};
+
+module.exports = { register, login, profilePasswordChange, findOneUser, profileUpdate,otpConfirmation};

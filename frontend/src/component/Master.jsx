@@ -6,7 +6,7 @@ export default function Master(){
     return(
         <>
         <div className="overflow-x-hidden p-0 m-0">
-        <Header/>
+        <Header />
         <Outlet/>
         <Footer/>
         </div>

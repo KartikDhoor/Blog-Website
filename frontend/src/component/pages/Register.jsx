@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AxiosInstance from "../utils/AxiosInstance";
+import {useAuth} from '../AuthContext';
 
 export default function Register() {
+    const {user,token,updateToken}=useAuth();
+    const navigate=useNavigate()
     const [passwordVisiblity, setPasswordVisiblity] = useState(false);
     const [message, setmessage] = useState("");
     const [userRegisterForm, setUserRegisterForm] = useState({
@@ -24,20 +27,18 @@ export default function Register() {
     }
     const handleRegister = async (e) => {
         e.preventDefault();
+        console.log(userRegisterForm)
         try {
             const response = await AxiosInstance.post("/customer/register", userRegisterForm);
+            console.log(response.data);
             const token= response.data;
-            const userType=response.data.data.userType;
             if (response) {
-                localStorage.setItem("blogsite_jwt_token", token);
-                if (userType === 1) {
-                    navigate("/dashboard");
-                }
-                if (userType === 2) {
-                    navigate("/");
-                }
+                updateToken(token);
+                if(response.data.data){
+                    navigate("/otp");
                 console.log(response.data);
                 setmessage(response.data.message);
+                } 
             }
         }
         catch (err) {
@@ -50,7 +51,7 @@ export default function Register() {
             <div className="h-screen w-full bg-dark2">
                 <div className="h-[10vh] w-full bg-pureblack">
                     <div className="h-full w-[90%] mx-auto flex items-center">
-                        <p className="text-3xl font-medium text-white">Blog Website</p>
+                        <p className="text-3xl stick-no-bills tracking-[.25rem] font-blod uppercase text-white">Blog Website</p>
                     </div>
 
                 </div>

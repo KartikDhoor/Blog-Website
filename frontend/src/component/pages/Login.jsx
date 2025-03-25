@@ -4,8 +4,10 @@ import { IoEyeOffOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import AxiosInstance from "../utils/AxiosInstance";
+import {useAuth} from '../AuthContext'
 
 export default function Login() {
+    const {updateToken}=useAuth();
     const navigate=useNavigate();
     const [passwordVisiblity, setPasswordVisiblity] = useState(false);
     const [message, setmessage] = useState("");
@@ -30,13 +32,21 @@ export default function Login() {
             if (response) {
                 const token = response.data?.token;
                 const userType = response.data?.data?.userType;
+                const userverified = response.data?.data?.userVerified;
                 console.log(response.data.data)
-                localStorage.setItem("blogsite_jwt_token", token);
+                // localStorage.setItem("blogsite_jwt_token", token);
+                updateToken(token)
+                if(userverified==false){
+                    navigate("/otp");
+                    return;
+                }
                 if (userType === 1) {
                     navigate("/dashboard");
+                    return;
                 }
                 if (userType === 2) {
                     navigate("/");
+                    return;
                 }
                 console.log(response.data);
                 setmessage(response.data.message);
@@ -52,7 +62,7 @@ export default function Login() {
             <div className="h-screen w-full bg-dark2">
                 <div className="h-[10vh] w-full bg-pureblack">
                     <div className="h-full w-[90%] mx-auto flex items-center">
-                        <p className="text-3xl font-medium text-white">Blog Website</p>
+                        <p className="text-3xl stick-no-bills tracking-[.25rem] font-blod uppercase text-white">Blog Website</p>
                     </div>
 
                 </div>

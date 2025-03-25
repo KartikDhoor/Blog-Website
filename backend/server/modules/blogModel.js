@@ -12,10 +12,10 @@ const blogSchema = new mongoose.Schema({
   },
   sections: [
     {
-      title: { type: String,},
-      content: { type: String,},
-      image: { type: String,},
-      url: { type:String,},
+      title: { type: String, default:''},
+      content: { type: String, default:''},
+      sectionImage: { type: String, default:''},
+      url: { type:String, default:''},
     },
   ],
   category: {
@@ -33,6 +33,10 @@ const blogSchema = new mongoose.Schema({
     type: String,
     enum: ['draft', 'published'],
     default: 'draft',
+  },
+  deleteStatus:{
+    type:Boolean,
+    default:false,
   },
   createdAt: {
     type: Date,

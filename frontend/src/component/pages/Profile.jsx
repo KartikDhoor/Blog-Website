@@ -1,8 +1,10 @@
 import { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AxiosInstance from "../utils/AxiosInstance";
+import { useAuth } from "../AuthContext";
 
 export default function Profile(){
+    const{user,token}=useAuth()
     const [userData,setUserData]=useState(null);
     const navigate=useNavigate();
     useEffect(()=>{

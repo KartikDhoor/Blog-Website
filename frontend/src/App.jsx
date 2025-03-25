@@ -13,7 +13,6 @@ import DashboardHome from './component/dashboard/pages/DashboardHome'
 import DashboardBlog from './component/dashboard/pages/DashboardBlog'
 import DashboardCategory from './component/dashboard/pages/DashboardCategory'
 import DashboardComments from './component/dashboard/pages/DashboardComments'
-import DashboardLikes from './component/dashboard/pages/DashboardLikes'
 import DashboardUser from './component/dashboard/pages/DashboardUser'
 import DashboardAnnouncement from './component/dashboard/pages/DashboardAnnouncement'
 import Login from './component/pages/Login'
@@ -47,14 +46,13 @@ function App() {
       <Route path='blog' element={<DashboardBlog/>}></Route>
       <Route path='category' element={<DashboardCategory/>}></Route>
       <Route path='comment' element={<DashboardComments/>}></Route>
-      <Route path='like' element={<DashboardLikes/>}></Route>
       <Route path='user' element={<DashboardUser/>}></Route>
       <Route path='announcement' element={<DashboardAnnouncement/>}></Route>
       </Route>
       </Route>
       <Route path='/login' element={<Login/>}></Route>
       <Route path='/register' element={<Register/>}></Route>
-      <Route path='/Otp' element={<OtpConformation/>}></Route>
+      <Route path='/otp' element={<OtpConformation/>}></Route>
     </Routes>
     </BrowserRouter>
     </AuthProvider>  

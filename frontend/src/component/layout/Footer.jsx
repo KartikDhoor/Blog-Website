@@ -4,7 +4,7 @@ import { BsArrowUpRightCircleFill } from "react-icons/bs";
 export default function Footer() {
     return (
         <>
-            <div className="h-full w-full bg-pureblack ">
+            <div className="noto-sans h-full w-full bg-pureblack ">
                 <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full bg-dark1">
                     <div className="lg:h-full lg:w-[90%] md:h-full md:w-[90%] sm:h-auto sm:w-[90%] belowSm:h-auto belowSm:w-[90%] mx-auto p-4">
                         <div className="h-[30vh] w-full flex justify-center items-center">
@@ -139,9 +139,9 @@ export default function Footer() {
                                     md:h-full md:w-[20%]
                                     sm:h-[40vh] sm:w-[50%]
                                     belowSm:h-[40vh] belowSm:w-[50%] text-base font-base text-gray1">
-                        <p className="text-xl text-cream my-4 font-medium">News</p>
-                        <p className="my-2">Quantum Computing</p>
-                        <p className="my-2">Al Ethics</p>
+                        <p className="text-xl text-cream my-4 font-medium">Category</p>
+                        <p className="my-2">Artificial Intellegence</p>
+                        <p className="my-2">Healthcare</p>
                         <p className="my-2">Sopace Exploration</p>
                         <p className="my-2">Biotechnology</p>
                         <p className="my-2">Renewable Energy</p>
@@ -151,7 +151,7 @@ export default function Footer() {
                                     md:h-full md:w-[20%]
                                     sm:h-[40vh] sm:w-[50%]
                                     belowSm:h-[40vh] belowSm:w-[50%] text-base font-base text-gray1">
-                        <p className="text-xl text-cream my-4 font-medium">News</p>
+                        <p className="text-xl text-cream my-4 font-medium">About</p>
                         <p className="my-2">AI Revolution</p>
                         <p className="my-2">Blog</p>
                         <p className="my-2">TechTalk AI</p>

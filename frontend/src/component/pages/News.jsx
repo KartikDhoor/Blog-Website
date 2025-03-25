@@ -30,7 +30,7 @@ export default function News() {
     }, []);
     const fetchBlogs = async (queryParams) => {
         try {
-            const response = await AxiosInstance.get('/customer/blogs', {
+            const response = await AxiosInstance.post('/customer/blogs', {
                 params: queryParams, // Sending data in query string
             });
 
