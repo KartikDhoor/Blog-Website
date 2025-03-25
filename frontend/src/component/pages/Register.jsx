@@ -27,18 +27,25 @@ export default function Register() {
     }
     const handleRegister = async (e) => {
         e.preventDefault();
-        console.log(userRegisterForm)
         try {
             const response = await AxiosInstance.post("/customer/register", userRegisterForm);
             console.log(response.data);
             const token= response.data;
             if (response) {
-                updateToken(token);
                 if(response.data.data){
-                    navigate("/otp");
+                    
+                updateToken(token);
                 console.log(response.data);
                 setmessage(response.data.message);
+                    navigate("/otp");
+                return;
                 } 
+                if(response.data.data.message=='User already exists'){
+                    navigate("/login");
+                    console.log(response.data);
+                    setmessage(response.data.message);
+                    return;
+                }
             }
         }
         catch (err) {

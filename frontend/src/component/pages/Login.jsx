@@ -32,11 +32,11 @@ export default function Login() {
             if (response) {
                 const token = response.data?.token;
                 const userType = response.data?.data?.userType;
-                const userverified = response.data?.data?.userVerified;
+                const userVerified = response.data?.data?.emailVerified;
                 console.log(response.data.data)
                 // localStorage.setItem("blogsite_jwt_token", token);
                 updateToken(token)
-                if(userverified==false){
+                if(userVerified==false){
                     navigate("/otp");
                     return;
                 }

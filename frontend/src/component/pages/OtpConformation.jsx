@@ -10,29 +10,37 @@ export default function OtpConformation() {
     const length = 6;
     const [otp, setOtp] = useState(new Array(length).fill(""));
     const inputsRef = useRef([]);
-    const handleOtpSubmit=async(e)=>{
+    const handleOtpSubmit = async (e) => {
         e.preventDefault();
-        try{
-            const otpStr=Number(otp.join(''));
-            const _id=user._id
-            console.log(user);
-            const response=await AxiosInstance.post("/customer/otp",{_id,otp:otpStr})
-            const data=response;
-            console.log(data);
-            if(data.emailVerified==true){
-                navigate("/");
+        console.log("User from AuthContext:", user);
+    
+        try {
+            if (!user || !user._id) {
+                setMessage("User not found, please login again.");
                 return;
             }
-            else{
-                setMessage(data.message)
+    
+            const otpStr = Number(otp.join(''));
+            const _id = user._id; // No need for await here
+    
+            console.log(user);
+            const response = await AxiosInstance.post("/customer/otp", { _id, otp: otpStr });
+    
+            const data = response.data.data; // Accessing data properly
+            console.log(data);
+    
+            if (data.emailVerified){
+                navigate("/");
+                return;
+            } else {
+                setMessage(data.message);
             }
-
-        }
-        catch(err){
+        } catch (err) {
             console.log(err);
-            setMessage(err.message)
+            setMessage(err.message);
         }
-    }
+    };
+    
 
     const handleChange = (index, value) => {
         if (!/^\d?$/.test(value)) return; // Only allow digits
