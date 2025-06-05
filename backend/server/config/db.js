@@ -1,7 +1,7 @@
 const mongoose=require('mongoose')
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/blog').then(()=>{
+mongoose.connect(process.env.MONGODB_URI).then(()=>{
     console.log('db is connected')
 })
 .catch((err)=>{

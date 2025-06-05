@@ -11,7 +11,7 @@ export default function BlogPagination({ totalPages, currentPage, setCurrentPage
   };
 
   const getPageNumbers = () => {
-    const pages = [1]; // Always include first page
+    const pages = [1]; 
 
     if (safeCurrentPage > 3) {
       pages.push("...");
@@ -26,7 +26,7 @@ export default function BlogPagination({ totalPages, currentPage, setCurrentPage
     }
 
     if (totalPages > 1) {
-      pages.push(totalPages); // Always include last page
+      pages.push(totalPages); 
     }
 
     return pages;

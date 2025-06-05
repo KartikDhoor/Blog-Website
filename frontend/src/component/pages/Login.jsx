@@ -62,24 +62,26 @@ export default function Login() {
             <div className="h-screen w-full bg-dark2">
                 <div className="h-[10vh] w-full bg-pureblack">
                     <div className="h-full w-[90%] mx-auto flex items-center">
-                        <p className="text-3xl stick-no-bills tracking-[.25rem] font-blod uppercase text-white">Blog Website</p>
+                        <Link to='/'>
+                        <p className="text-3xl stick-no-bills tracking-[.25rem] font-blod uppercase text-white">NEURADHOOR</p>
+                        </Link>
                     </div>
 
                 </div>
-                <div className="h-auto w-[80%] my-4 mx-auto rounded-xl flex justify-center">
-                    <div className="h-[80vh] w-[50%] rounded-l-xl bg-pureblack">
+                <div className="h-auto w-[90%] lg:w-[80%] my-4 mx-auto rounded-xl flex justify-center">
+                    <div className="h-[80vh] w-[50%] md:block sm:block lg:block hidden rounded-l-xl bg-pureblack">
 
                     </div>
-                    <div className="h-[80vh] w-[50%] rounded-r-xl bg-dark1 p-4 relative">
+                    <div className="h-[80vh] w-[100%] md:w-[50%] sm:w-[50%] lg:w-[50%] rounded-xl md:rounded-r-xl sm:rounded-r-xl lg:rounded-r-xl bg-dark1 p-4 relative">
                         <p className="text-4xl text-white text-center ">Login</p>
                         {message ? <p className="text-amber-600 text-center">{message}</p> : ""}
                         <form className="my-4" onSubmit={handleLogin}>
-                            <p className="text-xl fornt-medium text-gray1">UserName</p>
+                            <p className="text-lg fornt-normal text-gray1">UserName</p>
                             <input text="email" className="h-[8vh] w-full rounded-lg text-white bg-dark1 border border-gray1 outline-none p-2" name='email' value={userLoginForm.email} onChange={userInputChange} />
-                            <p className="text-lg fornt-medium text-gray1">Password</p>
+                            <p className="text-lg fornt-normal text-gray1">Password</p>
                             <div className="h-[8vh] w-full flex jsutify-center items-center rounded-lg border-gray1 border">
-                                <input type={passwordVisiblity ? "text" : "password"} className="h-full w-[90%] bg-dark1 text-white rounded-lg outline-none p-2" name='password' value={userLoginForm.password} onChange={userInputChange} />
-                                {passwordVisiblity ? <FaRegEye className=" w-[10%] text-3xl" onClick={passwordVisiblityToggle} /> : <IoEyeOffOutline className=" w-[10%] text-3xl" onClick={passwordVisiblityToggle} />}
+                                <input type={passwordVisiblity ? "text" : "password"} className="h-full lg:w-[90%] md:w-[90%] sm:w-[90%] w-[80%] bg-dark1 text-white rounded-lg outline-none p-2" name='password' value={userLoginForm.password} onChange={userInputChange} />
+                                {passwordVisiblity ? <FaRegEye className=" w-[20%] lg:w-[10%] md:w-[10%] sm:w-[10%] text-3xl" onClick={passwordVisiblityToggle} /> : <IoEyeOffOutline className=" w-[20%] lg:w-[10%] md:w-[10%] sm:w-[10%] text-3xl" onClick={passwordVisiblityToggle} />}
                             </div>
                             <p className="text-end text-white text-sm font-normal my-2">forget Password</p>
                             <div className="h-auto w-full mt-8 flex justify-center">

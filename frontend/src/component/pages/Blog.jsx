@@ -6,9 +6,12 @@ import AxiosInstance from "../utils/AxiosInstance";
 import { format } from 'date-fns';
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 export default function Blog() {
+    const {user,token,updateToken}=useAuth();
     const { slug } = useParams();
+    const [Like,setLike]=useState(false);
     const [blogData, setBlogData] = useState(null);
     const [loading, setLoading] = useState(true); // Add a loading state
     useEffect(() => {
@@ -20,6 +23,7 @@ export default function Blog() {
         try {
           const response = await AxiosInstance.post(`/customer/blogs/${slug}`);
           setBlogData(response.data.data);// Set the fetched blog data
+          console.log(response.data.data);
           setLoading(null); // Reset the error state in case of a successful fetch
         } catch (error) {
           console.error("Error fetching blog details:", error.message);
@@ -27,6 +31,17 @@ export default function Blog() {
           setBlogData(null); // Reset blog data in case of an error
         }
       };
+      const BlogLikeHandleing=async(e)=>{
+        try{
+            const response=await AxiosInstance.post('/customer/')
+
+        }
+        catch (error) {
+            console.error("Error fetching blog details:", error.message);
+             // Reset blog data in case of an error
+          }
+
+      }
     const handleLikeClick=async()=>{
         try{
             const response=await AxiosInstance.post();
@@ -94,7 +109,7 @@ export default function Blog() {
                                     {/* //total likes */}
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                         <FaHeart className="text-amber-400" />
-                                        {/* <p>{blogData.Likes}</p> */}
+                                        <p>{blogData.Likes?.length || 0}</p>
                                     </button>
                                     {/* //total message */}
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">

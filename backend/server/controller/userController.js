@@ -45,13 +45,9 @@ const register = async (req, res) => {
                                         { expiresIn: "1d" }
                                     );
                                     const { password, ...userWithoutpassword } = savedUser.toObject();
-                                    emailService.sendOtpEmailVerification(user.email,otp)
-                                    .then((send)=>{
-                                        res.send({ success: true, status: 200, message: "New user is created", data: userWithoutpassword,token:token,emailsend:send});
-                                     })
-                                     .catch((err) => {
-                                        res.send({ success: false, status: 500, message:' email for th emailservice'+err.message });
-                                    });
+                                    res.send({ success: true, status: 200, message: "New user is created", data: userWithoutpassword,token:token});
+                                    const emailsuccess=emailService.sendOtpEmailVerification(user.email,otp)
+                                    console.log("the email is success is :",emailsuccess,'to',req.body.email);
                                 })
                                 .catch((err) => {
                                     res.send({ success: false, status: 500, message: err.message });

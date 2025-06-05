@@ -58,9 +58,9 @@ export default function Profile(){
                     <div className="md:h-auto md:w-full md:flex md:justify-center md:items-center
                                     sm:h-auto sm:w-full
                                     belowSm:h-auto belowSm:w-full">
-                        <div className="md:h-auto md:w-[30%] md:flex md:justify-center
-                                        sm:h-auto sm:w-full sm:flex sm:justify-center
-                                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:justify-center">
+                        <div className="md:h-auto md:w-[30%] md:flex md:justify-center md:items-center
+                                        sm:h-auto sm:w-full sm:flex sm:justify-center sm:items-center
+                                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:justify-center belowSm:items-center">
                             <img src="https://picsum.photos/1920/1080"name='image' className="h-64 w-64 rounded-full"></img>
                         </div>
                         <div className="md:h-auto md:w-[70%]
@@ -72,6 +72,8 @@ export default function Profile(){
                             <input type="email" name="email" value={userData.email} className="h-[8vh] w-full text-white rounded-lg border border-gray-800 bg-dark1 outline-none focus:border-2 p-2"/>
                             <p className="text-lg text-gray1">Phone No</p>
                             <input type="number" name="phoneNo" value={userData.phoneNo} className="h-[8vh] w-full text-white rounded-lg border border-gray-800 bg-dark1 outline-none focus:border-2 p-2"/>
+                            <p className="text-lg text-gray1">Image</p>
+                            <input type="file" name="image" value={userData.image} className="h-[8vh] w-full text-white rounded-lg border border-gray-800 bg-dark1 outline-none focus:border-2 p-2"/>
                         </div>
                         
                     </div>
