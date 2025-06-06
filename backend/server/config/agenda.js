@@ -1,7 +1,7 @@
 const Agenda = require('agenda');
 const Blog = require('../modules/blogModel');
 
-const mongoConnectionString = 'mongodb://localhost:27017/yourdb'; // Replace with your MongoDB connection string
+const mongoConnectionString = process.env.MONGODB_URI; // Replace with your MongoDB connection string
 
 // Here, we set the collection name to 'blogJobs' for storing jobs
 const agenda = new Agenda({
