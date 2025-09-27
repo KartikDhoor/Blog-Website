@@ -19,8 +19,8 @@ import 'swiper/css/navigation';
 export default function NewsPanel({ headline }) {
     const [pagesData, setPagesData] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
-    const [categoryData, setCategoryData] = useState(null);
-    const [popularBlog, setPopularBlog] = useState(null);
+    const [categoryData, setCategoryData] = useState([]);
+    const [popularBlog, setPopularBlog] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filterQuery, setFilterQueryParams] = useState({
         sortBy: '',
@@ -49,13 +49,18 @@ export default function NewsPanel({ headline }) {
                 console.log(category.data.data)
             }
             if (response.data.success) {
-                setLoading(false);
                 setPopularBlog(response.data.data);
                 setPagesData(response.data.pagination)
-                console.log(response.data) 
+                console.log(response.data)
                 // Return the blogs data
-
-            } else {
+                if (response.data.length == 0) {
+                    setLoading(true)
+                }
+                else {
+                    setLoading(false)
+                }
+            }
+            else {
                 console.error('API Error:', response.data.message);
                 return [];
             }

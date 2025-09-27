@@ -38,7 +38,7 @@ router.all('*',(req,res)=>{
     res.send({
         success:false,
         status:404,
-        message:"Invalid Address"
+        message:"Invalid Address for now"
     })
 })
 

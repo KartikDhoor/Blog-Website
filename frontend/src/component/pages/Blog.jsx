@@ -103,27 +103,27 @@ export default function Blog() {
                         </div>
                     </div>
                     <div className="lg:h-auto lg:w-[40%] md:h-full md:w-[40%] sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full sm:overflow-y-hidden belowSm:overflow-y-hidden">
-                        <div className="h-auto w-full border-y border-gray-800">
+                        {/* <div className="h-auto w-full border-y border-gray-800">
                             <div className="h-[10vh] w-[90%] mx-auto flex items-center">
                                 <div className="h-[5vh] my-1 w-full flex justify-start gap-4 ">
-                                    {/* //total likes */}
+                                 
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                         <FaHeart className="text-amber-400" />
                                         <p>{blogData.Likes?.length || 0}</p>
                                     </button>
-                                    {/* //total message */}
+                                   
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                         <FiMessageCircle className="text-gray-1" />
                                         <p>{blogData.comments.length}</p>
                                     </button>
-                                    {/* //total share */}
+                                   
                                     <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                         <PiPaperPlaneTiltBold className="text-gray-1" />
                                         <p>20</p>
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="h-auto w-full">
                             <div className="h-[20vh] w-full">
                                 <div className="h-full w-[90%] mx-auto flex justify-center">

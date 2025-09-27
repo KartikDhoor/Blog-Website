@@ -36,6 +36,8 @@ export default function Register() {
        
         e.preventDefault();
         try {
+            console.log(userRegisterForm)
+            console.log()
             const response = await AxiosInstance.post("/customer/register", userRegisterForm);
             
             if (response) {

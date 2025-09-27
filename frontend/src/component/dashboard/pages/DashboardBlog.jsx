@@ -13,11 +13,11 @@ import DashboardPopUp from "../DashboardPopUp";
 
 export default function DashboardBlog() {
     const navigate = useNavigate();
-    const [categoryData, setCategoryData] = useState(null);
-    const [blogsData, setBlogsData] = useState(null);
+    const [categoryData, setCategoryData] = useState([]);
+    const [blogsData, setBlogsData] = useState([]);
     const [createFormErrors, setCreateFormErrors] = useState({});
     const [updateFormErrors, setUpdateFormErrors] = useState({});
-    const [loading, setLoading] = useState(true);
+    // const [loading, setLoading] = useState(true);
     const [blogCreate, setBlogCreate] = useState(false);
     const [blogUpdate, setBlogUpdate] = useState(false);
     const [createPopup, setCreatePopup] = useState(false);
@@ -48,13 +48,13 @@ export default function DashboardBlog() {
         const fetchdata = async () => {
             let token = localStorage.getItem('blogsite_jwt_token')
             try {
-                const blog = await AxiosInstance.post("/admin/dashboard/blogs/find", { params: queryParams}, {
+                const blog = await AxiosInstance.post("/admin/dashboard/blogs/find", { params: queryParams }, {
                     headers: {
                         "authorization": token,
                     },
                 });
                 const category = await AxiosInstance.post("/customer/category");
-                
+
                 if (category) {
                     console.log(category.data.data)
                     setCategoryData(category.data.data);
@@ -64,8 +64,8 @@ export default function DashboardBlog() {
                 if (blog) {
                     setBlogsData(blog.data.data);
                     console.log(blog.data.data);
-                    setLoading(false);
-                    setLoading(false);
+                    // setLoading(false);
+                    // setLoading(false);
                 }
             }
             catch (err) {
@@ -355,70 +355,70 @@ export default function DashboardBlog() {
         }
     };
 
-    if (loading) {
-        return (
-            <>
-                <div className="h-full w-full bg-pureblack p-2">
-                    <div className="h-[10vh] w-[95%] mx-auto flex justify-center items-center">
-                        <div className="h-[8vh] w-[50%] flex items-center">
-                            <p className="text-2xl text-white font-medium">Blog</p>
-                        </div>
-                        <div className="h-[7vh] w-[30%] px-4">
-                            <input className="h-[7vh] w-full bg-dark1 rounded-lg border border-dark1"></input>
-                        </div>
-                        <div className="h-[8vh] w-[20%] flex justify-center ">
-                            <button className="h-full py-2 px-4 text-lg bg-green-600 rounded-xl font-medium">Create</button>
-                        </div>
-                    </div>
-                    <div className="h-auto w-[95%] mx-auto bg-dark1 rounded-lg my-4 grid grid-cols-5 gap-4 p-4">
-                        <div className="h-auto w-full my-2">
-                            <p className="text-base text-gray1 text-center font-medium my-2">Category</p>
-                            <div className="h-[6vh] w-full bg-pureblack rounded-xl ">
+    // if (loading) {
+    //     return (
+    //         <>
+    //             <div className="h-full w-full bg-pureblack p-2">
+    //                 <div className="h-[10vh] w-[95%] mx-auto flex justify-center items-center">
+    //                     <div className="h-[8vh] w-[50%] flex items-center">
+    //                         <p className="text-2xl text-white font-medium">Blog</p>
+    //                     </div>
+    //                     <div className="h-[7vh] w-[30%] px-4">
+    //                         <input className="h-[7vh] w-full bg-dark1 rounded-lg border border-dark1"></input>
+    //                     </div>
+    //                     <div className="h-[8vh] w-[20%] flex justify-center ">
+    //                         <button className="h-full py-2 px-4 text-lg bg-green-600 rounded-xl font-medium">Create</button>
+    //                     </div>
+    //                 </div>
+    //                 <div className="h-auto w-[95%] mx-auto bg-dark1 rounded-lg my-4 grid grid-cols-5 gap-4 p-4">
+    //                     <div className="h-auto w-full my-2">
+    //                         <p className="text-base text-gray1 text-center font-medium my-2">Category</p>
+    //                         <div className="h-[6vh] w-full bg-pureblack rounded-xl ">
 
-                            </div>
-                        </div>
-                        <div className="h-auto w-full my-2">
-                            <p className="text-base text-gray1 text-center font-medium my-2">Sorted By</p>
-                            <div className="h-[6vh] w-full bg-pureblack rounded-xl ">
+    //                         </div>
+    //                     </div>
+    //                     <div className="h-auto w-full my-2">
+    //                         <p className="text-base text-gray1 text-center font-medium my-2">Sorted By</p>
+    //                         <div className="h-[6vh] w-full bg-pureblack rounded-xl ">
 
-                            </div>
-                        </div>
-                        <div className="h-auto w-full my-2">
-                            <p className="text-base text-gray1 text-center font-medium my-2">Order</p>
-                            <div className="h-[6vh] w-full bg-pureblack rounded-xl ">
+    //                         </div>
+    //                     </div>
+    //                     <div className="h-auto w-full my-2">
+    //                         <p className="text-base text-gray1 text-center font-medium my-2">Order</p>
+    //                         <div className="h-[6vh] w-full bg-pureblack rounded-xl ">
 
-                            </div>
-                        </div>
-                        <div className="h-auto w-full my-2">
-                            <p className="text-base text-gray1 text-center font-medium my-2">Limit</p>
-                            <div className="h-[6vh] w-full bg-pureblack rounded-xl ">
+    //                         </div>
+    //                     </div>
+    //                     <div className="h-auto w-full my-2">
+    //                         <p className="text-base text-gray1 text-center font-medium my-2">Limit</p>
+    //                         <div className="h-[6vh] w-full bg-pureblack rounded-xl ">
 
-                            </div>
-                        </div>
-                        <div className="h-auto w-full flex justify-center items-center my-2">
-                            <button className="h-[6vh] text-base py-2 px-4 text-lime-800 rounded-lg border-2 border-lime-800">Filter</button>
-                        </div>
+    //                         </div>
+    //                     </div>
+    //                     <div className="h-auto w-full flex justify-center items-center my-2">
+    //                         <button className="h-[6vh] text-base py-2 px-4 text-lime-800 rounded-lg border-2 border-lime-800">Filter</button>
+    //                     </div>
 
-                    </div>
-                    <div className="h-auto w-[95%] mx-auto rounded-xl border-0 shadow-dark1 bg-dark1 flex justify-center my-4">
-                        <div className="h-[40vh] w-[40%] bg-dark2 lg:rounded-xl md:rounded-xl sm:rounded-t-xl belowSm:rounded-t-xl">
-                        </div>
-                        <div className="h-auto w-[60%] rounded-r-xl">
+    //                 </div>
+    //                 <div className="h-auto w-[95%] mx-auto rounded-xl border-0 shadow-dark1 bg-dark1 flex justify-center my-4">
+    //                     <div className="h-[40vh] w-[40%] bg-dark2 lg:rounded-xl md:rounded-xl sm:rounded-t-xl belowSm:rounded-t-xl">
+    //                     </div>
+    //                     <div className="h-auto w-[60%] rounded-r-xl">
 
-                        </div>
-                    </div>
-                    <div className="h-auto w-[95%] mx-auto rounded-xl border-0 shadow-dark1 bg-dark1 flex justify-center">
-                        <div className="h-[40vh] w-[40%] bg-dark2 lg:rounded-xl md:rounded-xl sm:rounded-t-xl belowSm:rounded-t-xl">
-                        </div>
-                        <div className="h-auto w-[60%] rounded-r-xl">
+    //                     </div>
+    //                 </div>
+    //                 <div className="h-auto w-[95%] mx-auto rounded-xl border-0 shadow-dark1 bg-dark1 flex justify-center">
+    //                     <div className="h-[40vh] w-[40%] bg-dark2 lg:rounded-xl md:rounded-xl sm:rounded-t-xl belowSm:rounded-t-xl">
+    //                     </div>
+    //                     <div className="h-auto w-[60%] rounded-r-xl">
 
-                        </div>
-                    </div>
+    //                     </div>
+    //                 </div>
 
-                </div>
-            </>
-        )
-    }
+    //             </div>
+    //         </>
+    //     )
+    // }
     return (
         <>
             <div className="h-full w-full p-2 bg-pureblack relative">
@@ -443,10 +443,10 @@ export default function DashboardBlog() {
                         <div className="p-2 text-base font-medium text-gray1 md:text-center"><p>Category</p></div>
                         <select className="md:w-full sm:w-[50%] belowSm:w-[50%] rounded-lg px-2 py-2 bg-pureblack text-gray1 outline-none">
                             {categoryData == null ?
-                                (    <>
+                                (<>
                                     <option>select</option>
                                     <option>no category</option>
-                                    </>
+                                </>
 
                                 ) :
                                 (
@@ -458,7 +458,7 @@ export default function DashboardBlog() {
                                 )
 
                             }
-                           
+
                         </select>
                     </div>
                     <div className="h-full w-full md:block sm:flex sm:justify-center sm:items-center belowSm:flex belowSm:justify-center belowSm:items-center my-2">
@@ -616,16 +616,22 @@ export default function DashboardBlog() {
 
                             <p className="text-lg text-gray1 font-medium">Category</p>
                             {createFormErrors.category && <p className="text-red-500 text-sm">{createFormErrors.category}</p>}
-                            <select name='category' onChange={handleInputChange}
-                                className="h-[7vh] w-full rounded-lg border border-gray-800 bg-dark1 text-gray1 outline-none "
+                            <select
+                                name="category"
+                                onChange={handleInputChange}   // ✅ use create handler
+                                value={blogCreateFormData.category}   // ✅ read from create state
+                                className="h-[7vh] w-full rounded-lg border border-gray-800 bg-dark1 text-gray1 outline-none"
                             >
-                                {categoryData.map((category) => {
-                                    return (
-                                        <option key={category._id} value={category._id}>{category.categoryName}</option>
-                                    )
-                                })
-                                }
+                                <option value="">Select a category</option>
+                                {categoryData.map((category) => (
+                                    <option key={category._id} value={category._id}>
+                                        {category.categoryName}
+                                    </option>
+                                ))}
                             </select>
+
+
+
                             {/* <input
                                 type="text"
                                 name="category"
@@ -800,15 +806,15 @@ export default function DashboardBlog() {
 
                             <p className="text-lg text-gray1 font-medium">Category</p>
                             {updateFormErrors.category && <p className="text-red-500 text-sm">{updateFormErrors.category}</p>}
-                            
+
                             <select name='category' onChange={handleUpdateInputChange}
-                            value={blogUpdateFormData.category._id}
-                            className="h-[7vh] w-full rounded-lg border border-gray-800 bg-dark1 text-gray1 outline-none "
+                                value={blogUpdateFormData.category._id}
+                                className="h-[7vh] w-full rounded-lg border border-gray-800 bg-dark1 text-gray1 outline-none "
                             >
                                 {categoryData.map((category) => {
                                     return (
                                         <option key={category._id} value={category._id}
-                                        
+
                                         >{category.categoryName}</option>)
                                 })}
                             </select>

@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
 const path=require('path');
+require("dotenv").config();
+
 
 app.use('/uploads', express.static(path.join(__dirname, './public/image')));
-require("dotenv").config();
-const db = require('./server/config/db')
+const db = require('./server/config/db.js')
+
 const customerRoutes = require('./server/routes/customerRoutes')
 const adminRoutes = require('./server/routes/adminRoutes')
 const cors = require("cors")

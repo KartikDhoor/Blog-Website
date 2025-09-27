@@ -11,7 +11,7 @@ const findCategory = async (req, res) => {
       const categories = await Category.find(query);
   
       if (!categories.length) {
-        return res.status(404).json({ success: false, message: "No categories found." });
+        return res.status(200).json({ success: false, message: "No categories found." });
       }
   
       res.status(200).json({ success: true,length:categories.length, data: categories });

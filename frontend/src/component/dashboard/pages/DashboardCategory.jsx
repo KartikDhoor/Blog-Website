@@ -21,7 +21,6 @@ export default function DashboardCategory() {
     const [createErrorForm, setCreateErrorForm] = useState({});
     const [updateFormPopUp,setUpdateFormPopUp]=useState(false);
     const [updateErrorForm,setUpdateErrorForm]=useState({});
-    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const getCategoryData = async () => {
             try {
@@ -29,7 +28,7 @@ export default function DashboardCategory() {
                 if (response) {
                     console.log(response.data.data)
                     setCategoryData(response.data.data);
-                    setLoading(false);
+                    
                 }
             }
             catch (err) {
@@ -163,40 +162,6 @@ export default function DashboardCategory() {
             console.error('Error creating blog:', err.message);
             toast.error(`Error creating blog: ${err.message}`);
         }
-    }
-    if (loading) {
-        return (
-            <>
-                <div className="h-full w-full bg-pureblack p-2">
-                    <div className="h-[10vh] w-[95%] mx-auto flex justify-center items-center">
-                        <div className="h-[8vh] w-[50%] flex items-center">
-                        <p className="text-2xl text-white font-medium">Category</p>
-                        </div>
-                        <div className="h-[7vh] w-[30%] px-4">
-                        <input className="h-[7vh] w-full bg-dark1 rounded-lg border border-dark1"></input>
-                        </div>
-                        <div className="h-[7vh] w-[20%] flex justify-center ">
-                        <button className="h-full py-2 px-4 text-lg bg-green-600 rounded-lg font-medium">Create</button>
-                        </div>
-                    </div>
-                    <div className="h-auto w-[95%] mx-auto rounded-xl border-0 shadow-dark1 bg-dark1 flex justify-center my-4">
-                        <div className="h-[30vh] w-[30%] bg-dark2 lg:rounded-xl md:rounded-xl sm:rounded-t-xl belowSm:rounded-t-xl">
-                        </div>
-                        <div className="h-auto w-[70%] rounded-r-xl">
-
-                        </div>
-                    </div>
-                    <div className="h-auto w-[95%] mx-auto rounded-xl border-0 shadow-dark1 bg-dark1 flex justify-center">
-                        <div className="h-[30vh] w-[30%] bg-dark2 lg:rounded-xl md:rounded-xl sm:rounded-t-xl belowSm:rounded-t-xl">
-                        </div>
-                        <div className="h-auto w-[70%] rounded-r-xl">
-
-                        </div>
-                    </div>
-
-                </div>
-            </>
-        )
     }
     return (
         <>
