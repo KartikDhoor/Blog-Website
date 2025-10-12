@@ -22,6 +22,7 @@ import ProtectedDashboard from './component/dashboard/ProtectedDashboard'
 import Profile from './component/pages/Profile'
 import Security from './component/pages/Security'
 import { AuthProvider } from './component/AuthContext'
+import BlogSearch from './component/pages/BlogSearch'
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
       <Route path='/blog/:slug' element={<Blog/>}></Route>
       <Route path='/news' element={<News/>}></Route>
       <Route path='/podcast' element={<Podcasts/>}></Route>
+      <Route path='/blog/search' element={<BlogSearch/>}></Route>
       <Route path='/inspire' element={<Inspire/>}></Route>
       <Route path='contact' element={<Contact/>}></Route>
       <Route path='profile' element={<Profile/>}></Route>

@@ -7,7 +7,7 @@ import AxiosInstance from "../utils/AxiosInstance";
 import {useAuth} from '../AuthContext'
 
 export default function Login() {
-    const {updateToken}=useAuth();
+    const {updateToken,user}=useAuth();
     const navigate=useNavigate();
     const [passwordVisiblity, setPasswordVisiblity] = useState(false);
     const [message, setmessage] = useState("");
@@ -33,18 +33,18 @@ export default function Login() {
                 const token = response.data?.token;
                 const userType = response.data?.data?.userType;
                 const userVerified = response.data?.data?.emailVerified;
-                console.log(response.data.data)
+                console.log(response.data.token)
                 // localStorage.setItem("blogsite_jwt_token", token);
                 updateToken(token)
                 if(userVerified==false){
                     navigate("/otp");
                     return;
                 }
-                if (userType === 1) {
+                if (userType == 1) {
                     navigate("/dashboard");
                     return;
                 }
-                if (userType === 2) {
+                if (userType == 2) {
                     navigate("/");
                     return;
                 }

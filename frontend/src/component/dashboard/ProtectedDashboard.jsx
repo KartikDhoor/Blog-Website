@@ -17,8 +17,8 @@ export default function ProtectedDashboard() {
       }
 
       try {
-        const response = await AxiosInstance.post("/customer/find/user", {
-          token,
+        const response = await AxiosInstance.post("/customer/find/user",{}, {headers: { authorization: token }
+
         });
 
         if (response.data.success && response.data.data.userType === 1) {

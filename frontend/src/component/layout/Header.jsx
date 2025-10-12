@@ -82,19 +82,15 @@ export default function Header() {
                     <div className="lg:h-full lg:w-[30%] lg:flex lg:items-center lg:justify-end p-4 md:h-full md:w-[30%] md:flex md:items-center md:justify-end sm:hidden belowSm:hidden">
                         {isAuthenticated ? (
                             userImage ? (
-                                <img
-                                    src={userImage}
-                                    alt="Profile"
-                                    className="w-10 h-10 rounded-full cursor-pointer hover:opacity-80"
-                                    onMouseEnter={handleDropDown}
+                                <div className="w-10 h-10 relative flex items-center justify-center" onMouseEnter={handleDropDown}
                                     onMouseLeave={handleDropDown}
-
                                 >
-                                    <FaUserCircle
-                                        className="text-3xl text-dark1 cursor-pointer hover:text-gray-400" />
-                                    <div className="h-2 w-2 rounded-full absolute right-2 bottom-1 bg-lime-600"></div>
+                                    <img
+                                    src={userImage}
+                                        className="w-10 h-10 rounded-full text-3xl text-dark1  cursor-pointer hover:text-gray-400" />
+                                    <div className="h-2 w-2 rounded-full absolute z-30 right-2 bottom-1 bg-lime-600"></div>
                                     {hovered ? (
-                                        <div className="absolute z-10 h-[30vh] w-[20%] top-[7vh] right-3 text-white rounded-xl bg-dark1 p-4">
+                                        <div className="absolute z-10 h-[30vh] w-[400%] top-[100%] right-0 text-white rounded-xl bg-dark1 p-4">
                                             <Link to="/profile">
                                                 <p className="text-center text-lg my-2">Profile</p>
                                             </Link>
@@ -110,13 +106,14 @@ export default function Header() {
                                         </div>
                                     ) : ""
                                     }
-                                </img>
+                                </div>
                             ) : (
-                                <div className="w-10 h-10 relative flex items-center justify-center" onMouseEnter={handleDropDown}
+                                <div className="w-auto h-auto relative flex items-center justify-center" onMouseEnter={handleDropDown}
                                     onMouseLeave={handleDropDown}
                                 >
-                                    <FaUserCircle
-                                        className="text-3xl text-dark1 cursor-pointer hover:text-gray-400" />
+                                    <div className="h-12 w-12 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-lg">
+                                                    {user.name.charAt(0).toUpperCase()}
+                                        </div>
                                     <div className="h-2 w-2 rounded-full absolute z-30 right-2 bottom-1 bg-lime-600"></div>
                                     {hovered ? (
                                         <div className="absolute z-10 h-[30vh] w-[400%] top-[100%] right-0 text-white rounded-xl bg-dark1 p-4">

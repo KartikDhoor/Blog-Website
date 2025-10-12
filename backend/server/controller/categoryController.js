@@ -52,9 +52,9 @@ const createCategory = async (req, res) => {
     if (!req.body.description) {
       validation += "Description is required. ";
     }
-    if (!req.file) {
-      validation += "Category image is required.";
-    }
+    // if (!req.file) {
+    //   validation += "Category image is required.";
+    // }
   
     if (validation) {
       return res.status(400).send({ success: false, status: 400, message: validation });

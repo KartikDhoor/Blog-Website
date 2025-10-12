@@ -18,10 +18,7 @@ const commentSchema = new mongoose.Schema({
     default: true,
   },
   blogId: { type: mongoose.Schema.Types.ObjectId, ref: 'blog', required: true },
-  likes: {
-    type: Number,
-    default: 0,  // Number of likes for this comment
-  },
+  
 });
 
 module.exports = mongoose.model('comment', commentSchema);

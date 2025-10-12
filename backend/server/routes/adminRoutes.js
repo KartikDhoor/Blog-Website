@@ -23,7 +23,7 @@ router.post(
     upload.any(),
     blogController.updateBlog
 );
-//Blog Delete
+//Blodashboardg Delete
 router.post('/delete/blog',blogController.deleteBlog);
 //Blog find List
 router.post('/dashboard/blogs/find',blogController.dashboardFindBlog);

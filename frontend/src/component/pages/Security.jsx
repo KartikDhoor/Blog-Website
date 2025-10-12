@@ -1,13 +1,14 @@
 import { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AxiosInstance from "../utils/AxiosInstance";
+import { useAuth } from "../AuthContext";
 
 export default function Security(){
+    const{user,token}=useAuth();
     const [userData,setUserData]=useState(null);
     const navigate=useNavigate();
     useEffect(()=>{
         
-        const token = localStorage.getItem('blogsite_jwt_token');
         if(!token){
             navigate("/login");
         }
@@ -18,7 +19,11 @@ export default function Security(){
     },[]);
     const handleProfileData=async(token)=>{
         try{
-            const response=await AxiosInstance.post("/customer/find/user",{token});
+            const response=await AxiosInstance.post("/customer/find/user",{},{
+                     headers: {
+            "authorization": token, // actual header
+          }
+                } );
             if(response.data.data){
                 setUserData(response.data.data)
             }

@@ -1,8 +1,8 @@
 const User = require('../modules/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
-const emailService=require('../config/emailService');
-const JWT_SECRET=process.env.SECRET_KEY
+const emailService = require('../config/emailService');
+const JWT_SECRET = process.env.SECRET_KEY
 
 const register = async (req, res) => {
     let validation = '';
@@ -34,20 +34,20 @@ const register = async (req, res) => {
                                 name: req.body.name,
                                 email: req.body.email,
                                 password: hashedPassword,
-                                otp:otp,
-                                otpExpired:otpExpired,
+                                otp: otp,
+                                otpExpired: otpExpired,
                             });
                             user.save()
                                 .then((savedUser) => {
                                     const token = jwt.sign(
-                                        { _id: user._id, email: user.email ,image:user.image,userType:user.userType},
+                                        { _id: user._id, email: user.email, image: user.image, userType: user.userType },
                                         JWT_SECRET,
                                         { expiresIn: "1d" }
                                     );
                                     const { password, ...userWithoutpassword } = savedUser.toObject();
-                                    res.send({ success: true, status: 200, message: "New user is created", data: userWithoutpassword,token:token});
-                                    const emailsuccess=emailService.sendOtpEmailVerification(user.email,otp)
-                                    console.log("the email is success is :",emailsuccess,'to',req.body.email);
+                                    res.send({ success: true, status: 200, message: "New user is created", data: userWithoutpassword, token: token });
+                                    const emailsuccess = emailService.sendOtpEmailVerification(user.email, otp)
+                                    console.log("the email is success is :", emailsuccess, 'to', req.body.email);
                                 })
                                 .catch((err) => {
                                     res.send({ success: false, status: 500, message: err.message });
@@ -89,7 +89,7 @@ const login = (req, res) => {
                         .then((isPasswordValid) => {
                             if (isPasswordValid) {
                                 const token = jwt.sign(
-                                    { _id: user._id, email: user.email ,image:user.image,userType:user.userType},
+                                    { _id: user._id, email: user.email, image: user.image, userType: user.userType },
                                     JWT_SECRET,
                                     { expiresIn: "1d" }
                                 );
@@ -145,9 +145,9 @@ const profilePasswordChange = (req, res) => {
                     res.send({ success: false, status: 400, message: "user od this _id not exists" })
                 }
                 else {
-                    if (bcrypt.compare(req.body.password,data.password)) {
+                    if (bcrypt.compare(req.body.password, data.password)) {
                         const saltRounds = 10;
-                    const hashedPassword=bcrypt.hash(req.body.newPassword, saltRounds)
+                        const hashedPassword = bcrypt.hash(req.body.newPassword, saltRounds)
                         data.password = hashedPassword
                         data.save()
                             .then((updatedData) => {
@@ -165,120 +165,106 @@ const profilePasswordChange = (req, res) => {
     }
 }
 const findOneUser = (req, res) => {
-    
-        User.findOne({ _id:req.decoded._id}).exec()
+
+    User.findOne({ _id: req.decoded._id }).exec()
+        .then((data) => {
+            if (data == null) {
+                res.send({ success: false, status: 400, message: "no users Exists" })
+            }
+            else {
+                res.send({ success: true, status: 200, message: "user", data: data })
+            }
+        })
+        .catch((err) => {
+            res.send({ success: false, status: 400, message: err.message })
+        })
+
+
+}
+const deleteUser = (req, res) => {
+    let validation = ''
+    if (!req.body._id) {
+        validation += "id is required"
+    }
+    if (!!validation) {
+        res.send({ success: false, status: 400, message: validation })
+    }
+    else {
+        User.findOne({ _id: req.body.id }).exec()
             .then((data) => {
                 if (data == null) {
-                    res.send({ success: false, status: 400, message: "no users Exists" })
+                    res.send({ success: false, status: 400, message: "user doesnot exists" })
                 }
                 else {
-                    res.send({ success: true, status: 200, message: "user", data: data })
+                    data.status = false
+                    data.save()
+                        .then((updatedData) => {
+                            res.send({ success: true, status: 200, message: "user is delted", data: updatedData })
+                        })
+                        .catch((err) => {
+                            res.send({ success: false, status: 400, message: err.message })
+                        })
+
                 }
             })
             .catch((err) => {
                 res.send({ success: false, status: 400, message: err.message })
             })
+    }
+}
+const profileUpdate = (req, res) => {
+  if (!req.decoded) {
+    return res.send({ success: false, status: 400, message: "decoded data is required" });
+  }
+
+  User.findOne({ _id: req.decoded._id }).exec()
+    .then(user => {
+      if (!user) return res.send({ success: false, status: 400, message: "user does not exist" });
+
+      const updates = req.body.userData ? JSON.parse(req.body.userData) : {};
+
+      // Update text fields
+      user.name = updates.name ?? user.name;
+      user.email = updates.email ?? user.email;
+      user.phoneNo = updates.phoneNo ?? user.phoneNo;
+      user.introduction = updates.introduction ?? user.introduction;
+
+      // Update uploaded file
+      if (req.file) {
+        console.log(req.file)
+        user.image = `http://localhost:5000/uploads/${req.file.filename}`;
+      }
+
+      return user.save();
+    })
+    .then(updatedUser => {
+      const token = jwt.sign({
+        _id: updatedUser._id,
+        email: updatedUser.email,
+        image: updatedUser.image,
+        userType: updatedUser.userType
+      }, JWT_SECRET, { expiresIn: "1h" });
+
+      const { password, ...userWithoutPassword } = updatedUser.toObject();
+      res.send({ success: true, status: 200, message: "Update done", data: userWithoutPassword, token });
+    })
+    .catch(err => {
+      res.send({ success: false, status: 500, message: err.message });
+    });
+};
 
 
-}
-const deleteUser=(req,res)=>{
-    let validation=''
-    if(!req.body._id){
-        validation+="id is required"
-    }
-    if(!!validation){
-        res.send({success:false,status:400,message:validation})
-    }
-    else{
-        User.findOne({_id:req.body.id}).exec()
-        .then((data)=>{
-            if(data==null){
-                res.send({success:false,status:400,message:"user doesnot exists"})
-            }
-            else{
-                data.status=false
-                data.save()
-                .then((updatedData)=>{
-                    res.send({success:true,status:200,message:"user is delted",data:updatedData})
-                })
-                .catch((err)=>{
-                    res.send({success:false,status:400,message:err.message})
-                })
-            
-            }
-        })
-        .catch((err)=>{
-            res.send({success:false,status:400,message:err.message})
-        })
-    }
-}
-const profileUpdate=(req,res)=>{
-    let validation=''
-    if(req.decoded){
-        validation+="decoded data is required"
-    }
-    if(!!validation){
-        res.send({success:false,status:400,message:validation})
-    }
-    else{
-        User.findOne({_id:req.decoded._id}).exec()
-        .then((data)=>{
-            if(data==null){
-                res.send({success:false,status:400,message:"user does not exists"})
-            }
-            if(!req.body.name){
-                data.name=req.body.name
-            }
-            if(!req.body.email){
-                data.email=req.body.email
-            }
-            if(!req.body.phone){
-                data.phone=req.body.phone
-            }
-            if(!req.body.introduction){
-                data.introduction=req.body.introduction
-            }
-            if(!req.body.image){
-                data.image=req.body.image
-            }
-            data.save()
-            .then((updatedData)=>{
-                const token = jwt.sign(
-                    { _id: updatedData._id, email: updatedData.email ,image:updatedData.image,userType:updatedData.userType},
-                    JWT_SECRET,
-                    { expiresIn: "1h" }
-                );
-                const { password, ...userWithoutpassword } = updatedData.toObject();
-                res.send({success:false,status:400,message:"the update is done",data:userWithoutpassword,token:token})
-            })
-            .catch((err) => {
-                res.send({
-                    success: false,
-                    status: 500,
-                    message: "Error during user Update: " + err.message,
-                });
-            });
-        })
-        .catch((err) => {
-            res.send({
-                success: false,
-                status: 500,
-                message: "Error during user Update: " + err.message,
-            });
-        });
-    }
-}
 const otpConfirmation = (req, res) => {
     let validation = '';
-    if (!req.body.otp){
-        validation+='otp is required'
+    if (!req.body.otp) {
+        validation += 'otp is required'
     }
-    if (!req.body._id){
-        validation+="_id is required"
+    if (!req.body._id) {
+        validation += "_id is required"
     }
 
     if (!!validation) {
-        return res.status(400).json({ success: false, message:validation });
+        return res.status(400).json({ success: false, message: validation });
     }
 
     User.findOne({ _id: req.body._id }).exec()
@@ -319,4 +305,4 @@ const otpConfirmation = (req, res) => {
 
 
 
-module.exports = { register, login, profilePasswordChange, findOneUser, profileUpdate,otpConfirmation};
+module.exports = { register, login, profilePasswordChange, findOneUser, profileUpdate, otpConfirmation };

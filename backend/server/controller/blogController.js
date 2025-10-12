@@ -2,35 +2,80 @@ const Blog = require('../modules/blogModel');
 const agenda=require('../config/agenda');
 const { query } = require('express');
 //customer apis
+const Like = require("../modules/likeModel");
 
-const slugFinder=(req,res)=>{
-  let validation=""
-  if(!req.params.slug){
-      validation+="slug is required"
+const slugFinder = async (req, res) => {
+  let validation = "";
+  if (!req.params.slug) {
+    validation += "slug is required";
   }
-  if(!!validation){
-      res.send({success:false,status:400,message:validation})
+
+  if (!!validation) {
+    return res.send({ success: false, status: 400, message: validation });
   }
-  else{
-      Blog.findOne({slug:req.params.slug,deleteStatus:false,status:'published'}).populate("category","_id categoryName description").populate({
-        path: 'comments',
+
+  try {
+    // find the blog and increment views
+    const blog = await Blog.findOneAndUpdate(
+      { slug: req.params.slug, deleteStatus: false, status: "published" },
+      { $inc: { views: 1 } },
+      { new: true }
+    )
+      .populate("category", "_id categoryName description")
+      .populate({
+        path: "comments",
         populate: {
-          path: 'userId',
+          path: "userId",
+          select: "_id name image",
         },
-      }).exec()
-      .then((data)=>{
-          if(data==null){
-              res.send({success:false,status:400,message:"no blog existed"})
-          }
-          else{
-          res.send({success:true,status:200,data:data})
-          }
       })
-      .catch((err)=>{
-          res.send({success:false,status:400,message:err.message})
+       .populate({
+        path: "likes", // Add this to populate likes
+        select: "_id userId status", // Select only the fields you want
       })
+      .exec();
+
+    if (!blog) {
+      return res.send({
+        success: false,
+        status: 400,
+        message: "No blog existed",
+      });
+    }
+
+    let likedByUser = false;
+
+    // if userId is provided in the request body (or query), check if user liked this blog
+    if (req.body.userId) {
+      const like = await Like.findOne({
+        blogId: blog._id,
+        userId: req.body.userId,
+        status: true,
+      }).exec();
+
+      likedByUser = !!like;
+    }
+    let totalLikes=0;
+    if(blog){
+      const like=await Like.find({
+        blogId: blog._id,
+        status: true,
+      }).exec();
+      totalLikes=like.length
+    }
+
+    res.send({
+      success: true,
+      status: 200,
+      data: blog,
+      likedByUser, // 👈 this tells frontend if current user liked it
+      totalLikes,
+    });
+  } catch (err) {
+    res.send({ success: false, status: 400, message: err.message });
   }
-}
+};
+
 const findBlog = async (req, res) => {
   console.log(req.query)
   try {

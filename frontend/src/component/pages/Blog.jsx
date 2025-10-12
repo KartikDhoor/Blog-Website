@@ -9,51 +9,102 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 
 export default function Blog() {
-    const {user,token,updateToken}=useAuth();
+    const { user, token, updateToken } = useAuth();
     const { slug } = useParams();
-    const [Like,setLike]=useState(false);
+    const [like, setLike] = useState(false);
+    const [commentData, setCommentData] = useState([]);
+    const [newComment, setNewComment] = useState();
+    const [likeTotal, setLikeTotal] = useState(0);
     const [blogData, setBlogData] = useState(null);
     const [loading, setLoading] = useState(true); // Add a loading state
     useEffect(() => {
         if (slug) {
-          fetchBlogDetails(slug);
+            fetchBlogDetails(slug);
         }
-      }, [slug]);
-      const fetchBlogDetails = async (slug) => {
+    }, [slug, user, like]);
+    const fetchBlogDetails = async (slug) => {
         try {
-          const response = await AxiosInstance.post(`/customer/blogs/${slug}`);
-          setBlogData(response.data.data);// Set the fetched blog data
-          console.log(response.data.data);
-          setLoading(null); // Reset the error state in case of a successful fetch
+            const response = await AxiosInstance.post(`/customer/blogs/${slug}`, {
+                userId: user?._id, // send userId if logged in
+            });
+            setBlogData(response.data.data);// Set the fetched blog data
+            setLike(response.data.likedByUser);
+            setLikeTotal(response.data.totalLikes);
+
+            setCommentData(response.data.data.comments || []);
+            console.log(response.data);
+            setLoading(null); // Reset the error state in case of a successful fetch
         } catch (error) {
-          console.error("Error fetching blog details:", error.message);
-          setLoading("Blog not found or an error occurred.");
-          setBlogData(null); // Reset blog data in case of an error
-        }
-      };
-      const BlogLikeHandleing=async(e)=>{
-        try{
-            const response=await AxiosInstance.post('/customer/')
-
-        }
-        catch (error) {
             console.error("Error fetching blog details:", error.message);
-             // Reset blog data in case of an error
-          }
+            setLoading("Blog not found or an error occurred.");
+            setBlogData(null); // Reset blog data in case of an error
+        }
+    };
 
-      }
-    const handleLikeClick=async()=>{
-        try{
-            const response=await AxiosInstance.post();
-            if(''){ 
+    const handleLikeClick = async () => {
 
+        try {
+            // 2️⃣ Send request with required userId
+            const response = await AxiosInstance.post(
+                "/customer/like/blog",
+                {
+                    blogId: blogData._id,
+                    userId: user._id, // required by your API
+                },
+                {
+                    headers: { authorization: token },
+                }
+            );
+
+            // 3️⃣ Update UI if success
+            if (response.data.success) {
+                setLike((prev) => !prev);
+                setBlogData((prev) => ({
+                    ...prev,
+                    Likes: [...(prev.Likes || []), user._id], // add current user
+                }));
+            } else {
+                console.error("Like failed:", response.data.message);
+            }
+        } catch (error) {
+            console.error("Error liking blog:", error.message);
+        }
+    };
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setNewComment(value);
+    };
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault(); // Prevent page reload
+        console.log("blogId :" + blogData._id + " userId : " + user._id + " comment : " + newComment);
+
+        try {
+            const response = await AxiosInstance.post('/customer/create/comment', {
+                blogId: blogData._id,
+                userId: user._id,
+                content: newComment,
+            }, {
+                headers: { authorization: token },
+            });
+
+            if (response) {
+                console.log(response.data);
+
+                // Clear textarea after submission
+                setNewComment('');
+
+                // Optionally refetch blog data to show new comment
+                fetchBlogDetails(slug);
             }
 
-        }
-        catch{
 
+        } catch (error) {
+            console.error("Error creating comment:", error.message);
         }
-    }
+    };
+
+
+
     if (loading) {
         return <div className="h-full w-full flex items-center justify-center text-black">Loading...</div>;
     }
@@ -66,10 +117,10 @@ export default function Blog() {
             <div className="h-full w-full bg-pureblack" key={blogData._id}>
                 {/* title */}
                 <div className="lg:h-[60vh] lg:w-full md:h-[60vh] md:w-full sm:h-[60vh] sn:w-full belowSm:h-[60vh] belowSm:w-full  flex items-end bg-center bg-fixed"
-                style={{
-                    backgroundImage: `url('${blogData.image|| 'https://picsum.photos/1920/1080'}')`,
-                    backgroundSize: 'cover',
-                  }}
+                    style={{
+                        backgroundImage: `url('${blogData.image || 'https://picsum.photos/1920/1080'}')`,
+                        backgroundSize: 'cover',
+                    }}
                 >
                     <div className="lg:h-[10vh] lg:w-full md:h-[10vh] md:w-full sm:h-[20vh] sm:w-full belowSm:h-[20vh] belowSm:w-full backdrop-blur-xl z-0 p-4 text-center text-4xl font-medium text-white">
                         <p>{blogData.title}</p>
@@ -93,37 +144,44 @@ export default function Blog() {
                         </div>
 
                         <div className="h-auto w-full">
-                        {/* //sections */}
+                            {/* //sections */}
                             {blogData.sections.map((section, index) => (
                                 <div key={index} className="h-full w-[90%] mx-auto text-white py-4">
                                     <p className="text-xl font-medium">{section.title}</p>
                                     <p className="text-base text-gray1">{section.content}</p>
+                                    {section.sectionImage ?
+                                        <div className="h-auto w-full rounded-lg">
+                                            <img className="h-auto min-h-[40vh] w-auto rounded-lg" src={section.sectionImage} />
+                                        </div> : ''
+                                    }
+
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div className="lg:h-auto lg:w-[40%] md:h-full md:w-[40%] sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full sm:overflow-y-hidden belowSm:overflow-y-hidden">
-                        {/* <div className="h-auto w-full border-y border-gray-800">
+                        <div className="h-auto w-full border-y border-gray-800">
                             <div className="h-[10vh] w-[90%] mx-auto flex items-center">
                                 <div className="h-[5vh] my-1 w-full flex justify-start gap-4 ">
-                                 
-                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
-                                        <FaHeart className="text-amber-400" />
-                                        <p>{blogData.Likes?.length || 0}</p>
+
+                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2" onClick={handleLikeClick}>
+                                        <FaHeart className={like ? "text-red-400" : "text-gray-400"} />
+                                        <p>{likeTotal}</p>
                                     </button>
-                                   
-                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
+
+
+                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2">
                                         <FiMessageCircle className="text-gray-1" />
                                         <p>{blogData.comments.length}</p>
                                     </button>
-                                   
-                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
+
+                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2">
                                         <PiPaperPlaneTiltBold className="text-gray-1" />
                                         <p>20</p>
                                     </button>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
                         <div className="h-auto w-full">
                             <div className="h-[20vh] w-full">
                                 <div className="h-full w-[90%] mx-auto flex justify-center">
@@ -191,6 +249,64 @@ export default function Blog() {
                             ))}
                         </div>
                     </div>
+                </div>
+
+                {/* this is for the comment section */}
+                <div className="h-auto w-full my-2">
+                    <form className="h-auto w-full" onSubmit={handleCommentSubmit}>
+                        <div className="h-auto w-[80%] mx-auto">
+                            <textarea name='comment' value={newComment} onChange={(e) => handleInputChange(e)} className="min-h-[20vh] w-full bg-gray-800 text-base p-2 rounded-lg outline-none text-white" />
+                        </div>
+                        <div className="h-auto w-[80%] mx-auto flex justify-end items-center my-2 ">
+                            <button type="submit" className="p-2 rounded-lg bg-amber-400 text-xl font-medium">
+                                Comment
+                            </button>
+                        </div>
+                    </form>
+                    {/* Display Comments Section */}
+                    <div className="h-auto w-full my-4">
+                        <div className="w-[80%] mx-auto">
+                            <p className="text-2xl font-medium text-white mb-6">
+                                Comments ({commentData.length})
+                            </p>
+
+                            {commentData.length === 0 ? (
+                                <p className="text-gray1 text-center py-8">No comments yet. Be the first to comment!</p>
+                            ) : (
+                                [...commentData].reverse().map((comment) => (
+                                    <div key={comment._id} className="bg-gray-800 p-4 rounded-lg mb-4 flex gap-4">
+                                        {/* User Image */}
+                                        <div className="flex-shrink-0">
+                                            {comment.userId.image ? (
+                                                <img
+                                                    src={comment.userId.image}
+                                                    alt={comment.userId.name}
+                                                    className="h-12 w-12 rounded-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="h-12 w-12 rounded-full bg-amber-400 flex items-center justify-center text-black font-bold text-lg">
+                                                    {comment.userId.name.charAt(0).toUpperCase()}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Comment Content */}
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <p className="text-white font-medium">{comment.userId.name}</p>
+                                                <span className="text-gray-500 text-xs">•</span>
+                                                <p className="text-gray-500 text-xs">
+                                                    {format(new Date(comment.date), 'MMM dd, yyyy')}
+                                                </p>
+                                            </div>
+                                            <p className="text-gray1 text-base">{comment.content}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+
                 </div>
                 <div className="lg:h-[50vh] lg:w-full lg:border-y lg:border-gray-800
                                 md:h-[50vh] md:w-full md:border-y md:border-gray-800

@@ -63,9 +63,9 @@ export default function DashboardCategory() {
         if (createFormCategory.description == "") {
             newErrors.description = "description is required";
         }
-        if (!createFormCategory.categoryImage) {
-            newErrors.categoryImage = "Category Image is required";
-        }
+        // if (!createFormCategory.categoryImage) {
+        //     newErrors.categoryImage = "Category Image is required";
+        // }
         setCreateErrorForm(newErrors);
         if (Object.keys(newErrors).length === 0) {
             setCreateFormPopup((prevState) => !prevState);

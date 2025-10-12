@@ -36,14 +36,16 @@ export default function Hero() {
                                                   sm:text-4xl 
                                                   belowSm:text-3xl font-semibold my-5 text-white "
                                     >
-                                        Explore the Frontiers of Artificial Intelligence
+                                        Master the Art of Code & AI Innovation
                                     </p>
                                     <p className="lg:text-base 
                                                   md:text-base
                                                   sm:text-sm 
                                                   belowSm:text-sm font-normal my-2 "
                                     >
-                                        Welcome to the epicenter of Ai innovation.future Ai News is your Passport to a world where Machine thinks, Learn and reshape the Future.join Us on this Visinary expedition into the heart of Ai
+                                        Welcome to your hub for practical coding tutorials, AI development guides,
+                                        and cutting-edge tech insights. Learn to build real projects, master modern
+                                        frameworks, and leverage AI to accelerate your development journey.
                                     </p>
                                 </div>
                             </div>
@@ -59,7 +61,7 @@ export default function Hero() {
                                 >
                                     <div>
                                         <p className="text-white">
-                                            300
+                                            30
                                             <span className="text-amber-400">
                                                 +
                                             </span>
@@ -69,7 +71,7 @@ export default function Hero() {
                                                       sm:text-base 
                                                       belowSm:text-sm belowSm:tracking-wider"
                                         >
-                                            Resources available
+                                            Code Tutorials
                                         </p>
                                     </div>
                                 </div>
@@ -90,7 +92,7 @@ export default function Hero() {
                                                       sm:text-base 
                                                       belowSm:text-sm text-center belowSm:tracking-wider"
                                         >
-                                            Total Downloads
+                                            Projects Built
                                         </p>
                                     </div>
                                 </div>
@@ -109,46 +111,46 @@ export default function Hero() {
                                         <p className="lg:text-base 
                                                       md:text-base 
                                                       sm:text-base 
-                                                      belowSm:text-sm belowSm:tracking-wider">Active  <br className="md:hidden sm:hidden belowSm:block"/>Users</p>
+                                                      belowSm:text-sm belowSm:tracking-wider">Developers <br className="md:hidden sm:hidden belowSm:block" />Learning</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                   < motion.div
+                    < motion.div
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true, amount: 0.5 }}
                         transition={{
-                        duration: 0.4,
-                        scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+                            duration: 0.4,
+                            scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
                         }}
                         className="lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full"
                     >
-            <div 
-            // className=" relative lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full p-4"
-            className=' relative h-full w-full p-4'
-            >
-                        <img src="./src/assets/hero.jpg" className="z-0 h-full w-full rounded-xl" />
-                        <div className="h-auto w-full absolute z-0 bg-transparent top-0">
-                            <div className='h-[2vh] w-full bg-pureblack'>
-
-                            </div>
-                            <div className="h-auto w-full flex justify-between">
-                                
-                                <div className="h-[6vh] w-[10%] bg-pureblack rounded-br-xl ">
+                        <div
+                            // className=" relative lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full p-4"
+                            className=' relative h-full w-full p-4'
+                        >
+                            <img src="./src/assets/hero.jpg" className="z-0 h-full w-full rounded-xl" />
+                            <div className="h-auto w-full absolute z-0 bg-transparent top-0">
+                                <div className='h-[2vh] w-full bg-pureblack'>
 
                                 </div>
-                                <div className="h-[6vh] w-[40%] bg-transparent">
+                                <div className="h-auto w-full flex justify-between">
 
+                                    <div className="h-[6vh] w-[10%] bg-pureblack rounded-br-xl ">
+
+                                    </div>
+                                    <div className="h-[6vh] w-[40%] bg-transparent">
+
+                                    </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
-                    </div>
 
-        </motion.div>
-                    
+                    </motion.div>
+
                 </div>
             </div>
         </>

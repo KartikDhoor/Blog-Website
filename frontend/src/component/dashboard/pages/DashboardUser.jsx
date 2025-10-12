@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import AxiosInstance from "../../utils/AxiosInstance";
 import { FaUser } from "react-icons/fa";
+import { useAuth } from "../../AuthContext";
 
 export default function DashboardUser() {
+    const {user,token}=useAuth();
     const [userData, setUserData] = useState(null);
     const [loading,setLoading]=useState(true);
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                let token = localStorage.getItem('blogsite_jwt_token')
-                const response = await AxiosInstance.post('/customer/find/user', {
-                    token,
-                });
+                const response = await AxiosInstance.post('/customer/find/user',{},{
+                     headers: {
+            "authorization": token, // actual header
+          }
+                } );
                 if (response) {
                     setUserData(response.data.data);
                     setLoading(false);

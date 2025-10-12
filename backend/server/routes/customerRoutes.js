@@ -4,7 +4,9 @@ const userController=require('../controller/userController');
 const blogController=require('../controller/blogController');
 const categoryController=require('../controller/categoryController');
 const commentController=require("../controller/commentController");
+const likeController=require("../controller/likeController");
 const jwtchecker=require('../config/jwtChecker');
+const upload =require("../config/multer")
 //user registration
 router.post('/register',userController.register);
 //user login
@@ -25,14 +27,19 @@ router.post("/find/blog/comment",commentController.blogComment);
 router.post("/find/user/comment",commentController.userComment);
 //comment find CommentID
 router.post("/find/comment",commentController.findComment);
-//jwt token checker
-router.use('/',jwtchecker.check);
-//find one user
-router.post("/find/user",userController.findOneUser);
 //comment create
 router.post('/create/comment',commentController.createComment);
 //comment update
 router.post('/update/comment',commentController.updateComment);
+//blog finder
+router.post('/blog/find',blogController.findBlog);
+//jwt token checker
+router.use('/',jwtchecker.customer);
+router.post('/like/blog',likeController.likeBlog);
+//find one user
+router.post("/find/user",userController.findOneUser);
+//user profile Update
+router.post("/profile/update",upload.single('image'),userController.profileUpdate);
 //all the remaining address
 router.all('*',(req,res)=>{
     res.send({

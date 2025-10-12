@@ -174,7 +174,7 @@ export default function Home() {
                     </motion.div>
                 </div>
                 <div className="h-full w-full">
-                    <NewsPanel headline="Explore the Future Tech In-Depth Blog Posts" />
+                    <NewsPanel headline="Learn Through Real-World Code & Tech Guides" />
                 </div>
                 <div className="h-full w-full hidden">
                     <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">
@@ -369,21 +369,18 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="h-full w-full">
-                    <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">
-                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between lg:items-center
-                                        md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between md:items-center
+                    <div className="lg:h-[30vh] lg:w-full md:h-[40vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">
+                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:mx-auto flex items-center
+                                        md:h-full md:w-[90%] md:mx-auto md:mx-auto
                                         sm:h-[30vh] sm:w-[90%] sm:mx-auto
-                                        belowSm:h-[30vh] belowSm:w-[90%] belowSm:mx-auto">
-                            <div className="lg:w-[80%] md:w-[80%] sm:w-full belowSm:w-full">
+                                        belowSm:h-[30vh] belowSm:w-[90%] belowSm:mx-auto p-4">
+                            <div className="lg:w-[90%] md:w-[90%] sm:w-full belowSm:w-full">
                                 <button className="bg-gray1 px-2 border rounded border-gray-800 text-base sm:text-sm belowSm:text-sm">
                                     <p className="text-white">What Our Readers Say</p>
                                 </button>
                                 <p className="lg:text-5xl md:text-5xl sm:lg:text-4xl belowSm:text-4xl text-white font-medium">Real words From Real Readers</p>
                             </div>
-                            <div className="lg:h-[8vh] lg:w-[15%] lg:flex lg:justify-end lg:items-center md:h-[8vh] md:w-[15%] md:flex md:justify-end md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-center sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-center">
-                                <button className="sm:w-full belowSm:w-full p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All testimonials</p><LuArrowUpRight className="text-xl text-amber-400" /></button>
-
-                            </div>
+                           
                         </div>
                     </div>
                     <div className="h-auto md:w-[90%] sm:w-full belowSm:w-full mx-auto grid md:grid-cols-3 sm:grid-cols-1 belowSm:grid-cols-1">

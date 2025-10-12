@@ -9,6 +9,8 @@ import { format } from 'date-fns';
 import { TfiControlSkipForward } from "react-icons/tfi";
 
 export default function News() {
+    const [popularBlog, setPopularBlog] = useState(null);
+    const [mordenBLog, setMordenBLog] = useState(null);
     const [blogsData, setBlogsData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [queryParams, setQueryParams] = useState({
@@ -17,14 +19,21 @@ export default function News() {
         limit: 4,
         page: 1,
     });
+    const [popularQueryParams, setPopularQueryParams] = useState({
+        sortBy: "views",   // or "commentsCount"
+        order: "desc",
+        limit: 4,
+        page: 1
+    }
+    );
 
     useEffect(() => {
         const loadBlogs = async () => {
-            setLoading(true);
             const blogs = await fetchBlogs(queryParams); // Fetch blogs using the function
             setBlogsData(blogs);
+            const blog = await fetchPopularBlogs(popularQueryParams);
+            setPopularBlog(blog);
             setLoading(false);
-            console.log(blogs);
         };
         loadBlogs();
     }, []);
@@ -32,6 +41,23 @@ export default function News() {
         try {
             const response = await AxiosInstance.post('/customer/blogs', {
                 params: queryParams, // Sending data in query string
+            });
+
+            if (response.data.success) {
+                return response.data.data; // Return the blogs data
+            } else {
+                console.error('API Error:', response.data.message);
+                return [];
+            }
+        } catch (err) {
+            console.error('Request Error:', err.message);
+            return [];
+        }
+    };
+    const fetchPopularBlogs = async (popularQueryParams) => {
+        try {
+            const response = await AxiosInstance.post('/customer/blogs', {
+                params: popularQueryParams, // Sending data in query string
             });
 
             if (response.data.success) {
@@ -86,20 +112,20 @@ export default function News() {
                                         md:h-full md:w-[40%] p-4 
                                         sm:h-full sm:w-full 
                                         belowSm:h-full belowSm:w-full">
-                            <img src={blogsData[0].image} className="h-full w-full rounded-xl" />
+                            <img src={blogsData[0]?.image} className="h-full w-full rounded-xl" />
                         </div>
                         <div className="lg:h-full lg:w-[60%] p-4 
                                         md:h-full md:w-[60%] 
                                         sm:h-[50vh] sm:w-full 
                                         belowSm:h-[50vh] belowSm:w-full">
-                            <Link to={`/blog/${blogsData[0].slug}`} className="">
-                                <p className="text-2xl font-medium text-white my-4 sm:my-2 belowSm:my-2">{blogsData[0].title}</p>
+                            <Link to={`/blog/${blogsData[0]?.slug}`} className="">
+                                <p className="text-2xl font-medium text-white my-4 sm:my-2 belowSm:my-2">{blogsData[0]?.title}</p>
                             </Link>
-                            <p className="text-base font-normal text-gray1 my-4 line-clamp-3 sm:my-2 belowSm:my-2">{blogsData[0].introduction}</p>
+                            <p className="text-base font-normal text-gray1 my-4 line-clamp-3 sm:my-2 belowSm:my-2">{blogsData[0]?.introduction}</p>
                             <div className="h-[10vh] w-full flex justify-center my-4 sm:my-2 belowSm:my-2 sm:text-sm belowSm:text-sm">
                                 <div className="h-full w-[20%] sm:w-[20%] belowSm:w-[20%] lg:text-base font-normal">
                                     <p className="text-gray1">Category</p>
-                                    <p className="text-white">{blogsData[0].category.categoryName}</p>
+                                    <p className="text-white">{blogsData[0]?.category.categoryName}</p>
                                 </div>
                                 <div className="h-full w-[20%] sm:w-[60%] belowSm:w-[50%]">
                                     <p className="text-gray1 text-center">Publication Date</p>
@@ -107,20 +133,20 @@ export default function News() {
                                 </div>
                                 <div className="h-full w-[60%] sm:w-[20%] belowSm:w-[30%]">
                                     <p className="text-gray1">Author</p>
-                                    <p className="text-white">{blogsData[0].author}</p>
+                                    <p className="text-white">{blogsData[0]?.author}</p>
                                 </div>
                             </div>
                             <div className="h-[8vh] w-full flex justify-start gap-4 my-4">
                                 <button className="h-[6vh] lg:w-[10%] md:w-[20%] sm:w-[20%] belowSm:w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                     <FiMessageCircle className="text-gray-1" />
-                                    <p>{blogsData[0].comments.length}</p>
+                                    <p>{blogsData[0]?.comments.length}</p>
                                 </button>
                                 <button className="h-[6vh] lg:w-[10%] md:w-[20%] sm:w-[20%] belowSm:w-[20%] px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center">
                                     <PiPaperPlaneTiltBold className="text-gray-1" />
                                     <p>20</p>
                                 </button>
                                 <div className="h-[6vh] lg:w-[80%] md:w-[60%] sm:w-[60%] belowSm:w-[60%] flex justify-end">
-                                    <Link to={`/blog/${blogsData[0].slug}`} className="">
+                                    <Link to={`/blog/${blogsData[0]?.slug}`} className="">
                                         <button className="px-4 py-2 text-base rounded-xl border border-gray-800 text-gray1">
                                             Read More
                                         </button>
@@ -133,23 +159,23 @@ export default function News() {
                 <div className="lg:h-[50vh] lg:w-full lg:border-y lg:border-gray-800
                                 md:h-[50vh] md:w-full md:border-y md:border-gray-800
                                 sm:h-[150vh] sm:w-full sm:border-y sm:border-gray-800
-                                belowSm:h-[150vh] belowSm:w-full belowSm:border-y belowSm:border-gray-800  ">
+                                belowSm:h-auto belowSm:w-full belowSm:border-y belowSm:border-gray-800  ">
                     <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:grid lg:grid-cols-3 lg:gap-2
                                     md:h-full md:w-[90%] md:mx-auto md:grid md:grid-cols-3 md:gap-2
                                     sm:h-full sm:w-full
                                     belowSm:h-full belowSm:w-full">
-                        {blogsData.slice(1).map((blog) => {
-                            return(
+                        {blogsData.slice(1, 4).map((blog) => {
+                            return (
                                 <div key={blog._id} className="h-full w-full p-4 flex items-center justify-center sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full">
-                                    <div>
+                                    <div className="h-auto w-full">
                                         <div className="h-[25vh] w-full">
                                             <Link to={`/blog/${blog.slug}`}>
-                                            <img src={blog.image} className="h-full w-full rounded-xl" />
+                                                <img src={blog.image} className="h-full w-full rounded-xl" />
                                             </Link>
                                         </div>
                                         <div className="h-[20vh] w-full text-white text-base">
                                             <Link to={`/blog/${blog.slug}`}>
-                                            <p className="text-white">{blog.title}</p>
+                                                <p className="text-white">{blog.title}</p>
                                             </Link>
                                             <p className="text-gray1 text-sm">{blog.category.categoryName}</p>
                                             <div className="h-[8vh] w-full flex justify-start gap-4 my-4">
@@ -173,18 +199,19 @@ export default function News() {
                                         </div>
                                     </div>
                                 </div>
-                        )})}
+                            )
+                        })}
                     </div>
                 </div>
                 <NewsPanel className='h-auto w-full'
                     headline='Discover the world of Headline'
                 />
                 <div className="h-full w-full">
-                    <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[50vh] sm:w-full belowSm:h-[50vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">
+                    <div className="lg:h-[30vh] lg:w-full md:h-[40vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[3 0vh] belowSm:w-full belowSm:flex belowSm:items-center bg-dark1">
                         <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between lg:items-center
                                                         md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between md:items-center
-                                                        sm:h-[40vh] sm:w-[90%] sm:mx-auto sm:p-4
-                                                        belowSm:h-[40vh] belowSm:w-[90%] belowSm:mx-auto belowSm:p-4">
+                                                        sm:h-[30vh] sm:w-[90%] sm:mx-auto sm:p-4
+                                                        belowSm:h-[30vh] belowSm:w-[90%] belowSm:mx-auto belowSm:p-4">
                             <div className="lg:w-[80%] md:w-[80%] sm:w-full belowSm:w-full">
                                 <button className=" bg-gray1 px-2 border rounded border-gray-800 text-base sm:text-sm belowSm:text-sm">
                                     <p className="text-white">Featured Videos</p>
@@ -196,85 +223,31 @@ export default function News() {
                             </div>
                         </div>
                     </div>
-                    <div className="lg:h-[60vh] lg:w-full lg:border-y lg:border-gray-800
-                                md:h-[60vh] md:w-full md:border-y md:border-gray-800
-                                sm:h-full sm:w-full sm:border-y sm:border-gray-800
-                                belowSm:h-full belowSm:w-full belowSm:border-y belowSm:border-gray-800">
-                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
-                                    md:h-full md:w-full md:mx-auto md:flex md:justify-center
-                                    sm:h-full sm:w-full 
-                                    belowSm:h-full belowSm:w-full">
-                            <div className="lg:h-full lg:w-[50%] lg:border-r lg:border-gray-800 
-                                        md:h-full md:w-[50%] md:border-r md:border-gray-800 
-                                        sm:h-[60vh] sm:w-full lg:border-b lg:border-gray-800 
-                                        lg:h-[60vh] lg:w-full lg:border-b lg:border-gray-800 p-6">
-                                <div className="h-[40vh] w-full">
-                                    <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
+                    <div  className="h-auto w-full min-h-[60vh] lg:border-y lg:border-gray-800" >
+                    <div className="h-auto md:w-[90%] sm:w-full belowSm:w-full min-h-[60vh] mx-auto grid md:grid-cols-2 sm:grid-cols-1 belowSm:grid-cols-1">
+                        {popularBlog.slice(0, 4)?.map((blog)=>{
+                            return(
+                                <div key={blog._id} className="lg:h-full lg:w-full 
+                                        md:h-full md:w-full 
+                                        sm:h-auto sm:w-full 
+                                        belowSm:h-auto belowSm:w-full p-6">
+                                <div className="md:h-[50vh] sm:h-[30vh] belowSm:h-[30vh] w-full">
+                                    <img src={blog.image} className="h-full w-full rounded-xl" />
                                 </div>
-                                <div className="lg:h-[10vh] lg:w-full
-                                            md:h-[10vh] md:w-full
-                                            sm:h-[20vh] sm:w-full
-                                            belowSm:h-[20vh] belowSm:w-full text-lg">
-                                    <p className="text-white font-medium">Mars Exploration:Unvaling Alien Landscape</p>
-                                    <p className="text-gray1 text-base font-normal line-clamp-2">Embark on a journy through the red plent breating landscape and uncover the mister of Mars.</p>
+                                <div className="lg:h-auto lg:w-full
+                                            md:h-auto md:w-full
+                                            sm:h-auto sm:w-full
+                                            belowSm:h-auto belowSm:w-full text-lg">
+                                    <p className="text-white font-medium">{blog.title}</p>
+                                    <p className="text-gray1 text-base font-normal line-clamp-2">{blog.introduction}</p>
                                 </div>
                             </div>
-                            <div className="lg:h-full lg:w-[50%] lg:border-r lg:border-gray-800 
-                                        md:h-full md:w-[50%] md:border-r md:border-gray-800 
-                                        sm:h-[60vh] sm:w-full lg:border-b lg:border-gray-800 
-                                        lg:h-[60vh] lg:w-full lg:border-b lg:border-gray-800 p-6">
-                                <div className="h-[40vh] w-full">
-                                    <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
-                                </div>
-                                <div className="lg:h-[10vh] lg:w-full
-                                            md:h-[10vh] md:w-full
-                                            sm:h-[20vh] sm:w-full
-                                            belowSm:h-[20vh] belowSm:w-full text-lg">
-                                    <p className="text-white font-medium">Mars Exploration:Unvaling Alien Landscape</p>
-                                    <p className="text-gray1 text-base font-normal line-clamp-2">Embark on a journy through the red plent breating landscape and uncover the mister of Mars.</p>
-                                </div>
-                            </div>
-                        </div>
+
+                            )
+                        })
+
+                        }
                     </div>
-                    <div className="lg:h-[60vh] lg:w-full lg:border-y lg:border-gray-800
-                                md:h-[60vh] md:w-full md:border-y md:border-gray-800
-                                sm:h-full sm:w-full sm:border-y sm:border-gray-800
-                                belowSm:h-full belowSm:w-full belowSm:border-y belowSm:border-gray-800">
-                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
-                                    md:h-full md:w-full md:mx-auto md:flex md:justify-center
-                                    sm:h-full sm:w-full 
-                                    belowSm:h-full belowSm:w-full">
-                            <div className="lg:h-full lg:w-[50%] lg:border-r lg:border-gray-800 
-                                        md:h-full md:w-[50%] md:border-r md:border-gray-800 
-                                        sm:h-[60vh] sm:w-full lg:border-b lg:border-gray-800 
-                                        lg:h-[60vh] lg:w-full lg:border-b lg:border-gray-800 p-6">
-                                <div className="h-[40vh] w-full">
-                                    <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
-                                </div>
-                                <div className="lg:h-[10vh] lg:w-full
-                                            md:h-[10vh] md:w-full
-                                            sm:h-[20vh] sm:w-full
-                                            belowSm:h-[20vh] belowSm:w-full text-lg">
-                                    <p className="text-white font-medium">Mars Exploration:Unvaling Alien Landscape</p>
-                                    <p className="text-gray1 text-base font-normal line-clamp-2">Embark on a journy through the red plent breating landscape and uncover the mister of Mars.</p>
-                                </div>
-                            </div>
-                            <div className="lg:h-full lg:w-[50%] lg:border-r lg:border-gray-800 
-                                        md:h-full md:w-[50%] md:border-r md:border-gray-800 
-                                        sm:h-[60vh] sm:w-full lg:border-b lg:border-gray-800 
-                                        lg:h-[60vh] lg:w-full lg:border-b lg:border-gray-800 p-6">
-                                <div className="h-[40vh] w-full">
-                                    <img src="https://picsum.photos/1920/1080" className="h-full w-full rounded-xl" />
-                                </div>
-                                <div className="lg:h-[10vh] lg:w-full
-                                            md:h-[10vh] md:w-full
-                                            sm:h-[20vh] sm:w-full
-                                            belowSm:h-[20vh] belowSm:w-full text-lg">
-                                    <p className="text-white font-medium">Mars Exploration:Unvaling Alien Landscape</p>
-                                    <p className="text-gray1 text-base font-normal line-clamp-2">Embark on a journy through the red plent breating landscape and uncover the mister of Mars.</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
