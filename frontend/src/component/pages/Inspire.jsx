@@ -1,240 +1,215 @@
 import { TbBulbFilled } from "react-icons/tb";
 import { GoStarFill } from "react-icons/go";
-import { LuArrowUpRight } from "react-icons/lu";
+import { BsArrowUpRight } from "react-icons/bs"; // ✅ FIXED: Bs instead of Lu
 import { GiConversation } from "react-icons/gi";
 
 export default function Inspire() {
     return (
         <>
-            <div className="h-full w-full bg-pureblack">
-                <div className="lg:h-[40vh] lg:w-full md:h-[40vh] md:w-full sm:h-[40vh] sm:w-full belowSm:h-[40vh] belowSm:w-full bg-dark1 flex items-center">
-                    <div className="lg:h-[25vh] lg:w-[90%] lg:mx-auto lg:p-2
-                                            md:h-[25vh] md:w-[90%] md:mx-auto md:p-2
-                                            sm:h-[30vh] sm:w-full sm:mx-auto sm:p-4c  e
-                                            belowSm:h-[30vh] belowSm:w-full belowSm:mx-auto belowSm:p-4 ">
-                        <div className="lg:h-[8vh] lg:w-full lg:text-5xl lg:text-white lg:font-medium
-                                                md:h-[8vh] md:w-full md:text-3xl md:text-white md:font-medium
-                                                sm:h-[10vh] sm:w-full sm:text-4xl sm:text-white sm:font-medium
-                                                belowSm:h-[10vh] belowSm:w-full belowSm:text-3xl belowSm:text-white belowSm:font-medium
-                                                ">
+            <div className="min-h-screen pt-32 dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:text-white text-gray-900">
+                {/* ✅ pt-32 = 128px top padding for floating navbar */}
+                
+                {/* Hero Banner */}
+                <div className="dark:bg-gray-900/90 bg-slate-100/50 backdrop-blur-xl flex items-center border-b dark:border-gray-800 border-slate-200/50">
+                    <div className="w-[90%] mx-auto py-12 lg:py-16">
+                        <div className="lg:text-5xl md:text-3xl text-3xl font-medium mb-8 leading-tight">
                             <p>Unlock A world of</p>
-                            <p className="lg:hidden md:hidden sm:block belowSm:block">Knowledge</p>
+                            <p className="lg:hidden md:hidden block mt-2">Knowledge</p>
                         </div>
-                        <div className="h-[10vh] w-full flex justify-center gap-2 my-2">
-                            <div className="h-full w-[30%] lg:text-5xl md:text-3xl text-white font-medium lg:block md:block sm:hidden belowSm:hidden">
-                                <p>Knowleldge</p>
+                        <div className="flex flex-col lg:flex-row items-center gap-8">
+                            <div className="lg:w-[30%] lg:text-5xl md:text-3xl text-4xl font-medium lg:block hidden text-center">
+                                <p>Knowledge</p>
                             </div>
-                            <div className="h-full w-[70%] text-base text-gray1 font-normal sm:w-full belowSm:w-full">
-                                <p>Explore the latest news from around the world.We bring you Up-To-The-Minutes update on the most significant event,trend,Stories,Discover the word throught our News Coverage.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="h-[30vh] w-full">
-                    <div className="h-full w-[90%] mx-auto grid  md:grid-cols-4 sm:grid-cols-2 belowSm:grid-cols-2">
-                        <div className="h-full w-full flex justify-center items-center md:border-r sm:border-r sm:border-b belowSm:border-r belowSm:border-b border-gray-800">
-                            <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
-                                <p>300<span className='text-amber-400'>+</span></p>
-                                <p className="text-base text-gray1">Resource Available</p>
-                            </div>
-                        </div>
-                        <div className="h-full w-full flex justify-center items-center md:border-r sm:border-r belowSm:border-b  border-gray-800">
-                            <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
-                                <p>12K<span className='text-amber-400'>+</span></p>
-                                <p className="text-base text-gray1">Total Downloads</p>
-                            </div>
-                        </div>
-                        <div className="h-full w-full flex justify-center items-center md:border-r sm:border-b belowSm:border-r belowSm:border-b  border-gray-800">
-                            <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
-                                <p>10K<span className='text-amber-400'>+</span></p>
-                                <p className="text-base text-gray1">Active Users</p>
-                            </div>
-                        </div>
-                        <div className="h-full w-full flex justify-center items-center">
-                            <div className="h-[15vh] w-full mx-auto text-5xl text-center text-white">
-                                <p>100<span className='text-amber-400'>+</span></p>
-                                <p className="text-base text-gray1">Countries Usability</p>
+                            <div className="lg:w-[70%] text-base lg:text-lg text-gray-600 dark:text-gray-400 font-normal leading-relaxed">
+                                <p>Explore the latest news from around the world. We bring you Up-To-The-Minute updates on the most significant events, trends, stories. Discover the world through our News Coverage.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="h-full w-full">
-                    <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[40vh] belowSm:w-full bg-dark1">
-                        <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between lg:items-center md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between md:items-center sm:h-full sm:w-[90%] sm:mx-auto sm:px-4 sm:flex sm:items-center sm:flex-wrap belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:px-4 belowSm:flex belowSm:items-center belowSm:flex-wrap">
-                            <div className="lg:w-[70%] md:w-[70%] sm:w-full belowSm:w-full b">
-                                <button className="bg-gray1 px-2 border rounded border-gray-800">
-                                    <p className="text-white">Dive into the details</p>
-                                </button>
-                                <p className="text-5xl text-white font-medium">In Deepth Reports And Analysis</p>
-                            </div>
-                            <div className="lg:h-[8vh] lg:w-[30%] lg:flex lg:justify-around lg:items-center lg:gap-4 md:gap-4 md:h-[8vh] md:w-[60%] md:flex md:justify-around md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-around sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-around sm:gap-4 belowSm:gap-4 rounded-lg p-1 bg-pureblack">
-                                <div className="h-full w-[30%]">
-                                    <button className="h-full w-full text-base text-gray1 rounded-xl border border-gray-800 bg-dark1">
-                                        WhitePaper
-                                    </button>
-                                </div>
-                                <div className="h-full w-[30%]">
-                                    <button className="h-full w-full text-base text-gray1 rounded-xl border border-gray-800 bg-dark1">
-                                        Ebooks
-                                    </button>
-                                </div>
-                                <div className="h-full w-[30%]">
-                                    <button className="h-full w-full text-base text-gray1 rounded-xl border border-gray-800 bg-dark1">
-                                        Reports
-                                    </button>
+
+                {/* Stats Grid */}
+                <div className="py-16">
+                    <div className="w-[90%] mx-auto">
+                        <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-6">
+                            <div className="flex justify-center items-center md:border-r dark:border-gray-800 border-slate-200/50 py-12">
+                                <div className="text-center">
+                                    <p className="text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-4">
+                                        300<span className="dark:text-amber-400 text-blue-500">+</span>
+                                    </p>
+                                    <p className="text-base dark:text-gray-400 text-gray-600 font-medium">Resources Available</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="h-[70vh] w-full border-y border-gray-800 md:h-[70vh] sm:h-auto belowSm:h-auto">
-                        <div className="h-full w-[90%] mx-auto md:flex md:justify-center">
-                            <div className="md:h-full md:w-[40%] md:border-r border-gray-800 flex items-center sm:w-full sm:border-b sm:h-[50vh] belowSm:h-[50vh] belowSm:border-b belowSm:w-full ">
-                                <div className="h-auto w-[90%] mx-auto">
-                                    <TbBulbFilled className="text-8xl text-amber-400" />
-                                    <div className="h-auto w-full my-2">
-                                        <div className="h-full w-full text-3xl text-white font-medium">
-                                            <p>Ai Revelution</p>
-                                        </div>
-                                    </div>
-                                    <div className="h-auto w-full">
-                                        <p className="text-sm text-gray1 line-clamp-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, at eaque! Optio neque quia, ipsam veniam quae dolores nihil nobis natus iure, amet libero ullam ipsum illo ducimus asperiores quidem?</p>
-                                    </div>
+                            <div className="flex justify-center items-center md:border-r dark:border-gray-800 border-slate-200/50 py-12">
+                                <div className="text-center">
+                                    <p className="text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-4">
+                                        12K<span className="dark:text-amber-400 text-blue-500">+</span>
+                                    </p>
+                                    <p className="text-base dark:text-gray-400 text-gray-600 font-medium">Total Downloads</p>
                                 </div>
                             </div>
-                            <div className="h-full md:w-[60%] sm:w-full belowSm:w-full">
-                                <div className="h-auto w-[90%] mx-auto">
-                                    <div className="h-auto w-full p-4">
-                                        <img src="https://picsum.photos/1920/1080" className="md:h-[40vh] sm:h-[30vh] belowSm:h-[30vh] w-full rounded-xl" />
-                                    </div>
-                                    <div className="h-auto w-full text-white text-lg ">
-                                        <div className="h-auto w-full grid md:grid-cols-3 sm:grid-cols-1 belowSm:grid-cols-1 gap-2">
-                                            <div className="h-full w-full col-span-2 ">
-                                                <p className="font-medium">Delves into the transformative impact of AI</p>
-                                                <p className="text-sm text-gray1 line-clamp-2">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo laboriosam aliquam et quidem nemo doloribus temporibus, consequatur placeat? Iure corrupti esse nostrum at quis. Laudantium dicta natus aliquam quae exercitationem?</p>
-                                            </div>
-                                            <div className="h-full w-full p-2 text-base">
-                                                <button className="h-full w-full rounded-lg border border-gray-800 flex justify-center bg-dark1 py-2 px-2">Download PDF Now<LuArrowUpRight className="text-amber-400 text-xl" /></button>
-                                            </div>
-                                        </div>
-                                        <div className="h-auto w-full rounded-lg bg-pureblack border my-2 p-2 border-gray-800 grid md:grid-cols-3 sm:grid-cols-1 gap-2">
-                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
-                                                <p className="text-sm text-gray1">Total Episode</p>
-                                                <p className="text-base text-white">50</p>
-                                            </div>
-                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
-                                                <p className="text-sm text-gray1">Average Episode Length</p>
-                                                <p className="text-base text-white">30 Min</p>
-                                            </div>
-                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
-                                                <p className="text-sm text-gray1">Release Frequence</p>
-                                                <p className="text-base text-white">Weekly</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div className="flex justify-center items-center md:border-r dark:border-gray-800 border-slate-200/50 py-12">
+                                <div className="text-center">
+                                    <p className="text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-4">
+                                        10K<span className="dark:text-amber-400 text-blue-500">+</span>
+                                    </p>
+                                    <p className="text-base dark:text-gray-400 text-gray-600 font-medium">Active Users</p>
+                                </div>
+                            </div>
+                            <div className="flex justify-center items-center py-12">
+                                <div className="text-center">
+                                    <p className="text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-4">
+                                        100<span className="dark:text-amber-400 text-blue-500">+</span>
+                                    </p>
+                                    <p className="text-base dark:text-gray-400 text-gray-600 font-medium">Countries Usability</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="h-[70vh] w-full border-y border-gray-800 md:h-[70vh] sm:h-auto belowSm:h-auto">
-                        <div className="h-full w-[90%] mx-auto md:flex md:justify-center">
-                            <div className="md:h-full md:w-[40%] md:border-r border-gray-800 flex items-center sm:w-full sm:border-b sm:h-[50vh] belowSm:h-[50vh] belowSm:border-b belowSm:w-full ">
-                                <div className="h-auto w-[90%] mx-auto">
-                                    <GiConversation className="text-8xl text-amber-400" />
-                                    <div className="h-auto w-full my-2">
-                                        <div className="h-full w-full text-3xl text-white font-medium">
-                                            <p>Ai Conversation</p>
-                                        </div>
+                </div>
+
+                {/* In Depth Reports Section */}
+                <div className="dark:bg-gray-900/90 bg-slate-100/50 backdrop-blur-xl border-b dark:border-gray-800 border-slate-200/50">
+                    <div className="w-[90%] mx-auto py-16 flex flex-col lg:flex-row items-center justify-between gap-8">
+                        <div className="lg:w-full w-full order-2 lg:order-1">
+                            <button className="mb-6 px-4 py-2 dark:bg-gray-800/50 bg-slate-200/50 border dark:border-gray-700 border-slate-300 rounded-xl text-sm font-medium dark:text-gray-300 text-gray-700">
+                                Dive into the details
+                            </button>
+                            <h2 className="text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 leading-tight">
+                                In Depth Reports And Analysis
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+                {/* AI Revolution Section */}
+                <div className="py-16 border-b dark:border-gray-800 border-slate-200/50">
+                    <div className="w-[90%] mx-auto flex flex-col lg:flex-row gap-12 items-center">
+                        <div className="lg:w-[40%] w-full order-2 lg:order-1 flex flex-col items-center lg:items-start">
+                            <TbBulbFilled className="text-8xl dark:text-amber-400 text-blue-500 mb-6" />
+                            <h3 className="text-3xl lg:text-4xl font-bold dark:text-white text-gray-900 mb-4 text-center lg:text-left">
+                                AI Revolution
+                            </h3>
+                            <p className="text-lg dark:text-gray-400 text-gray-600 leading-relaxed text-center lg:text-left line-clamp-3">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, at eaque! Optio neque quia, ipsam veniam quae dolores nihil nobis natus iure, amet libero ullam ipsum illo ducimus asperiores quidem?
+                            </p>
+                        </div>
+                        <div className="lg:w-[60%] w-full order-1 lg:order-2">
+                            <img src="https://picsum.photos/1920/1080" className="w-full h-80 lg:h-96 object-cover rounded-3xl shadow-2xl hover:scale-105 transition-all duration-500" alt="AI Revolution" />
+                            <div className="mt-8 p-6 dark:bg-gray-900/50 bg-slate-100/50 backdrop-blur-xl rounded-3xl border dark:border-gray-800 border-slate-200/50">
+                                <div className="grid md:grid-cols-3 gap-6">
+                                    <div className="md:col-span-2 space-y-3">
+                                        <h4 className="text-xl font-semibold dark:text-white text-gray-900">
+                                            Delves into the transformative impact of AI
+                                        </h4>
+                                        <p className="text-base dark:text-gray-400 text-gray-600 line-clamp-3">
+                                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo laboriosam aliquam et quidem nemo doloribus temporibus, consequatur placeat? Iure corrupti esse nostrum at quis.
+                                        </p>
                                     </div>
-                                    <div className="h-auto w-full">
-                                        <p className="text-sm text-gray1 line-clamp-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, at eaque! Optio neque quia, ipsam veniam quae dolores nihil nobis natus iure, amet libero ullam ipsum illo ducimus asperiores quidem?</p>
+                                    <div className="flex justify-center md:justify-end">
+                                        <button className="flex items-center gap-2 px-6 py-3 dark:bg-gray-900 bg-slate-100 backdrop-blur-xl dark:border-gray-700 border-slate-200 rounded-2xl font-semibold dark:text-gray-300 text-gray-700 hover:dark:bg-orange-500/20 hover:bg-blue-500/20 hover:dark:text-orange-400 hover:text-blue-500 transition-all">
+                                            Read Now
+                                            <BsArrowUpRight className="text-xl dark:text-orange-400 text-blue-500" />
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="h-full md:w-[60%] sm:w-full belowSm:w-full">
-                                <div className="h-auto w-[90%] mx-auto">
-                                    <div className="h-auto w-full p-2">
-                                        <img src="https://picsum.photos/1920/1080" className="md:h-[40vh] sm:h-[30vh] belowSm:h-[30vh] w-full rounded-xl" />
+                                <div className="mt-6 grid md:grid-cols-3 gap-4 p-4 dark:bg-black/50 bg-slate-50/50 rounded-2xl border dark:border-gray-800 border-slate-200/50">
+                                    <div className="text-center p-4 dark:bg-gray-900/70 bg-slate-100/70 rounded-xl border dark:border-gray-700 border-slate-200">
+                                        <p className="text-sm dark:text-gray-400 text-gray-600 mb-1">Blog</p>
+                                        <p className="text-lg font-semibold dark:text-white text-gray-900">50</p>
                                     </div>
-                                    <div className="h-auto w-full text-white text-lg ">
-                                        <div className="h-auto w-full grid md:grid-cols-3 sm:grid-cols-1 belowSm:grid-cols-1 gap-2">
-                                            <div className="h-full w-full col-span-2 ">
-                                                <p className="font-medium">Delves into the transformative impact of AI</p>
-                                                <p className="text-sm text-gray1 line-clamp-2">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo laboriosam aliquam et quidem nemo doloribus temporibus, consequatur placeat? Iure corrupti esse nostrum at quis. Laudantium dicta natus aliquam quae exercitationem?</p>
-                                            </div>
-                                            <div className="h-full w-full p-2 text-base">
-                                                <button className="h-full w-full rounded-lg border border-gray-800 flex justify-center bg-dark1 py-2 px-2">Download PDF Now<LuArrowUpRight className="text-amber-400 text-xl" /></button>
-                                            </div>
-                                        </div>
-                                        <div className="h-auto w-full rounded-lg bg-pureblack border my-2 p-2 border-gray-800 grid md:grid-cols-3 sm:grid-cols-1 gap-2">
-                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
-                                                <p className="text-sm text-gray1">Total Episode</p>
-                                                <p className="text-base text-white">50</p>
-                                            </div>
-                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
-                                                <p className="text-sm text-gray1">Average Episode Length</p>
-                                                <p className="text-base text-white">30 Min</p>
-                                            </div>
-                                            <div className="h-full w-full rounded-lg border border-gray-800 bg-dark1 p-2">
-                                                <p className="text-sm text-gray1">Release Frequence</p>
-                                                <p className="text-base text-white">Weekly</p>
-                                            </div>
-                                        </div>
+                                    <div className="text-center p-4 dark:bg-gray-900/70 bg-slate-100/70 rounded-xl border dark:border-gray-700 border-slate-200">
+                                        <p className="text-sm dark:text-gray-400 text-gray-600 mb-1">Avg Reading Length</p>
+                                        <p className="text-lg font-semibold dark:text-white text-gray-900">30 Min</p>
+                                    </div>
+                                    <div className="text-center p-4 dark:bg-gray-900/70 bg-slate-100/70 rounded-xl border dark:border-gray-700 border-slate-200">
+                                        <p className="text-sm dark:text-gray-400 text-gray-600 mb-1">Release Frequency</p>
+                                        <p className="text-lg font-semibold dark:text-white text-gray-900">Weekly</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="md:h-[50vh] sm:h-auto w-full border-y border-gray-800">
-                        <div className="h-full w-[90%] mx-auto grid md:grid-cols-3 sm:grid-cols-1 belowSm:grid-cols-1 items-center">
-                            <div className="h-full w-full flex items-center">
-                                <div className="h-auto w-full p-2">
-                                    <div className="h-auto w-full">
-                                        <img src="https://picsum.photos/1920/1080" className="h-[25vh] w-full rounded-xl" />
+                </div>
+
+                {/* AI Conversation Section */}
+                <div className="py-16 border-b dark:border-gray-800 border-slate-200/50">
+                    <div className="w-[90%] mx-auto flex flex-col lg:flex-row gap-12 items-center">
+                        <div className="lg:w-[40%] w-full order-2 lg:order-1 flex flex-col items-center lg:items-start">
+                            <GiConversation className="text-8xl dark:text-amber-400 text-blue-500 mb-6" />
+                            <h3 className="text-3xl lg:text-4xl font-bold dark:text-white text-gray-900 mb-4 text-center lg:text-left">
+                                AI Conversation
+                            </h3>
+                            <p className="text-lg dark:text-gray-400 text-gray-600 leading-relaxed text-center lg:text-left line-clamp-3">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, at eaque! Optio neque quia, ipsam veniam quae dolores nihil nobis natus iure, amet libero ullam ipsum illo ducimus asperiores quidem?
+                            </p>
+                        </div>
+                        <div className="lg:w-[60%] w-full order-1 lg:order-2">
+                            <img src="https://picsum.photos/1920/1080" className="w-full h-80 lg:h-96 object-cover rounded-3xl shadow-2xl hover:scale-105 transition-all duration-500" alt="AI Conversation" />
+                            <div className="mt-8 p-6 dark:bg-gray-900/50 bg-slate-100/50 backdrop-blur-xl rounded-3xl border dark:border-gray-800 border-slate-200/50">
+                                <div className="grid md:grid-cols-3 gap-6">
+                                    <div className="md:col-span-2 space-y-3">
+                                        <h4 className="text-xl font-semibold dark:text-white text-gray-900">
+                                            Delves into the transformative impact of AI
+                                        </h4>
+                                        <p className="text-base dark:text-gray-400 text-gray-600 line-clamp-3">
+                                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quo laboriosam aliquam et quidem nemo doloribus temporibus, consequatur placeat? Iure corrupti esse nostrum at quis.
+                                        </p>
                                     </div>
-                                    <div className="h-auto w-full ">
-                                        <p className="text-white">FutureTech Trends 2024</p>
-                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque odio distinctio eaque perferendis laudantium labore nulla nemo deserunt, omnis aperiam quod laboriosam ipsa culpa sit obcaecati consectetur dolorem perspiciatis quas!</p>
-                                        <div className="h-[8vh] w-full flex justify-center gap-4 p-2 text-gray1 ">
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">View Details</button>
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download Now</button>
-                                        </div>
+                                    <div className="flex justify-center md:justify-end">
+                                        <button className="flex items-center gap-2 px-6 py-3 dark:bg-gray-900 bg-slate-100 backdrop-blur-xl dark:border-gray-700 border-slate-200 rounded-2xl font-semibold dark:text-gray-300 text-gray-700 hover:dark:bg-orange-500/20 hover:bg-blue-500/20 hover:dark:text-orange-400 hover:text-blue-500 transition-all">
+                                            Read Now
+                                            <BsArrowUpRight className="text-xl dark:text-orange-400 text-blue-500" />
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="h-full w-full flex items-center border-gray-800 md:border-x sm:border-y belowSm:border-y">
-                                <div className="h-auto w-full p-2">
-                                    <div className="h-auto w-full">
-                                        <img src="https://picsum.photos/1920/1080" className="h-[25vh] w-full rounded-xl" />
+                                <div className="mt-6 grid md:grid-cols-3 gap-4 p-4 dark:bg-black/50 bg-slate-50/50 rounded-2xl border dark:border-gray-800 border-slate-200/50">
+                                    <div className="text-center p-4 dark:bg-gray-900/70 bg-slate-100/70 rounded-xl border dark:border-gray-700 border-slate-200">
+                                        <p className="text-sm dark:text-gray-400 text-gray-600 mb-1">Blog</p>
+                                        <p className="text-lg font-semibold dark:text-white text-gray-900">50</p>
                                     </div>
-                                    <div className="h-auto w-full ">
-                                        <p className="text-white">FutureTech Trends 2024</p>
-                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque odio distinctio eaque perferendis laudantium labore nulla nemo deserunt, omnis aperiam quod laboriosam ipsa culpa sit obcaecati consectetur dolorem perspiciatis quas!</p>
-                                        <div className="h-[8vh] w-full flex justify-center gap-4 p-2 text-gray1 ">
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">View Details</button>
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download Now</button>
-                                        </div>
+                                    <div className="text-center p-4 dark:bg-gray-900/70 bg-slate-100/70 rounded-xl border dark:border-gray-700 border-slate-200">
+                                        <p className="text-sm dark:text-gray-400 text-gray-600 mb-1">Avg Reading Length</p>
+                                        <p className="text-lg font-semibold dark:text-white text-gray-900">30 Min</p>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="h-full w-full flex items-center">
-                                <div className="h-auto w-full p-2">
-                                    <div className="h-auto w-full">
-                                        <img src="https://picsum.photos/1920/1080" className="h-[25vh] w-full rounded-xl" />
-                                    </div>
-                                    <div className="h-auto w-full ">
-                                        <p className="text-white">FutureTech Trends 2024</p>
-                                        <p className="line-clamp-2 text-sm text-gray1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque odio distinctio eaque perferendis laudantium labore nulla nemo deserunt, omnis aperiam quod laboriosam ipsa culpa sit obcaecati consectetur dolorem perspiciatis quas!</p>
-                                        <div className="h-[8vh] w-full flex justify-center gap-4 p-2 text-gray1 ">
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">View Details</button>
-                                            <button className="text-base border border-gray-800 rounded-lg h-full w-[50%]">Download Now</button>
-                                        </div>
+                                    <div className="text-center p-4 dark:bg-gray-900/70 bg-slate-100/70 rounded-xl border dark:border-gray-700 border-slate-200">
+                                        <p className="text-sm dark:text-gray-400 text-gray-600 mb-1">Release Frequency</p>
+                                        <p className="text-lg font-semibold dark:text-white text-gray-900">Weekly</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* Resources Grid */}
+                <div className="py-16 pb-32">
+                    <div className="w-[90%] mx-auto grid md:grid-cols-3 gap-8">
+                        {[
+                            { title: "FutureTech Trends 2024", img: "https://picsum.photos/1920/1080" },
+                            { title: "FutureTech Trends 2024", img: "https://picsum.photos/1920/1080" },
+                            { title: "FutureTech Trends 2024", img: "https://picsum.photos/1920/1080" }
+                        ].map((resource, index) => (
+                            <div key={index} className="group overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-br dark:from-gray-900/50 from-slate-100/50 backdrop-blur-xl border dark:border-gray-800 border-slate-200/50">
+                                <img src={resource.img} className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700" alt={resource.title} />
+                                <div className="p-8">
+                                    <h3 className="text-xl font-semibold dark:text-white text-gray-900 mb-4 group-hover:text-orange-500 transition-colors">{resource.title}</h3>
+                                    <p className="text-base dark:text-gray-400 text-gray-600 line-clamp-3 mb-6 leading-relaxed">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque odio distinctio eaque perferendis laudantium labore nulla nemo deserunt, omnis aperiam quod laboriosam ipsa culpa sit obcaecati consectetur dolorem perspiciatis quas!
+                                    </p>
+                                    <div className="flex gap-4">
+                                        <button className="flex-1 py-3 px-6 dark:border-gray-700 border-slate-200 rounded-xl dark:text-gray-300 text-gray-700 font-medium hover:dark:text-orange-400 hover:text-blue-500 hover:dark:bg-gray-800/50 hover:bg-slate-200/50 transition-all">
+                                            View Details
+                                        </button>
+                                        <button className="flex-1 py-3 px-6 dark:border-gray-700 border-slate-200 rounded-xl dark:text-gray-300 text-gray-700 font-medium hover:dark:text-orange-400 hover:text-blue-500 hover:dark:bg-gray-800/50 hover:bg-slate-200/50 transition-all">
+                                            Download Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
         </>
-    )
+    );
 }

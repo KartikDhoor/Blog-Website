@@ -1,158 +1,124 @@
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
+
 export default function Hero() {
-    return (
-        <>
-            <div className="comme  lg:h-[90vh] lg:w-full 
-                            md:h-full md:w-full bg-pureblack"
+  return (
+    <section className="min-h-screen bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 from-orange-50 via-white to-yellow-50 overflow-hidden relative">
+      {/* Animated Background Particles - ORANGE THEME */}
+      <div className="absolute inset-0">
+        <div className="absolute top-32 left-20 w-72 h-72 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-400/10 bg-gradient-to-r from-orange-400/20 to-yellow-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-40 right-24 w-96 h-96 dark:bg-gradient-to-r dark:from-orange-600/10 dark:to-yellow-500/10 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/4 w-48 h-48 dark:bg-gradient-to-r dark:from-orange-400/15 bg-gradient-to-r from-orange-400/25 rounded-full blur-2xl animate-bounce [animation-delay:2s]"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center h-[85vh]">
+          
+          {/* Content Section */}
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="space-y-8 lg:space-y-12"
+          >
+            {/* Badge - ORANGE THEME */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-500/20 to-yellow-400/20 backdrop-blur-xl border-orange-400/40 dark:border-orange-400/50 rounded-2xl text-orange-400 dark:text-orange-300 font-semibold text-lg uppercase tracking-wider shadow-lg hover:bg-orange-500/30 transition-all"
             >
-                <div className="lg:h-[90vh] lg:w-[95%] lg:mx-auto lg:flex lg:justify-center lg:items-center 
-                                md:h-[90vh] md:w-full md:flex md:justify-center md:items-center 
-                                sm:h-[180vh] sm:w-full"
+              <div className="w-3 h-3 bg-orange-400 rounded-full animate-ping"></div>
+              Your Journey to Tomorrow Begins Here
+            </motion.div>
+
+            {/* Main Headline - WHITISH ORANGE */}
+            <motion.h1 
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="text-5xl lg:text-7xl xl:text-8xl font-black leading-tight dark:bg-gradient-to-r from-orange-100 via-orange-200 to-yellow-200 bg-gradient-to-r from-orange-600 via-orange-400 to-yellow-400 bg-clip-text dark:text-transparent text-transparent drop-shadow-lg"
+            >
+              Master the Art of
+              <br />
+              <span className="block text-6xl lg:text-7xl xl:text-8xl dark:bg-gradient-to-r dark:from-orange-300 dark:to-yellow-300 bg-gradient-to-r from-orange-500 to-yellow-400 bg-clip-text dark:text-transparent text-transparent drop-shadow-2xl">
+                Code & AI Innovation
+              </span>
+            </motion.h1>
+
+            {/* Description */}
+            <motion.p 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="text-xl lg:text-2xl dark:text-gray-300 text-gray-700 max-w-lg leading-relaxed font-light"
+            >
+              Welcome to your hub for practical coding tutorials, AI development guides,
+              and cutting-edge tech insights. Learn to build real projects, master modern
+              frameworks, and leverage AI to accelerate your development journey.
+            </motion.p>
+
+            {/* Stats Grid - ORANGE THEME */}
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8 dark:border-gray-800 border-orange-200/50"
+            >
+              {[
+                { id: "tutorials", number: "30+", label: "Code Tutorials" },
+                { id: "projects", number: "2K+", label: "Projects Built" },
+                { id: "developers", number: "10K+", label: "Developers Learning" }
+              ].map((stat, index) => (
+                <motion.div
+                  key={stat.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
+                  className="group text-center p-6 bg-white/50 dark:bg-white/10 backdrop-blur-xl border-white/30 dark:border-white/20 rounded-2xl hover:bg-white/70 dark:hover:bg-white/20 hover:border-orange-400/50 transition-all duration-500 hover:shadow-2xl dark:hover:shadow-orange-500/20 hover:shadow-orange-500/20"
+                  whileHover={{ y: -8, scale: 1.02 }}
                 >
-                    <div className="lg:h-full lg:w-[60%] 
-                                    md:h-[90vh] md:w-[60%] 
-                                    sm:h-[90vh] sm:w-full"
-                    >
-                        <div className='lg:h-full lg:w-full 
-                                        md:h-full md:w-full md:animate-slideLeftIn
-                                        sm:h-full sm:w-full sm:animate-slideBottomIn
-                                        belowSm:animate-slideBottomIn'
-                        >
-                            <div className="lg:h-[60vh] lg:w-full lg:text-gray1 lg:flex lg:items-center lg:border-r lg:border-b lg:border-gray-800 
-                                            md:h-[60vh] md:w-full md:text-gray1 md:flex md:items-center md:border-r md:border-b md:border-gray-800 
-                                            sm:h-[60vh] sm:w-full sm:text-gray1 sm:flex sm:items-center sm:border-r sm:border-b sm:border-gray-800
-                                            belowSm:border-b belowSm:border-gray-800 text-gray1 p-4 "
-                            >
-                                <div>
-                                    <p className="lg:text-3xl 
-                                                  md:text-3xl 
-                                                  sm:text-xl 
-                                                  belowSm:text-lg font-normal mb-2"
-                                    >
-                                        Your journey to Tomorrow Begin Here
-                                    </p>
-                                    <p className="lg:text-6xl 
-                                                  md:text-6xl
-                                                  sm:text-4xl 
-                                                  belowSm:text-3xl font-semibold my-5 text-white "
-                                    >
-                                        Master the Art of Code & AI Innovation
-                                    </p>
-                                    <p className="lg:text-base 
-                                                  md:text-base
-                                                  sm:text-sm 
-                                                  belowSm:text-sm font-normal my-2 "
-                                    >
-                                        Welcome to your hub for practical coding tutorials, AI development guides,
-                                        and cutting-edge tech insights. Learn to build real projects, master modern
-                                        frameworks, and leverage AI to accelerate your development journey.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className=" lg:h-[30vh] lg:w-full lg:flex lg:justify-center 
-                                            md:h-[30vh] md:w-full md:flex md:justify-center 
-                                            sm:h-[30vh] sm:w-full sm:flex sm:justify-center 
-                                            belowSm:h-[30vh] belowSm:w-full belowSm:flex belowSm:justify-center border-y border-r border-gray-800 text-gray1 font-normal "
-                            >
-                                <div className="lg:h-full lg:w-[30%] lg:text-5xl lg:flex lg:items-center lg:justify-center lg:border-r lg:border-gray-800 
-                                                md:h-full md:w-[30%] md:flex md:items-center md:justify-center md:text-4xl md:border-r md:border-gray-800 
-                                                sm:h-full sm:w-[30%] sm:flex sm:items-center sm:justify-center sm:text-3xl sm:border-r sm:border-gray-800 
-                                                belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl belowSm:border-r belowSm:border-gray-800 text-center"
-                                >
-                                    <div>
-                                        <p className="text-white">
-                                            30
-                                            <span className="text-amber-400">
-                                                +
-                                            </span>
-                                        </p>
-                                        <p className="lg:text-base 
-                                                      md:text-base 
-                                                      sm:text-base 
-                                                      belowSm:text-sm belowSm:tracking-wider"
-                                        >
-                                            Code Tutorials
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="lg:h-full lg:w-[30%] lg:text-5xl lg:flex lg:items-center lg:justify-center lg:border-r lg:border-gray-800 
-                                                md:h-full md:w-[30%] md:flex md:items-center md:justify-center md:text-4xl md:border-r md:border-gray-800 
-                                                sm:h-full sm:w-[30%] sm:flex sm:items-center sm:justify-center sm:text-3xl sm:border-r sm:border-gray-800 
-                                                belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl belowSm:border-r belowSm:border-gray-800"
-                                >
-                                    <div>
-                                        <p className="text-white text-center">
-                                            2K
-                                            <span className="text-amber-400">
-                                                +
-                                            </span>
-                                        </p>
-                                        <p className="lg:text-base 
-                                                      md:text-base 
-                                                      sm:text-base 
-                                                      belowSm:text-sm text-center belowSm:tracking-wider"
-                                        >
-                                            Projects Built
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="lg:h-full lg:w-[30%] lg:text-5xl lg:flex lg:items-center lg:justify-center 
-                                                md:h-full md:w-[30%] md:flex md:items-center md:justify-center md:text-4xl 
-                                                sm:h-full sm:w-[30%] sm:flex sm:items-center sm:justify-center sm:text-3xl 
-                                                belowSm:h-full belowSm:w-[30%] belowSm:flex belowSm:items-center belowSm:justify-center belowSm:text-3xl text-center"
-                                >
-                                    <div>
-                                        <p className="text-white">
-                                            10K
-                                            <span className="text-amber-400">
-                                                +
-                                            </span>
-                                        </p>
-                                        <p className="lg:text-base 
-                                                      md:text-base 
-                                                      sm:text-base 
-                                                      belowSm:text-sm belowSm:tracking-wider">Developers <br className="md:hidden sm:hidden belowSm:block" />Learning</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    < motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true, amount: 0.5 }}
-                        transition={{
-                            duration: 0.4,
-                            scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
-                        }}
-                        className="lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full"
-                    >
-                        <div
-                            // className=" relative lg:h-full lg:w-[40%] md:h-[90vh] md:w-[40%] sm:h-[90vh] sm:w-full belowSm:h-[60vh] belowSm:w-full p-4"
-                            className=' relative h-full w-full p-4'
-                        >
-                            <img src="./src/assets/hero.jpg" className="z-0 h-full w-full rounded-xl" />
-                            <div className="h-auto w-full absolute z-0 bg-transparent top-0">
-                                <div className='h-[2vh] w-full bg-pureblack'>
+                  <div className="text-4xl lg:text-5xl font-black dark:bg-gradient-to-r dark:from-orange-400 dark:via-yellow-400 dark:to-orange-500 bg-gradient-to-r from-orange-500 via-orange-400 to-yellow-500 bg-clip-text dark:text-transparent text-transparent group-hover:scale-110 transition-transform drop-shadow-lg">
+                    {stat.number}
+                  </div>
+                  <p className="dark:text-gray-400 text-gray-700 font-medium text-base lg:text-lg mt-2 tracking-wide uppercase">
+                    {stat.label}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
 
-                                </div>
-                                <div className="h-auto w-full flex justify-between">
-
-                                    <div className="h-[6vh] w-[10%] bg-pureblack rounded-br-xl ">
-
-                                    </div>
-                                    <div className="h-[6vh] w-[40%] bg-transparent">
-
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </motion.div>
-
-                </div>
-            </div>
-        </>
-    )
+          {/* Hero Image Section - ORANGE THEME */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 1,
+              scale: { type: "spring", damping: 15, stiffness: 100 }
+            }}
+            className="relative h-[500px] lg:h-[600px] xl:h-[700px] w-full"
+          >
+            <div className="absolute inset-0 dark:bg-gradient-to-br dark:from-black/80 bg-gradient-to-br from-white/80 rounded-3xl backdrop-blur-sm"></div>
+            
+            {/* Replace with your hero image */}
+            <div className="absolute inset-0 bg-gradient-to-br dark:from-orange-500/20 dark:to-yellow-500/20 from-orange-400/30 to-yellow-400/30 rounded-3xl blur-xl animate-pulse"></div>
+            
+            <img 
+              src="/src/assets/hero.jpg" 
+              alt="AI Innovation"
+              className="w-full h-full object-cover rounded-3xl shadow-2xl absolute inset-0"
+            />
+            
+            {/* Decorative Overlays - ORANGE */}
+            <div className="absolute top-6 left-6 w-24 h-24 bg-gradient-to-r from-orange-500/40 to-yellow-400/40 rounded-2xl blur-xl"></div>
+            <div className="absolute bottom-8 right-8 w-32 h-32 bg-gradient-to-r from-orange-600/30 to-yellow-500/30 rounded-2xl blur-2xl animate-pulse"></div>
+            
+            {/* Corner Decorations - ORANGE */}
+            <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-orange-500/30 to-yellow-400/30 rounded-br-3xl"></div>
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-yellow-400/20 to-orange-500/20 rounded-tl-3xl"></div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
 }

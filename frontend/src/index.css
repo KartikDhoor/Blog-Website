@@ -59,3 +59,24 @@ body{
     font-weight: 400;
     font-style: normal;
   }
+.bg-grid-white {
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.bg-grid-orange {
+  background-image: 
+    linear-gradient(rgba(255,127,80,0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,127,80,0.2) 1px, transparent 1px);
+  background-size: 100px 100px;
+}
+/* Hide scrollbar but keep scrollability */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.sidebar-scroll {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;    /* Firefox */
+}

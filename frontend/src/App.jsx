@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Master from './component/Master'
@@ -24,40 +23,54 @@ import Security from './component/pages/Security'
 import { AuthProvider } from './component/AuthContext'
 import BlogSearch from './component/pages/BlogSearch'
 
-function App() {
+// ANALYTICS IMPORTS
+import { AnalyticsProvider } from './component/analytics/AnalyticsProvider'
+import AnalyticsDashboard from './component/dashboard/AnalyticsDashboard'
 
+function App() {
   return (
     <>
-    <AuthProvider>
-    <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<Master/>}>
-      <Route path='/' element={<Home/>}></Route>
-      <Route path='/blog/:slug' element={<Blog/>}></Route>
-      <Route path='/news' element={<News/>}></Route>
-      <Route path='/podcast' element={<Podcasts/>}></Route>
-      <Route path='/blog/search' element={<BlogSearch/>}></Route>
-      <Route path='/inspire' element={<Inspire/>}></Route>
-      <Route path='contact' element={<Contact/>}></Route>
-      <Route path='profile' element={<Profile/>}></Route>
-      <Route path='security' element={<Security/>}></Route>
-      </Route>
-      <Route path='/dashboard' element={<ProtectedDashboard/>}>      
-      <Route element={<DashboardMaster/>}>
-      <Route path='' element={<DashboardHome/>}></Route>
-      <Route path='blog' element={<DashboardBlog/>}></Route>
-      <Route path='category' element={<DashboardCategory/>}></Route>
-      <Route path='comment' element={<DashboardComments/>}></Route>
-      <Route path='user' element={<DashboardUser/>}></Route>
-      <Route path='announcement' element={<DashboardAnnouncement/>}></Route>
-      </Route>
-      </Route>
-      <Route path='/login' element={<Login/>}></Route>
-      <Route path='/register' element={<Register/>}></Route>
-      <Route path='/otp' element={<OtpConformation/>}></Route>
-    </Routes>
-    </BrowserRouter>
-    </AuthProvider>  
+      {/* ✅ ROUTER WRAPS EVERYTHING - FIRST */}
+      <BrowserRouter>
+        {/* ✅ AUTH PROVIDER - SECOND */}
+        <AuthProvider>
+          {/* ✅ ANALYTICS PROVIDER - THIRD (INSIDE ROUTER) */}
+          <AnalyticsProvider>
+            <Routes>
+              {/* PUBLIC ROUTES */}
+              <Route path='/' element={<Master/>}>
+                <Route path='/' element={<Home/>}></Route>
+                <Route path='/blog/:slug' element={<Blog/>}></Route>
+                <Route path='/news' element={<News/>}></Route>
+                <Route path='/podcast' element={<Podcasts/>}></Route>
+                <Route path='/blog/search' element={<BlogSearch/>}></Route>
+                <Route path='/inspire' element={<Inspire/>}></Route>
+                <Route path='/contact' element={<Contact/>}></Route>
+                <Route path='/profile' element={<Profile/>}></Route>
+                <Route path='/security' element={<Security/>}></Route>
+              </Route>
+
+              {/* ADMIN DASHBOARD ROUTES */}
+              <Route path='/dashboard' element={<ProtectedDashboard/>}>
+                <Route element={<DashboardMaster/>}>
+                  <Route path='' element={<DashboardHome/>}></Route>
+                  <Route path='blog' element={<DashboardBlog/>}></Route>
+                  <Route path='category' element={<DashboardCategory/>}></Route>
+                  <Route path='comment' element={<DashboardComments/>}></Route>
+                  <Route path='user' element={<DashboardUser/>}></Route>
+                  <Route path='announcement' element={<DashboardAnnouncement/>}></Route>
+                  <Route path='analytics' element={<AnalyticsDashboard/>}></Route>
+                </Route>
+              </Route>
+
+              {/* AUTH ROUTES */}
+              <Route path='/login' element={<Login/>}></Route>
+              <Route path='/register' element={<Register/>}></Route>
+              <Route path='/otp' element={<OtpConformation/>}></Route>
+            </Routes>
+          </AnalyticsProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </>
   )
 }

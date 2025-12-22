@@ -1,197 +1,208 @@
-import { Bar } from 'react-chartjs-2';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import { BiSolidLike } from "react-icons/bi";
 import { RiMessage2Fill } from "react-icons/ri";
 import { FaUpload } from "react-icons/fa";
 import AxiosInstance from "../../utils/AxiosInstance";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { DiVim } from 'react-icons/di';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-
 
 export default function DashboardHome() {
   const [blogsData, setBlogsData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May'],
-    datasets: [
-      {
-        label: 'Sales ($)',
-        data: [5000, 8000, 6000, 7000, 9000],
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Monthly blog Data',
-      },
-    },
-  };
+
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const blog = await AxiosInstance.post("/customer/blogs",);
-        if (blog) {
+        const blog = await AxiosInstance.post("/customer/blogs");
+        if (blog?.data?.data) {
           setBlogsData(blog.data.data);
-          setLoading(false);
         }
+      } catch (err) {
+        console.error("Request Error:", err.message);
+      } finally {
+        setLoading(false);
       }
-      catch (err) {
-        console.error('Request Error:', err.message);
-        return [];
-      }
-
-    }
+    };
     fetchdata();
   }, []);
-  if (loading) {
+
+  const stats = useMemo(() => {
+    if (!blogsData) return { totalBlogs: 0, totalLikes: 0, totalComments: 0 };
+    let totalLikes = 0;
+    let totalComments = 0;
+    blogsData.forEach((b) => {
+      totalLikes += b.likes?.length || 0;
+      totalComments += b.comments?.length || 0;
+    });
+    return {
+      totalBlogs: blogsData.length,
+      totalLikes,
+      totalComments,
+    };
+  }, [blogsData]);
+
+  if (loading || !blogsData) {
     return (
-      <>
-        <div className=''>
-          <p>Loading</p>
-        </div>
-      </>
-    )
+      <div className="min-h-[40vh] flex items-center justify-center">
+        <p className="text-lg text-gray-700 dark:text-gray-200">
+          Loading dashboard...
+        </p>
+      </div>
+    );
   }
+
   return (
-    <>
-      <div className="h-full w-full p-2 bg-pureblack">
-        <div className="md:h-[10vh] md:w-[95%] mx-auto flex justify-center items-center">
-          <div className="md:h-auto md:w-[70%] sm:h-auto sm:w-[90%] belowSm:h-auto belowSm:w-[85%] text-xl text-gray-900 flex items-center">
-            <p className="text-2xl font-medium text-white">Dashboard</p>
-          </div>
-          <div className="md:h-auto md:w-[30%] sm:h-auto sm:w-[10%] belowSm:h-auto belowSm:w-[15%] flex justify-center items-center gap-2">
-            <select className="md:w-[40%] md:block sm:hidden belowSm:hidden p-2 rounded-lg border border-gray-800">
-              <option>
-                10-11-2024
-              </option>
-              <option>
-                12-11-2024
-              </option>
-            </select>
-            <select className="md:w-[40%] md:block sm:hidden belowSm:hidden p-2 rounded-lg border border-gray-800">
-              <option>
-                10-11-2024
-              </option>
-              <option>
-                12-11-2024
-              </option>
-            </select>
-            <div className="h-full md:w-[20%] sm:w-full belowSm:w-full p-2 relative">
-              <img src="https://picsum.photos/1920/1080" className="h-10 w-10 rounded-full" />
-              <div className="h-3 w-3 bg-lime-600 rounded-full absolute bottom-2 right-2 "></div>
-            </div>
-          </div>
+    <div className="w-full space-y-6">
+      {/* Header / overview */}
+      <div className="rounded-3xl bg-white/90 dark:bg-white/5 border border-orange-100 dark:border-white/10 backdrop-blur-2xl px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm dark:shadow-none">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500 dark:text-orange-300 mb-1">
+            Overview
+          </p>
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">
+            Dashboard
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Monitor your blog performance and latest posts at a glance.
+          </p>
         </div>
-        <div className="h-[60vh] w-[90%] mx-auto rounded-xl bg-dark1 my-3">
-          <Bar data={data} options={options} />;
+        <button className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/30 hover:from-orange-600 hover:to-yellow-500 transition-all">
+          <FaUpload className="w-4 h-4" />
+          New Post
+        </button>
+      </div>
+
+      {/* Stat cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="rounded-3xl bg-white/90 dark:bg-white/5 border border-orange-100 dark:border-white/10 backdrop-blur-2xl px-4 py-3 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400 mb-1">
+            Total Blogs
+          </p>
+          <p className="text-3xl font-black text-gray-900 dark:text-white">
+            {stats.totalBlogs}
+          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Published articles on the platform.
+          </p>
         </div>
-        <div className='h-auto w-[90%] mx-auto rounded-xl  bg-pureblack'>
-          {blogsData.map((blog) => {
-            return (
-              <div key={blog._id} className='md:h-full md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full md:flex md:justify-center bg-dark1 rounded-lg  rounded-lg border-gray-800 border my-4'>
-                <div className="md:h-[40vh] md:w-[30%] sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full">
-                  <img src={blog.image} className="h-full w-full md:rounded-l-lg sm:rounded-t-lg belowSm:rounded-t-lg" />
-                </div>
-                <div className="md:h-[40vh] md:w-[70%] sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full p-2">
-                  <div className="md:h-[20vh] md:w-full">
-                    <p className="text-2xl font-medium text-white">{blog.title}</p>
-                    <p className="text-lg font-medium text-gray1">{blog.author}</p>
-                    <p className="line-clamp-3 text-gray-400">{blog.introduction}
-                    </p>
-                  </div>
-                  <div className="md:h-[10vh] md:w-full md:flex md:justify-center sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full">
-                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="font-medium text-lg text-gray1">Category</p>
-                      </div>
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="text-base font-medium text-gray-600">{blog.category.categoryName}</p>
-                      </div>
-                    </div>
-                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="font-medium text-lg text-gray1">Created At</p>
-                      </div>
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="text-base font-medium text-gray-600">{format(new Date(blog.createdAt), 'MMMM dd, yyyy')}</p>
-                      </div>
-                    </div>
-                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="font-medium text-lg text-gray1">Status</p>
-                      </div>
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="text-base font-medium text-gray-600">{blog.status}</p>
-                      </div>
-                    </div>
-                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="font-medium text-lg text-gray1">Published At</p>
-                      </div>
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="text-base font-medium text-gray-600">{format(new Date(blog.publishAt), 'MMMM dd, yyyy')}</p>
-                      </div>
-                    </div>
-                    <div className="md:w-[20%] sm:w-full belowSm:w-full sm:flex sm:justify-center belowSm:flex belowSm:justify-center ">
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="font-medium text-lg text-gray1">Update At</p>
-                      </div>
-                      <div className="sm:w-[50%] belowSm:w-[50%]">
-                        <p className="text-base font-medium text-gray-600">{format(new Date(blog.updatedAt), 'MMMM dd, yyyy')}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="md:h-[8vh] md:w-full grid md:grid-cols-3 sm:grid-cols-2 belowSm:grid-cols-2 gap-4">
-                    <div className="h-full w-full py-2 px-4 rounded-lg border-2 border-gray-800 flex justify-center items-center bg-pureblack">
-                      <BiSolidLike className="text-3xl text-amber-600" />
-                      <p className="text-xl font-medium text-gray1"><span>{blog.likes.length}</span>Likes</p>
-                    </div>
-                    <div className="h-full w-full py-2 px-4 rounded-lg border-2 border-gray-800 flex justify-center items-center bg-pureblack">
-                      <RiMessage2Fill className="text-3xl text-amber-600" />
-                      <p className="text-lg font-medium text-gray1"><span>{blog.comments.length}</span>Messages</p>
-                    </div>
-                    <Link to={`/blog/${blog.slug}`} className='md:col-span-1 sm:col-span-2 belowSm:col-span-2'>
-                      <div className="md:col-span-1 sm:col-span-2 belowSm:col-span-2 h-full w-full py-2 px-4 rounded-lg border-2 border-lime-800 bg-pureblack text-center" onClick={(e) => { updateButtonHandler(blog) }}>
-                        <p className="text-xl font-medium text-gray1"><span></span>Read Blog</p>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+
+        <div className="rounded-3xl bg-gradient-to-br from-orange-500 to-yellow-400 text-white px-4 py-3 shadow-md shadow-orange-500/40">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] mb-1">
+            Total Likes
+          </p>
+          <p className="text-3xl font-black flex items-center gap-2">
+            <BiSolidLike className="w-7 h-7" />
+            {stats.totalLikes}
+          </p>
+          <p className="text-xs mt-1 opacity-90">
+            Reactions across all your posts.
+          </p>
+        </div>
+
+        <div className="rounded-3xl bg-white/90 dark:bg-white/5 border border-orange-100 dark:border-white/10 backdrop-blur-2xl px-4 py-3 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400 mb-1">
+            Total Comments
+          </p>
+          <p className="text-3xl font-black flex items-center gap-2 text-gray-900 dark:text-white">
+            <RiMessage2Fill className="w-6 h-6 text-orange-500 dark:text-orange-400" />
+            {stats.totalComments}
+          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Conversations started by readers.
+          </p>
         </div>
       </div>
-    </>
-  )
+
+      {/* Blog list */}
+      <div className="space-y-4">
+        {blogsData.map((blog) => (
+          <div
+            key={blog._id}
+            className="rounded-3xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-white/5 backdrop-blur-2xl overflow-hidden shadow-md shadow-orange-200/40 dark:shadow-[0_14px_40px_rgba(0,0,0,0.85)]"
+          >
+            <div className="grid md:grid-cols-[260px,1fr]">
+              {/* Image */}
+              <div className="h-48 md:h-full w-full">
+                <img
+                  src={blog.image}
+                  alt={blog.title}
+                  className="w-full h-full object-cover md:rounded-l-3xl md:rounded-tr-none rounded-t-3xl"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="p-4 md:p-5 flex flex-col gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500 dark:text-orange-300 mb-1">
+                    {blog.category?.categoryName ?? "Uncategorized"}
+                  </p>
+                  <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-1">
+                    {blog.title}
+                  </h2>
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                    by {blog.author}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 md:line-clamp-3">
+                    {blog.introduction}
+                  </p>
+                </div>
+
+                {/* Meta grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-gray-600 dark:text-gray-300">
+                  <div>
+                    <p className="font-semibold text-gray-500 dark:text-gray-400">
+                      Created
+                    </p>
+                    <p>{format(new Date(blog.createdAt), "MMM dd, yyyy")}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-500 dark:text-gray-400">
+                      Published
+                    </p>
+                    <p>{format(new Date(blog.publishAt), "MMM dd, yyyy")}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-500 dark:text-gray-400">
+                      Updated
+                    </p>
+                    <p>{format(new Date(blog.updatedAt), "MMM dd, yyyy")}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-500 dark:text-gray-400">
+                      Status
+                    </p>
+                    <p className="capitalize">{blog.status}</p>
+                  </div>
+                </div>
+
+                {/* Footer actions */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                  <div className="flex items-center justify-center gap-2 rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/40 px-3 py-2">
+                    <BiSolidLike className="text-lg text-orange-500" />
+                    <p className="text-xs font-semibold text-gray-800 dark:text-gray-100">
+                      {blog.likes.length} Likes
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/40 px-3 py-2">
+                    <RiMessage2Fill className="text-lg text-orange-500" />
+                    <p className="text-xs font-semibold text-gray-800 dark:text-gray-100">
+                      {blog.comments.length} Comments
+                    </p>
+                  </div>
+                  <Link
+                    to={`/blog/${blog.slug}`}
+                    className="flex items-center justify-center"
+                  >
+                    <div className="w-full text-center rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold px-4 py-2 shadow-md shadow-orange-500/40 hover:from-orange-600 hover:to-yellow-500 transition-all">
+                      Read Blog
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

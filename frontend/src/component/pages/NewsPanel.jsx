@@ -1,370 +1,348 @@
-import { LuArrowUpRight } from "react-icons/lu";
+import { motion } from "framer-motion";
+import { BsArrowUpRight } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 import { PiPaperPlaneTiltBold } from "react-icons/pi";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import AxiosInstance from "../utils/AxiosInstance";
-import { useEffect, useState } from "react";
-import { format } from 'date-fns';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { FreeMode, Navigation, Pagination } from 'swiper/modules';
-import { IoIosArrowForward } from "react-icons/io";
-import { IoIosArrowBack } from "react-icons/io";
-import BlogPagination from "./BlogPagination";
-// import Swiper and modules styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-// import 'swiper/css/pagination';
-export default function NewsPanel({ headline }) {
-    const [pagesData, setPagesData] = useState({});
-    const [currentPage, setCurrentPage] = useState(1);
-    const [categoryData, setCategoryData] = useState([]);
-    const [popularBlog, setPopularBlog] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedCategory, setSelectedCategory] = useState(''); // Add this
+import { useEffect, useState, useCallback } from "react";
+import { format } from "date-fns";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
-    // FIXED: Separate state for filter parameters
-    const [filterQuery, setFilterQueryParams] = useState({
-        category: '',
-        sortBy: '',
-        order: 'desc',
-        limit: 3,
-        page: 1,
-    });
+export default function NewsPanel({ headline = "Latest News" }) {
+  const [pagesData, setPagesData] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [categoryData, setCategoryData] = useState([]);
+  const [popularBlog, setPopularBlog] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-    // FIXED: Single useEffect that handles all filter changes
-    useEffect(() => {
-        fetchDatablog(filterQuery);
-        
-    }, [filterQuery.category, filterQuery.page]); // Only watch specific properties
-    
-    const fetchDatablog = async (filterQuery) => {
-        try {
-            setLoading(true); // Add loading state
-            console.log('Fetching with filters:', filterQuery); // Debug log
+  const [filterQuery, setFilterQueryParams] = useState({
+    category: "",
+    sortBy: "",
+    order: "desc",
+    limit: 6,
+    page: 1,
+  });
 
-            const category = await AxiosInstance.post("/customer/category");
-            const response = await AxiosInstance.post('/customer/blogs', {
-                ...filterQuery
-            });
+  const fetchDatablog = useCallback(async (filters) => {
+    try {
+      setLoading(true);
+      const [category, response] = await Promise.all([
+        AxiosInstance.post("/customer/category"),
+        AxiosInstance.post("/customer/blogs", filters),
+      ]);
 
-            if (category.data.data) {
-                setCategoryData(category.data.data);
-            }
+      if (category.data.data) {
+        setCategoryData(category.data.data);
+      }
 
-            if (response.data.success) {
-                setPopularBlog(response.data.data);
-                console.log(response.data.data);
-                setPagesData(response.data.pagination);
-
-                if (response.data.data.length === 0) {
-                    setLoading(false);
-                }
-                else {
-                    setLoading(false);
-                }
-            } else {
-                console.error('API Error:', response.data.message);
-                setLoading(false);
-            }
-        } catch (err) {
-            console.error('Request Error:', err.message);
-            setLoading(false);
-        }
+      if (response.data.success) {
+        setPopularBlog(response.data.data);
+        setPagesData(response.data.pagination);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
     }
+  }, []);
 
-    // FIXED: Proper category search handler
-    const handleCategorySearch = (categoryId) => {
-        console.log('Category clicked:', categoryId); // Debug log
-        setSelectedCategory(categoryId);
-        setCurrentPage(1);
-        setFilterQueryParams(prev => ({
-            ...prev,
-            category: categoryId,
-            page: 1
-        }));
-    }
+  useEffect(() => {
+    fetchDatablog(filterQuery);
+  }, [filterQuery.category, filterQuery.page, fetchDatablog]);
 
-    // FIXED: Handle page changes separately
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
-        setFilterQueryParams(prev => ({
-            ...prev,
-            page: newPage
-        }));
-    }
+  const handleCategorySearch = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setCurrentPage(1);
+    setFilterQueryParams((prev) => ({
+      ...prev,
+      category: categoryId,
+      page: 1,
+    }));
+  };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    setFilterQueryParams((prev) => ({
+      ...prev,
+      page: newPage,
+    }));
+  };
 
-    if (loading) {
-        return (
-            <>
-                <div className="h-full w-full bg-pureblack">
-                    <div className="md:h-[30vh] sm:h-auto belowSm:h-auto w-full mx-auto p-4 bg-dark1 flex items-center">
-
-                        <div className="lg:w-[90%] md:w-[90%] sm:w-full mx-auto belowSm:w-full b">
-                            <button className="bg-gray1 px-2 border rounded border-gray-800">
-                                <p className="text-white">Unlock the Power of</p>
-                            </button>
-                            <p className="md:text-5xl belowSm:text-4xl text-white font-medium">{headline}</p>
-                        </div>
-                    </div>
-                    <div className="h-[10vh] w-full bg-pureblack flex justify-between items-center">
-                        <button className="h-12 w-12 text-white p-2 rounded-full bg-dark2">
-                            <IoIosArrowBack className="text-white text-3xl " />
-                        </button>
-                        <button className="h-12 w-12 text-white p-2 rounded-full bg-dark2">
-                            <IoIosArrowForward className="text-white text-3xl " />
-                        </button>
-                    </div>
-                    <div className="md:h-[30vh] sm:h-auto belowSm:h-auto w-full mx-auto border-y border-gray1">
-                        <div className="h-full w-[90%] mx-auto md:justify-center md:flex  p-4">
-                            <div className="md:h-full sm:h-[30vh] belowSm:h-[30vh] md:w-[30%] sm:w-full belowSm:w-full rounded-xl p-2">
-                                <div className="h-full w-full rounded-xl bg-dark1">
-
-                                </div>
-                            </div>
-                            <div className="sm:relative belowSm:relative md:h-full sm:h-[30vh] belowSm:h-[30vh] md:w-[70%] sm:w-full belowSm:w-full rounded-xl md:flex md:justify-end">
-                                <div className="h-full w-[30%] flex items-center ">
-                                    <button className="h-10 w-full md:relative sm:absolute belowSm:absolute  bg-dark1 rounded-xl bottom-0">
-
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className="md:h-[30vh] sm:h-auto belowSm:h-auto w-full mx-auto border-y border-gray1">
-                        <div className="h-full w-[90%] mx-auto md:justify-center md:flex  p-4">
-                            <div className="md:h-full sm:h-[30vh] belowSm:h-[30vh] md:w-[30%] sm:w-full belowSm:w-full rounded-xl p-2">
-                                <div className="h-full w-full rounded-xl bg-dark1">
-
-                                </div>
-                            </div>
-                            <div className="sm:relative belowSm:relative md:h-full sm:h-[30vh] belowSm:h-[30vh] md:w-[70%] sm:w-full belowSm:w-full rounded-xl md:flex md:justify-end">
-                                <div className="h-full w-[30%] flex items-center ">
-                                    <button className="h-10 w-full md:relative sm:absolute belowSm:absolute  bg-dark1 rounded-xl bottom-0">
-
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className="md:h-[30vh] sm:h-auto belowSm:h-auto w-full mx-auto border-y border-gray1">
-                        <div className="h-full w-[90%] mx-auto md:justify-center md:flex  p-4">
-                            <div className="md:h-full sm:h-[30vh] belowSm:h-[30vh] md:w-[30%] sm:w-full belowSm:w-full rounded-xl p-2">
-                                <div className="h-full w-full rounded-xl bg-dark1">
-
-                                </div>
-                            </div>
-                            <div className="sm:relative belowSm:relative md:h-full sm:h-[30vh] belowSm:h-[30vh] md:w-[70%] sm:w-full belowSm:w-full rounded-xl md:flex md:justify-end">
-                                <div className="h-full w-[30%] flex items-center ">
-                                    <button className="h-10 w-full md:relative sm:absolute belowSm:absolute  bg-dark1 rounded-xl bottom-0">
-
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </>
-        )
-    }
-
+  if (loading) {
     return (
-        <>
-            <div className="h-full w-full bg-pureblack">
-                <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[40vh] belowSm:w-full bg-dark1">
-                    <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-between lg:items-center md:h-full md:w-[90%] md:mx-auto md:flex md:justify-between md:items-center sm:h-full sm:w-[90%] sm:mx-auto sm:px-4 sm:flex sm:items-center sm:flex-wrap belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:px-4 belowSm:flex belowSm:items-center belowSm:flex-wrap">
-                        <div className="lg:w-[85%] md:w-[85%] sm:w-full belowSm:w-full b">
-                            <button className="bg-gray1 px-2 border rounded border-gray-800">
-                                <p className="text-white">Unlock the Power of</p>
-                            </button>
-                            <p className="text-5xl text-white font-medium">{headline}</p>
-                        </div>
-                        {/* <div className="lg:h-[8vh] lg:w-[15%] lg:flex lg:justify-end lg:items-center md:h-[8vh] md:w-[15%] md:flex md:justify-end md:items-center sm:h-[8vh] sm:w-full sm:flex sm:justify-center sm:items-center belowSm:h-[8vh] belowSm:w-full belowSm:flex belowSm:items-center belowSm:justify-center">
-                            <button className="sm:w-full belowSm:w-full p-2 rounded bg-pureblack text-base font-normal text-gray1 flex justify-center"><p>View All Blogs</p><LuArrowUpRight className="text-xl text-amber-400" /></button>
-                        </div> */}
-                    </div>
-                </div>
-                <div className="lg:h-[10vh] lg:w-full md:h-[10vh] md:w-full sm:h-[10vh] sm:w-full belowSm:h-[10vh] belowSm:w-full border-y border-gray-800">
-                    <div className="lg:h-full lg:w-full lg:mx-auto md:h-full md:w-[90%] md:mx-auto sm:h-full sm:w-full belowSm:h-full belowSm:w-full flex justify-around items-center gap-2">
-                        <div className="h-full lg:w-[10%] md:w-[20%] sm:w-[20%] belowsm:w-[30%] flex items-center">
-                            <button className=" custom-prev text-white p-2 rounded-full bg-dark2">
-                                <IoIosArrowBack className="text-white text-3xl " />
-                            </button>
-                        </div>
-                        <Swiper
-                            key={categoryData.length}
-                            modules={[Navigation]}
-                            navigation={{
-                                nextEl: ".custom-next",
-                                prevEl: ".custom-prev",
-                            }}
-                            speed={0}
-                            spaceBetween={10}
-                            slidesPerView={Math.min(categoryData.length + 1, 5)}
-                            centeredSlides={false}  // ← ADD THIS
-                            centerInsufficientSlides={false}  // ← ADD THIS - Important!
-                            breakpoints={{
-                                0: {
-                                    slidesPerView: Math.min(categoryData.length + 1, 2),
-                                    centeredSlides: false,  // ← ADD in each breakpoint
-                                    centerInsufficientSlides: false,
-                                    speed: 0
+      <section className="py-24 bg-gradient-to-b dark:from-gray-900 dark:to-black from-orange-50 to-yellow-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-12"
+          >
+            <div className="text-center">
+              <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-orange-500/20 to-yellow-400/20 backdrop-blur-xl border-orange-400/40 rounded-2xl mb-8 mx-auto">
+                <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
+                <span className="text-orange-400 font-semibold uppercase tracking-wider">
+                  Loading
+                </span>
+              </div>
+              <div className="h-12 sm:h-16 bg-gradient-to-r from-orange-400/20 rounded-3xl animate-pulse mx-auto w-48 sm:w-64"></div>
+            </div>
 
-                                },
-                                640: {
-                                    slidesPerView: Math.min(categoryData.length + 1, 2),
-                                    centeredSlides: false,
-                                    centerInsufficientSlides: false,
-                                    speed: 0
-                                },
-                                768: {
-                                    slidesPerView: Math.min(categoryData.length + 1, 4),
-                                    centeredSlides: false,
-                                    centerInsufficientSlides: false,
-                                    speed: 0
-                                },
-                                1024: {
-                                    slidesPerView: Math.min(categoryData.length + 1, 5),
-                                    centeredSlides: false,
-                                    centerInsufficientSlides: false,
-                                    speed: 0
-                                },
-                            }}
+            {[1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 p-6 sm:p-8 bg-white/70 dark:bg-white/10 backdrop-blur-2xl border-white/40 dark:border-white/20 rounded-3xl animate-pulse shadow-xl"
+              >
+                <div className="w-full sm:w-48 h-40 sm:h-32 bg-gradient-to-r from-orange-400/20 rounded-2xl"></div>
+                <div className="flex-1 space-y-4 w-full">
+                  <div className="h-5 sm:h-6 bg-gradient-to-r from-orange-400/20 rounded-xl w-3/4"></div>
+                  <div className="h-10 sm:h-12 bg-gradient-to-r from-orange-400/20 rounded-2xl w-full"></div>
+                  <div className="h-4 bg-gradient-to-r from-orange-400/20 rounded-xl w-1/2"></div>
+                  <div className="flex flex-wrap gap-3 sm:gap-4">
+                    {[...Array(3)].map((_, j) => (
+                      <div
+                        key={j}
+                        className="h-8 sm:h-10 w-20 sm:w-24 bg-gradient-to-r from-orange-400/20 rounded-xl"
+                      ></div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="py-20 sm:py-24 bg-gradient-to-b dark:from-gray-900 dark:via-black dark:to-gray-900 from-orange-50 via-white to-yellow-50 relative overflow-hidden transition-colors duration-500">
+      {/* Background Decorations */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-40 left-0 sm:left-20 w-40 sm:w-64 h-40 sm:h-64 bg-gradient-to-r from-orange-500/10 to-yellow-400/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 sm:bottom-40 right-4 sm:right-24 w-52 sm:w-80 h-52 sm:h-80 bg-gradient-to-r from-orange-600/10 to-yellow-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12 sm:mb-20"
+        >
+          <div className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500/20 to-yellow-400/20 backdrop-blur-xl border-orange-400/40 rounded-2xl mb-4 sm:mb-8 mx-auto max-w-max">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-orange-400 rounded-full animate-ping"></div>
+            <span className="text-sm sm:text-lg text-orange-400 dark:text-orange-300 font-semibold uppercase tracking-wider">
+              Unlock the Power of
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black dark:bg-gradient-to-r from-orange-100 via-orange-200 to-yellow-200 bg-gradient-to-r from-orange-600 via-orange-400 to-yellow-400 bg-clip-text dark:text-transparent text-transparent leading-tight drop-shadow-lg">
+            {headline}
+          </h2>
+        </motion.div>
+
+        {/* Category Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-12 sm:mb-16"
+        >
+          <div className="bg-white/70 dark:bg-white/10 backdrop-blur-2xl border-white/40 dark:border-white/20 rounded-3xl p-2 sm:p-3 shadow-xl">
+            <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
+              <button className="custom-prev hidden sm:flex flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-white/50 dark:bg-white/20 hover:bg-white/70 dark:hover:bg-white/30 border-white/30 dark:border-white/20 rounded-2xl transition-all duration-300 items-center justify-center text-lg sm:text-2xl text-gray-700 dark:text-gray-300 hover:text-orange-500">
+                <IoIosArrowBack />
+              </button>
+
+              <Swiper
+                modules={[Navigation]}
+                navigation={{
+                  nextEl: ".custom-next",
+                  prevEl: ".custom-prev",
+                }}
+                spaceBetween={12}
+                slidesPerView={2}
+                breakpoints={{
+                  480: { slidesPerView: 3 },
+                  640: { slidesPerView: 4 },
+                  768: { slidesPerView: 5 },
+                  1024: { slidesPerView: 6 },
+                  1280: { slidesPerView: 7 },
+                }}
+                className="flex-1"
+              >
+                <SwiperSlide>
+                  <motion.div
+                    onClick={() => handleCategorySearch("")}
+                    className={`px-4 py-3 sm:px-6 sm:py-4 rounded-2xl cursor-pointer transition-all duration-300 h-full flex items-center justify-center shadow-lg ${
+                      selectedCategory === ""
+                        ? "bg-gradient-to-br from-orange-500 to-orange-600 border-orange-400/50 shadow-orange-500/25 bg-blend-overlay"
+                        : "bg-white/80 dark:bg-white/20 border-white/40 dark:border-white/20 hover:bg-white/90 dark:hover:bg-white/30 hover:shadow-xl hover:border-orange-400/50"
+                    }`}
+                    whileHover={{ scale: 1.02, y: -2 }}
+                  >
+                    <span className="font-semibold text-gray-800 dark:text-gray-200 text-xs sm:text-sm text-center line-clamp-2">
+                      All Categories
+                    </span>
+                  </motion.div>
+                </SwiperSlide>
+                {categoryData.map((category) => (
+                  <SwiperSlide key={category._id}>
+                    <motion.div
+                      onClick={() => handleCategorySearch(category._id)}
+                      className={`px-4 py-3 sm:px-6 sm:py-4 rounded-2xl cursor-pointer transition-all duration-300 h-full flex items-center justify-center shadow-lg ${
+                        selectedCategory === category._id
+                          ? "bg-gradient-to-br from-orange-500 to-orange-600 border-orange-400/50 shadow-orange-500/25 bg-blend-overlay"
+                          : "bg-white/80 dark:bg-white/20 border-white/40 dark:border-white/20 hover:bg-white/90 dark:hover:bg-white/30 hover:shadow-xl hover:border-orange-400/50"
+                      }`}
+                      whileHover={{ scale: 1.02, y: -2 }}
+                    >
+                      <span className="font-semibold text-gray-800 dark:text-gray-200 text-xs sm:text-sm text-center line-clamp-2">
+                        {category.categoryName}
+                      </span>
+                    </motion.div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+
+              <button className="custom-next hidden sm:flex flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-white/50 dark:bg-white/20 hover:bg-white/70 dark:hover:bg-white/30 border-white/30 dark:border-white/20 rounded-2xl transition-all duration-300 items-center justify-center text-lg sm:text-2xl text-gray-700 dark:text-gray-300 hover:text-orange-500">
+                <IoIosArrowForward />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Premium Glass Cards */}
+        <div className="space-y-8 mb-12 sm:mb-16">
+          {!popularBlog || popularBlog.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-24 sm:py-32"
+            >
+              <div className="inline-flex items-center gap-4 px-6 sm:px-8 py-3 sm:py-4 bg-white/70 dark:bg-white/10 backdrop-blur-2xl border-white/40 dark:border-white/20 rounded-3xl mb-6 sm:mb-8 shadow-xl">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-xl animate-pulse"></div>
+                <span className="text-gray-800 dark:text-gray-300 font-medium text-base sm:text-xl">
+                  No blogs available yet
+                </span>
+              </div>
+              <Link
+                to="/blog/search"
+                className="inline-flex items-center gap-3 px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-base sm:text-lg rounded-3xl shadow-2xl shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 transition-all duration-300 backdrop-blur-xl"
+              >
+                Explore All Blogs
+                <BsArrowUpRight />
+              </Link>
+            </motion.div>
+          ) : (
+            popularBlog.map((blog, index) => (
+              <motion.div
+                key={blog._id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
+                className="group bg-white/90 dark:bg-white/15 backdrop-blur-2xl border border-white/60 dark:border-white/30 rounded-3xl p-5 sm:p-8 shadow-2xl hover:shadow-3xl hover:border-orange-400/60 hover:bg-white dark:hover:bg-white/20 transition-all duration-700 overflow-hidden relative"
+                whileHover={{ y: -10, scale: 1.01 }}
+              >
+                {/* Gradient Border Effect */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-orange-500/0 via-orange-500/15 to-yellow-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                <div className="flex flex-col lg:flex-row gap-5 lg:gap-8 items-start h-full relative z-10">
+                  {/* Image */}
+                  <motion.div
+                    className="relative w-full lg:w-64 h-52 sm:h-60 lg:h-48 rounded-2xl overflow-hidden shadow-2xl group-hover:scale-[1.01] transition-all duration-700"
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <img
+                      src={blog.image}
+                      alt={blog.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent rounded-2xl opacity-60 group-hover:opacity-80 transition-all duration-500"></div>
+                    <div className="absolute bottom-3 left-3 px-3 py-1 rounded-xl bg-black/60 text-[11px] sm:text-xs text-white font-medium">
+                      {format(new Date(blog.createdAt), "MMMM dd, yyyy")}
+                    </div>
+                  </motion.div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 leading-tight line-clamp-2 group-hover:text-orange-500 transition-all duration-500 drop-shadow-sm">
+                      {blog.title}
+                    </h3>
+
+                    <p className="text-sm sm:text-base lg:text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-5 sm:mb-6 line-clamp-3 font-light">
+                      {blog.introduction}
+                    </p>
+
+                    {/* Stats - Glass Pills */}
+                    <div className="flex flex-wrap gap-3 mb-5 sm:mb-6">
+                      <motion.button
+                        className="group/stats flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-white/20 backdrop-blur-xl border border-white/40 dark:border-white/20 rounded-2xl text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-300 shadow-md hover:bg-white/90 dark:hover:bg-white/30 hover:shadow-lg hover:border-orange-400/50 hover:text-orange-500 transition-all duration-300"
+                        whileHover={{ scale: 1.05, y: -1 }}
+                      >
+                        <FaHeart className="text-sm sm:text-base group-hover/stats:scale-110 transition-transform text-red-500" />
+                        <span>{blog.likes.length}</span>
+                      </motion.button>
+                      <motion.button
+                        className="group/stats flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-white/20 backdrop-blur-xl border border-white/40 dark:border-white/20 rounded-2xl text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-300 shadow-md hover:bg-white/90 dark:hover:bg-white/30 hover:shadow-lg hover:border-orange-400/50 hover:text-orange-500 transition-all duration-300"
+                        whileHover={{ scale: 1.05, y: -1 }}
+                      >
+                        <FiMessageCircle className="text-sm sm:text-base group-hover/stats:scale-110 transition-transform" />
+                        <span>{blog.comments.length}</span>
+                      </motion.button>
+                      <motion.button
+                        className="group/stats flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-white/20 backdrop-blur-xl border border-white/40 dark:border-white/20 rounded-2xl text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-300 shadow-md hover:bg-white/90 dark:hover:bg-white/30 hover:shadow-lg hover:border-orange-400/50 hover:text-orange-500 transition-all duration-300"
+                        whileHover={{ scale: 1.05, y: -1 }}
+                      >
+                        <PiPaperPlaneTiltBold className="text-sm sm:text-base group-hover/stats:scale-110 transition-transform" />
+                        <span>20</span>
+                      </motion.button>
+                    </div>
+
+                    {/* CTA Button */}
+                    <div className="flex justify-start">
+                      <motion.div whileHover={{ scale: 1.03 }}>
+                        <Link
+                          to={`/blog/${blog.slug}`}
+                          className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-sm sm:text-lg rounded-2xl shadow-2xl shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 sm:hover:-translate-y-2 hover:from-orange-600 hover:to-yellow-500 transition-all duration-500 backdrop-blur-xl border border-orange-400/30"
                         >
-                            {/* All Categories Option */}
-                            <SwiperSlide
-                                onClick={() => handleCategorySearch('')}
-                                className={`rounded-lg border text-white sm:p-4 belowSm:p-2 cursor-pointer transition-colors ${selectedCategory === ''
-                                    ? 'bg-amber-600 border-amber-500'
-                                    : 'bg-dark1 border-dark2 hover:bg-dark2'
-                                    }`}
-                            >
-                                <p className='line-clamp-1 belowSm:text-xs'>All Categories</p>
-                            </SwiperSlide>
-
-                            {/* Category Slides */}
-                            {categoryData.map((category) => (
-                                <SwiperSlide
-                                    key={category._id}
-                                    onClick={() => handleCategorySearch(category._id)}
-                                    className={`rounded-lg border text-white sm:p-4 belowSm:p-2 cursor-pointer transition-colors ${selectedCategory === category._id
-                                        ? 'bg-amber-600 border-amber-500'
-                                        : 'bg-dark1 border-dark2 hover:bg-dark2'
-                                        }`}
-                                >
-                                    <p className='line-clamp-1 belowSm:text-xs'>{category.categoryName}</p>
-                                </SwiperSlide>
-                            ))}
-                        </Swiper>
-
-                        <div className="h-full lg:w-[10%] md:w-[20%] sm:w-[20%] belowsm:w-[30%] flex items-center justify-end">
-                            <button className="custom-next text-white p-2 rounded-full bg-dark2">
-                                <IoIosArrowForward className="text-white text-3xl" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="lg:h-auto lg:w-full md:h-[90vh] md:w-full sm:h-full sm:w-full belowSm:h-full belowSm:w-full">
-                    {popularBlog == null || popularBlog == '' ? <div className="h-auto w-full">
-                        <p className="text-center text-3xl  text-white my-2">there is no blog avilable</p>
-                    </div>
-                        :
-                        popularBlog.map((blog) => {
-                            return (
-                                <div key={blog._id} className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-auto sm:w-full belowSm:h-auto belowSm:w-full border-y border-gray-800 ">
-                                    <div className="lg:h-full lg:w-[90%] lg:mx-auto lg:flex lg:justify-center
-                                md:h-full md:w-[90%] md:mx-auto md:flex md:justify-center
-                                sm:h-full sm:w-[90%] sm:mx-auto sm:py-6
-                                belowSm:h-full belowSm:w-[90%] belowSm:mx-auto belowSm:py-6 ">
-                                        <div className="lg:h-full lg:w-[25%] lg:flex lg:items-center
-                                    md:h-full md:w-[25%] md:flex md:items-center
-                                    sm:h-auto sm:w-full sm:flex sm:items-center
-                                    belowSm:h-auto belowSm:w-full belowSm:flex belowSm:items-center">
-                                            <div className="lg:h-auto lg:w-full lg:flex lg:justify-center
-                            md:h-auto md:w-full md:flex md:justify-center
-                            sm:h-fautoll sm:w-full sm:flex sm:justify-center
-                            belowSm:h-auto belowSm:w-full">
-                                                <div className="lg:h-[30vh] lg:w-full md:h-[30vh] md:w-full sm:h-[30vh] sm:w-full belowSm:h-[30vh] belowSm:w-full p-2">
-                                                    <img src={blog.image} className="rounded-lg h-full w-full" />
-                                                </div>
-
-                                                <div className="lg:hidden md:hidden sm:block belowSm:block">
-                                                    <Link to={`/blog/${blog.slug}`}>
-                                                        <div className="p-2 rounded bg-dark1 text-base font-normal text-gray1 flex justify-center">
-                                                            <p>View Blogs</p>
-                                                            <LuArrowUpRight className="text-xl text-amber-400" />
-                                                        </div>
-                                                    </Link>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div className="lg:h-full lg:w-[55%] lg:flex lg:items-center
-                        md:h-full md:w-[55%] md:flex md:items-center
-                        sm:h-[20vh] sm:w-full sm:flex sm:items-center
-                        belowSm:h-auto belowSm:w-full belowSm:flex belowSm:items-center px-4
-                        ">
-                                            <div className="text-gray1 font-normal ">
-                                                <p className="my-2 font-medium">{format(new Date(blog.createdAt), 'MMMM dd, yyyy')}</p>
-                                                <p className="text-white text-xl font-medium">{blog.title}</p>
-                                                <p className="line-clamp-2">{blog.introduction}</p>
-                                                <div className="h-[5vh] my-1 w-full flex justify-start gap-4 ">
-                                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2">
-                                                        <FaHeart className="text-gray-400" />
-                                                        <p>{blog.likes.length}</p>
-                                                    </button>
-                                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2">
-                                                        <FiMessageCircle className="text-gray-1" />
-                                                        <p>{blog.comments.length}</p>
-                                                    </button>
-                                                    <button className="px-2 text-sm font-normal text-gray1 rounded-xl border border-gray-800 flex justify-center items-center gap-2">
-                                                        <PiPaperPlaneTiltBold className="text-gray-1" />
-                                                        <p>20</p>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="lg:h-full lg:w-[15%] lg:flex lg:items-center lg:justify-end lg:block
-                        md:h-full md:w-[15%] md:flex md:items-center md:justify-end md:block
-                        sm:hidden
-                        belowSm:hidden">
-                                            <div className="w-full p-2 rounded bg-dark1 text-base font-normal text-gray1">
-                                                <Link to={`/blog/${blog.slug}`} className=" flex justify-center">
-                                                    <p>View All Blogs</p>
-                                                    <LuArrowUpRight className="text-xl text-amber-400" />
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })
-                    }
-                    <div className="h-auto w-full flex justify-center items-center">
-                        <Link to='/blog/search'>
-                        <button className=" text-white rounded-xl text-xl bg-amber-500 my-2 p-4">
-                            Show More
-                        </button>
+                          Read Article
+                          <BsArrowUpRight className="text-base sm:text-lg" />
                         </Link>
+                      </motion.div>
                     </div>
-                    {/* {pagesData == null ? "" :
-                        <BlogPagination
-                            totalPages={pagesData.totalPages}
-                            currentPage={currentPage}
-                            setCurrentPage={handlePageChange} // Use the handler instead
-                        />
-                    } */}
-
-
+                  </div>
                 </div>
-            </div >
-        </>
-    )
+              </motion.div>
+            ))
+          )}
+        </div>
+
+        {/* Show More Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center"
+        >
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+            <Link
+              to="/blog/search"
+              className="inline-flex items-center gap-2 sm:gap-3 px-8 sm:px-12 py-3 sm:py-6 bg-gradient-to-r from-orange-500 via-orange-600 to-yellow-500 text-white font-bold text-base sm:text-xl rounded-3xl shadow-2xl shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-500 ring-1 sm:ring-2 ring-orange-400/30 backdrop-blur-xl border border-orange-400/30"
+            >
+              Show More Blogs
+              <BsArrowUpRight className="text-lg sm:text-2xl" />
+            </Link>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
 }
