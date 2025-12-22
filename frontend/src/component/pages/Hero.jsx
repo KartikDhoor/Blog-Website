@@ -104,7 +104,7 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-br dark:from-orange-500/20 dark:to-yellow-500/20 from-orange-400/30 to-yellow-400/30 rounded-3xl blur-xl animate-pulse"></div>
             
             <img 
-              src="/src/assets/hero.jpg" 
+              src="/hero.jpg" 
               alt="AI Innovation"
               className="w-full h-full object-cover rounded-3xl shadow-2xl absolute inset-0"
             />
