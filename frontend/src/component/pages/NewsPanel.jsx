@@ -134,17 +134,33 @@ export default function NewsPanel({ headline = "Latest News" }) {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12 sm:mb-20"
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-8 mb-12 sm:mb-20"
         >
-          <div className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500/20 to-yellow-400/20 backdrop-blur-xl border-orange-400/40 rounded-2xl mb-4 sm:mb-8 mx-auto max-w-max">
-            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-orange-400 rounded-full animate-ping"></div>
-            <span className="text-sm sm:text-lg text-orange-400 dark:text-orange-300 font-semibold uppercase tracking-wider">
-              Unlock the Power of
-            </span>
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500/20 to-yellow-400/20 backdrop-blur-xl border-orange-400/40 rounded-2xl mb-4 sm:mb-8 max-w-max">
+              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-orange-400 rounded-full animate-ping"></div>
+              <span className="text-sm sm:text-lg text-orange-400 dark:text-orange-300 font-semibold uppercase tracking-wider">
+                Unlock the Power of
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black dark:bg-gradient-to-r from-orange-100 via-orange-200 to-yellow-200 bg-gradient-to-r from-orange-600 via-orange-400 to-yellow-400 bg-clip-text dark:text-transparent text-transparent leading-tight drop-shadow-lg">
+              {headline}
+            </h2>
           </div>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black dark:bg-gradient-to-r from-orange-100 via-orange-200 to-yellow-200 bg-gradient-to-r from-orange-600 via-orange-400 to-yellow-400 bg-clip-text dark:text-transparent text-transparent leading-tight drop-shadow-lg">
-            {headline}
-          </h2>
+          
+          {/* View All Button in Header - Always Visible */}
+          <motion.div 
+            whileHover={{ scale: 1.03 }}
+            className="flex-shrink-0"
+          >
+            <Link
+              to="/blog/search"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-500 text-white font-bold text-sm rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 whitespace-nowrap border border-orange-400/30 backdrop-blur-xl"
+            >
+              View All
+              <BsArrowUpRight className="text-base" />
+            </Link>
+          </motion.div>
         </motion.div>
 
         {/* Category Navigation */}
@@ -325,23 +341,84 @@ export default function NewsPanel({ headline = "Latest News" }) {
           )}
         </div>
 
-        {/* Show More Button */}
+        {/* PAGINATION CONTROLS - COMPLETE IMPLEMENTATION */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center"
+          className="flex flex-col sm:flex-row gap-4 items-center justify-center pt-12 pb-8"
         >
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-            <Link
-              to="/blog/search"
-              className="inline-flex items-center gap-2 sm:gap-3 px-8 sm:px-12 py-3 sm:py-6 bg-gradient-to-r from-orange-500 via-orange-600 to-yellow-500 text-white font-bold text-base sm:text-xl rounded-3xl shadow-2xl shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-500 ring-1 sm:ring-2 ring-orange-400/30 backdrop-blur-xl border border-orange-400/30"
+          {/* Page Info */}
+          <div className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium">
+            Page {pagesData.currentPage} of {pagesData.totalPages} 
+            ({pagesData.totalBlogs} total blogs)
+          </div>
+
+          {/* Pagination Buttons */}
+          <div className="flex items-center gap-2 bg-white/70 dark:bg-white/10 backdrop-blur-xl border border-white/40 dark:border-white/20 rounded-3xl p-2 shadow-xl">
+            {/* Previous Button */}
+            <motion.button
+              onClick={() => handlePageChange(pagesData.currentPage - 1)}
+              disabled={!pagesData.hasPrev}
+              className={`flex items-center gap-2 px-4 py-2 rounded-2xl font-semibold transition-all duration-300 ${
+                pagesData.hasPrev
+                  ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:from-orange-600 hover:to-yellow-500"
+                  : "bg-gray-200/50 dark:bg-gray-700/50 text-gray-500 cursor-not-allowed"
+              }`}
+              whileHover={pagesData.hasPrev ? { scale: 1.05 } : {}}
+              whileTap={{ scale: 0.95 }}
             >
-              Show More Blogs
-              <BsArrowUpRight className="text-lg sm:text-2xl" />
-            </Link>
-          </motion.div>
+              <IoIosArrowBack className="text-sm" />
+              <span className="hidden sm:inline">Previous</span>
+            </motion.button>
+
+            {/* Page Numbers */}
+            <div className="flex items-center gap-1 px-2">
+              {Array.from({ length: Math.min(5, pagesData.totalPages) }, (_, i) => {
+                const pageNum = pagesData.currentPage > 2 
+                  ? pagesData.currentPage + i - 2 
+                  : i + 1;
+                if (pageNum <= pagesData.totalPages) {
+                  return (
+                    <motion.button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`w-10 h-10 rounded-xl font-semibold flex items-center justify-center transition-all duration-300 text-sm ${
+                        pagesData.currentPage === pageNum
+                          ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/25"
+                          : "bg-white/70 dark:bg-white/20 hover:bg-orange-500/20 hover:text-orange-500 border border-white/40 dark:border-white/20 shadow-md hover:shadow-lg"
+                      }`}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {pageNum}
+                    </motion.button>
+                  );
+                }
+                return null;
+              })}
+            </div>
+
+            {/* Next Button */}
+            <motion.button
+              onClick={() => handlePageChange(pagesData.currentPage + 1)}
+              disabled={!pagesData.hasNext}
+              className={`flex items-center gap-2 px-4 py-2 rounded-2xl font-semibold transition-all duration-300 ${
+                pagesData.hasNext
+                  ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:from-orange-600 hover:to-yellow-500"
+                  : "bg-gray-200/50 dark:bg-gray-700/50 text-gray-500 cursor-not-allowed"
+              }`}
+              whileHover={pagesData.hasNext ? { scale: 1.05 } : {}}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span className="hidden sm:inline">Next</span>
+              <IoIosArrowForward className="text-sm" />
+            </motion.button>
+          </div>
+
+          
         </motion.div>
+       
       </div>
     </section>
   );

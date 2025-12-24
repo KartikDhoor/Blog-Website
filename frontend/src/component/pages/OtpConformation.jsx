@@ -119,30 +119,31 @@ export default function OtpConformation() {
       <div className="h-auto w-[90%] lg:w-[80%] my-8 mx-auto rounded-3xl flex justify-center shadow-2xl overflow-hidden">
         {/* Left Side - Decorative */}
         <div
-          className={`h-[80vh] w-[50%] lg:block md:block hidden ${
-            isDark
-              ? "bg-gradient-to-br from-black/90 to-gray-900/90"
-              : "bg-gradient-to-br from-orange-500/20 to-yellow-500/20"
-          } backdrop-blur-xl flex items-center justify-center`}
-        >
-          <div className="text-center px-8">
-            <h2
-              className={`text-4xl font-black mb-4 ${
+    className={`h-[60vh] sm:h-[70vh] lg:h-[80vh] w-full lg:w-[50%] ${
+        isDark
+            ? "bg-gradient-to-br from-black/90 to-gray-900/90"
+            : "bg-gradient-to-br from-orange-500/20 to-yellow-500/20"
+    } backdrop-blur-xl hidden lg:flex md:flex items-center justify-center p-6 sm:p-8`}
+>
+    <div className="text-center px-4 sm:px-8 max-w-md flex flex-col items-center justify-center">
+        <h2
+            className={`text-2xl sm:text-3xl lg:text-4xl font-black mb-3 sm:mb-4 leading-tight ${
                 isDark ? "text-white/90" : "text-orange-600"
-              }`}
-            >
-              Verify Your Email
-            </h2>
-            <p
-              className={`text-lg ${
+            }`}
+        >
+            Verify Your Email
+        </h2>
+        <p
+            className={`text-base sm:text-lg leading-relaxed ${
                 isDark ? "text-gray-300" : "text-gray-700"
-              }`}
-            >
-              We&apos;ve sent a 6‑digit code to your email. Enter it to complete
-              your sign in.
-            </p>
-          </div>
-        </div>
+            }`}
+        >
+            We&apos;ve sent a 6‑digit code to your email. Enter it to complete
+            your sign in.
+        </p>
+    </div>
+</div>
+
 
         {/* Right Side - OTP Form */}
         <motion.div

@@ -59,41 +59,50 @@ export default function Profile() {
   };
 
   const handleUpdateProfile = async () => {
-    if (!userData) return;
-    try {
-      const formData = new FormData();
-      formData.append("token", token);
-      formData.append("name", userData.name || "");
-      formData.append("email", userData.email || "");
-      formData.append("phoneNo", userData.phoneNo || "");
-      formData.append("introduction", userData.introduction || "");
-      if (userData.image instanceof File) {
-        formData.append("image", userData.image);
-      }
-
-      const response = await AxiosInstance.post(
-        "/customer/profile/update",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: token,
-          },
-        }
-      );
-
-      if (response.data.data) {
-        setUserData(response.data.data);
-        toast.success("Profile updated successfully");
-      } else {
-        console.error(response.data);
-        toast.error("Failed to update profile");
-      }
-    } catch (err) {
-      console.error("Update failed:", err);
-      toast.error("Something went wrong while updating");
+  if (!userData) return;
+  try {
+    const formData = new FormData();
+    
+    // ✅ Create userData object with all fields
+    const dataToSend = {
+      name: userData.name || "",
+      email: userData.email || "",
+      phoneNo: userData.phoneNo || "",
+      introduction: userData.introduction || "",
+    };
+    
+    // ✅ Append as JSON string
+    formData.append("userData", JSON.stringify(dataToSend));
+    
+    // ✅ Append image file if it's a new File
+    if (userData.image instanceof File) {
+      formData.append("image", userData.image);
     }
-  };
+
+    const response = await AxiosInstance.post(
+      "/customer/profile/update",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: token,
+        },
+      }
+    );
+    console.log(response)
+
+    if (response.data.success) {
+      setUserData(response.data.data);
+      toast.success("Profile updated successfully");
+    } else {
+      toast.error("Failed to update profile");
+    }
+  } catch (err) {
+    console.error("Update failed:", err);
+    toast.error("Something went wrong while updating");
+  }
+};
+
 
   if (!userData) {
     return (
@@ -107,7 +116,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-yellow-50 dark:from-gray-950 dark:via-black dark:to-gray-900 pt-28 pb-16 px-4 sm:px-6">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-yellow-50 dark:from-gray-950 dark:via-black dark:to-gray-900 pt-36 pb-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8 text-center">

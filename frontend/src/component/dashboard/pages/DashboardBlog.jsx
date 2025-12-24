@@ -147,6 +147,7 @@ export default function DashboardBlog() {
   };
 
   const handleCreateSubmit = async () => {
+     alert('Creating your blog...');
     const token = localStorage.getItem("blogsite_jwt_token");
     const formData = new FormData();
     formData.append("title", blogCreateFormData.title);
@@ -172,14 +173,17 @@ export default function DashboardBlog() {
     });
 
     try {
-      const res = await AxiosInstance.post("/admin/dashboard/blogs/create", formData, {
+      const res = await AxiosInstance.post("/admin/create/blog", formData, {
         headers: {
           authorization: token,
           "Content-Type": "multipart/form-data",
         },
       });
+       alert('Creating your blog 5 5 5 ...');
+       console.log(res.data);
 
       if (res?.data?.success) {
+         alert('Creating your blog...');
         toast.success("Blog created successfully!");
         setBlogCreate(false);
         setCreatePopup(false);

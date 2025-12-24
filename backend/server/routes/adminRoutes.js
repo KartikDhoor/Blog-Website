@@ -4,45 +4,35 @@ const router=express.Router();
 const userController=require('../controller/userController');
 const blogController=require('../controller/blogController');
 const categoryController=require('../controller/categoryController');
-const upload =require("../config/multer")
-const jwtChecker=require('../config/jwtChecker')
-//Admin registration
+const { upload, uploadToCloudinaryMiddleware } = require("../config/multer"); // ✅ SINGLE import
+const jwtChecker=require('../config/jwtChecker');
 
+//Admin login
 router.post('/login',userController.login);
+
 //jwt checker
 router.use('/',jwtChecker.dashboard);
-//Blog creation 
-router.post(
-    '/create/blog',
-    upload.any(),
-    blogController.createBlog
-  );
-//Blog update
-router.post(
-    '/update/blog',
-    upload.any(),
-    blogController.updateBlog
-);
-//Blodashboardg Delete
+
+//Blog routes ✅ CORRECT
+router.post('/create/blog', upload.any(), uploadToCloudinaryMiddleware, blogController.createBlog);
+router.post('/update/blog', upload.any(), uploadToCloudinaryMiddleware, blogController.updateBlog);
+
+//Category routes (single image)
+router.post('/create/category', upload.single('categoryImage'), uploadToCloudinaryMiddleware, categoryController.createCategory);
+router.post('/update/category', upload.single('categoryImage'), uploadToCloudinaryMiddleware, categoryController.updateCategory);
+
+//Other routes...
 router.post('/delete/blog',blogController.deleteBlog);
-//Blog find List
 router.post('/dashboard/blogs/find',blogController.dashboardFindBlog);
-//slug Blog Finder
-router.get("/dashboard/blogs/:slug",blogController.dashboardSlugFinder)
-//category Creation
-router.post('/create/categroy',upload.single('categoryImage'),categoryController.createCategory);
-//category Update
-router.post('/update/category',upload.single('categoryImage'),categoryController.updateCategory);
-//categroy delete
+router.get("/dashboard/blogs/:slug",blogController.dashboardSlugFinder);
 router.post('/delete/category',categoryController.deleteCategory);
-// //chceker for the token
-//all the remaining address
+
 router.all('*',(req,res)=>{
     res.send({
         success:false,
         status:404,
         message:"Invalid Address"
     })
-})
+});
 
 module.exports=router;

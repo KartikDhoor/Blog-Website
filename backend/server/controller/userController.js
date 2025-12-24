@@ -219,20 +219,28 @@ const profileUpdate = (req, res) => {
 
   User.findOne({ _id: req.decoded._id }).exec()
     .then(user => {
-      if (!user) return res.send({ success: false, status: 400, message: "user does not exist" });
+      if (!user) {
+        return res.send({ success: false, status: 400, message: "user does not exist" });
+      }
+    console.log(req.body)
+    console.log(req.file)
+    console.log(req.cloudinaryFile)
 
+      // ✅ Parse userData correctly
       const updates = req.body.userData ? JSON.parse(req.body.userData) : {};
 
-      // Update text fields
-      user.name = updates.name ?? user.name;
-      user.email = updates.email ?? user.email;
-      user.phoneNo = updates.phoneNo ?? user.phoneNo;
-      user.introduction = updates.introduction ?? user.introduction;
+      // ✅ Update text fields
+      if (updates.name) user.name = updates.name;
+      if (updates.email) user.email = updates.email;
+      if (updates.phoneNo) user.phoneNo = updates.phoneNo;
+      if (updates.introduction) user.introduction = updates.introduction;
 
-      // Update uploaded file
-      if (req.file) {
-        console.log(req.file)
-        user.image = `http://localhost:5000/uploads/${req.file.filename}`;
+      // ✅ Handle image upload from Cloudinary middleware
+      if (req.file && req.cloudinaryFile) {
+        // print(req.file);
+        // req.cloudinaryFile comes from uploadToCloudinaryMiddleware
+        user.image = req.cloudinaryFile.cloudinaryUrl;
+
       }
 
       return user.save();
@@ -252,6 +260,7 @@ const profileUpdate = (req, res) => {
       res.send({ success: false, status: 500, message: err.message });
     });
 };
+
 
 
 const otpConfirmation = (req, res) => {

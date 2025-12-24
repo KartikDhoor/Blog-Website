@@ -94,61 +94,156 @@ const updateComment = (req, res) => {
     }
 }
 
-const findComment=(req,res)=>{
-    let validation=''
-    if(!req.body._id){
-        validation+="_id is required"
+const findComment = async (req, res) => {
+  let validation = "";
+  if (!req.body._id) validation += "_id is required";
+  
+  if (!!validation) {
+    return res.send({ success: false, status: 400, message: validation });
+  }
+
+  try {
+    const page = parseInt(req.body.page) || 1;
+    const limit = parseInt(req.body.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    // Find comment + related comments (same blog)
+    const comment = await Comment.findOne({ 
+      _id: req.body._id, 
+      status: true 
+    }).populate("userId", 'name image').populate("blogId", 'title');
+
+    if (!comment) {
+      return res.send({ success: false, status: 404, message: "Comment not found" });
     }
-    if(!!validation){
-        res.send({success:false,status:400,message:validation})
-    }
-    else{
-        Comment.findOne({_id:req.body._id}).populate("blog","user").exec()
-        .then((data)=>{
-            res.send({success:true,status:200,data:data})
-        })
-        .catch((err)=>{
-            res.send({success:false,status:400,message:err.message})
-        })
-    }
-}
-const blogComment=(req,res)=>{
-    let validation=""
-    if(!req.body.blogId){
-        validation+="blog id is required"
-    }
-    if(!!validation){
-        res.send({success:false,status:400,message:validation})
-    }
-    else{
-        Comment.find({blogId:req.body.blogId}).populate("userId",'name email').populate("blogId",'title author')
-        .exec()
-        .then((data)=>{
-            res.send({success:true,status:200,total:data.length,data:data})
-        })
-        .catch((err)=>{
-            res.send({success:false,status:400,message:err.message})
-        })
-    }
-}
-const userComment=(req,res)=>{
-    let validation=""
-    if(req.body.userId){
-        validation+="user id is required"
-    }
-    if(!!validation){
-        res.send({success:false,status:400,message:validation})
-    }
-    else{
-        Comment.find({userId:req.body.userId}).populate("user","blog").exec()
-        .then((data)=>{
-            res.send({success:true,status:200,data:data})
-        })
-        .catch((err)=>{
-            res.send({success:false,status:400,message:err.message})
-        })
-    }
-}
+
+    const totalComments = await Comment.countDocuments({ 
+      blogId: comment.blogId, 
+      status: true 
+    });
+
+    const comments = await Comment.find({ 
+      blogId: comment.blogId, 
+      status: true 
+    })
+    .populate("userId", 'name image')
+    .sort({ date: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec();
+
+    const hasMore = skip + comments.length < totalComments;
+
+    res.send({
+      success: true,
+      status: 200,
+      selectedComment: comment,
+      total: totalComments,
+      data: comments,
+      pagination: {
+        currentPage: page,
+        hasMore,
+        nextPage: hasMore ? page + 1 : null
+      }
+    });
+  } catch (err) {
+    res.send({ success: false, status: 400, message: err.message });
+  }
+};
+
+const blogComment = async (req, res) => {
+  let validation = "";
+  if (!req.body.blogId) validation += "blog id is required";
+  
+  if (!!validation) {
+    return res.send({ success: false, status: 400, message: validation });
+  }
+
+  try {
+    const page = parseInt(req.body.page) || 1;
+    const limit = parseInt(req.body.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    const totalComments = await Comment.countDocuments({ 
+      blogId: req.body.blogId, 
+      status: true 
+    });
+
+    const comments = await Comment.find({ 
+      blogId: req.body.blogId, 
+      status: true 
+    })
+    .populate("userId", 'name image')
+    .populate("blogId", 'title author')
+    .sort({ date: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec();
+
+    const hasMore = skip + comments.length < totalComments;
+
+    res.send({
+      success: true,
+      status: 200,
+      total: totalComments,
+      data: comments,
+      pagination: {
+        currentPage: page,
+        hasMore,
+        nextPage: hasMore ? page + 1 : null
+      }
+    });
+  } catch (err) {
+    res.send({ success: false, status: 400, message: err.message });
+  }
+};
+
+const userComment = async (req, res) => {
+  let validation = "";
+  if (!req.body.userId) validation += "user id is required";
+  
+  if (!!validation) {
+    return res.send({ success: false, status: 400, message: validation });
+  }
+
+  try {
+    const page = parseInt(req.body.page) || 1;
+    const limit = parseInt(req.body.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    const totalComments = await Comment.countDocuments({ 
+      userId: req.body.userId, 
+      status: true 
+    });
+
+    const comments = await Comment.find({ 
+      userId: req.body.userId, 
+      status: true 
+    })
+    .populate("blogId", 'title slug author')
+    .sort({ date: -1 })
+    .skip(skip)
+    .limit(limit)
+    .exec();
+
+    const hasMore = skip + comments.length < totalComments;
+
+    res.send({
+      success: true,
+      status: 200,
+      total: totalComments,
+      data: comments,
+      pagination: {
+        currentPage: page,
+        hasMore,
+        nextPage: hasMore ? page + 1 : null
+      }
+    });
+  } catch (err) {
+    res.send({ success: false, status: 400, message: err.message });
+  }
+};
+
 
 //admin apis
 const dashboardUpdateComment = (req, res) => {

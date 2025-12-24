@@ -6,18 +6,37 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY, 
     api_secret: process.env.CLOUDINARY_API_SECRET 
 });
-const uploadToCloudinary = async (filePath) => {
+
+const uploadToCloudinary = async (input) => {
     try {
-      const result = await cloudinary.uploader.upload(filePath, { folder: 'uploads' });
-  
-      // Delete the file from local storage after successful upload
-      fs.unlinkSync(filePath);
-  
-      return result.secure_url; // Return Cloudinary image URL
+        let result;
+        
+        // Handle BUFFER (memory storage)
+        if (Buffer.isBuffer(input)) {
+            result = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    { folder: 'uploads' },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                ).end(input);
+            });
+        } 
+        // Handle FILE PATH (disk storage)
+        else if (typeof input === 'string' && fs.existsSync(input)) {
+            result = await cloudinary.uploader.upload(input, { folder: 'uploads' });
+            fs.unlinkSync(input); // Delete local file
+        } 
+        else {
+            throw new Error('Invalid input: must be Buffer or file path');
+        }
+        
+        return result.secure_url;
     } catch (error) {
-      console.error('Error uploading to Cloudinary:', error);
-      throw error;
+        console.error('Cloudinary Error:', error);
+        throw error;
     }
-  };
-  
-  module.exports = uploadToCloudinary;
+};
+
+module.exports = uploadToCloudinary;

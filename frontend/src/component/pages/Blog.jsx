@@ -9,10 +9,12 @@ import { useAuth } from "../AuthContext";
 import { useAnalyticsContext } from "../analytics/AnalyticsProvider";
 import { motion } from "framer-motion";
 
+
 export default function Blog() {
   const { user, token } = useAuth();
   const { slug } = useParams();
   const { setPostData, trackLike, trackComment } = useAnalyticsContext();
+
 
   const [like, setLike] = useState(false);
   const [commentData, setCommentData] = useState([]);
@@ -20,12 +22,21 @@ export default function Blog() {
   const [likeTotal, setLikeTotal] = useState(0);
   const [blogData, setBlogData] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // 🚀 COMMENT PAGINATION STATES
+  const [commentsPage, setCommentsPage] = useState(1);
+  const [loadingMoreComments, setLoadingMoreComments] = useState(false);
+  const [hasMoreComments, setHasMoreComments] = useState(false);
+  const [totalComments, setTotalComments] = useState(0);
+  const COMMENTS_PER_PAGE = 5;
+
 
   useEffect(() => {
     if (slug) {
       fetchBlogDetails(slug);
     }
   }, [slug, user, like]);
+
 
   const fetchBlogDetails = async (slugValue) => {
     try {
@@ -36,15 +47,24 @@ export default function Blog() {
         }
       );
 
+
       const data = response.data.data;
       setBlogData(data);
       setLike(response.data.likedByUser);
       setLikeTotal(response.data.totalLikes || 0);
-      setCommentData(data.comments || []);
+      
+      // 🚀 Load initial comments with pagination
+      const allComments = data.comments || [];
+      setTotalComments(allComments.length);
+      setCommentData(allComments.slice(0, COMMENTS_PER_PAGE));
+      setHasMoreComments(allComments.length > COMMENTS_PER_PAGE);
+      setCommentsPage(1);
+
 
       if (data?._id && data?.title) {
         setPostData(data._id, data.title);
       }
+
 
       setLoading(false);
     } catch (error) {
@@ -54,8 +74,41 @@ export default function Blog() {
     }
   };
 
+
+  // 🚀 LOAD MORE COMMENTS
+  const loadMoreComments = async () => {
+    if (!blogData || loadingMoreComments || !hasMoreComments) return;
+
+    setLoadingMoreComments(true);
+    try {
+      // Fetch all comments from blog data
+      const allComments = blogData.comments || [];
+      const nextPage = commentsPage + 1;
+      const startIndex = nextPage * COMMENTS_PER_PAGE - COMMENTS_PER_PAGE;
+      const endIndex = nextPage * COMMENTS_PER_PAGE;
+      
+      const newComments = allComments.slice(startIndex, endIndex);
+      
+      if (newComments.length > 0) {
+        setCommentData(prev => [...prev, ...newComments]);
+        setCommentsPage(nextPage);
+        
+        // Check if more comments exist
+        if (endIndex >= allComments.length) {
+          setHasMoreComments(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading more comments:", error.message);
+    } finally {
+      setLoadingMoreComments(false);
+    }
+  };
+
+
   const handleLikeClick = async () => {
     if (!blogData || !user) return;
+
 
     try {
       const response = await AxiosInstance.post(
@@ -69,6 +122,7 @@ export default function Blog() {
         }
       );
 
+
       if (response.data.success) {
         trackLike();
         setLike((prev) => !prev);
@@ -79,13 +133,16 @@ export default function Blog() {
     }
   };
 
+
   const handleInputChange = (e) => {
     setNewComment(e.target.value);
   };
 
+
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!blogData || !user || !newComment.trim()) return;
+
 
     try {
       const response = await AxiosInstance.post(
@@ -100,6 +157,7 @@ export default function Blog() {
         }
       );
 
+
       if (response) {
         trackComment();
         setNewComment("");
@@ -109,6 +167,7 @@ export default function Blog() {
       console.error("Error creating comment:", error.message);
     }
   };
+
 
   if (loading) {
     return (
@@ -126,6 +185,7 @@ export default function Blog() {
       </motion.div>
     );
   }
+
 
   if (!blogData) {
     return (
@@ -149,6 +209,7 @@ export default function Blog() {
     );
   }
 
+
   return (
     <div className="bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 min-h-screen">
       {/* HERO SECTION WITH IMAGE BACKGROUND */}
@@ -169,6 +230,7 @@ export default function Blog() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
         </div>
 
+
         {/* Content Overlay */}
         <motion.div
           className="absolute inset-0 flex flex-col justify-end px-4 sm:px-6 lg:px-16 pb-10 sm:pb-14 lg:pb-16"
@@ -186,6 +248,7 @@ export default function Blog() {
               </span>
             </motion.div>
 
+
             <motion.h1
               className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-black text-white leading-tight drop-shadow-2xl max-w-3xl mb-4 sm:mb-8"
               initial={{ y: 20, opacity: 0 }}
@@ -194,6 +257,7 @@ export default function Blog() {
             >
               {blogData.title}
             </motion.h1>
+
 
             <motion.div
               className="flex flex-wrap gap-4 sm:gap-8 items-center text-white/90"
@@ -226,6 +290,7 @@ export default function Blog() {
         </motion.div>
       </motion.div>
 
+
       {/* MAIN CONTENT AREA */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 py-16 sm:py-20">
         {/* MOBILE ACTION BAR */}
@@ -242,11 +307,13 @@ export default function Blog() {
             <span>{likeTotal}</span>
           </button>
 
+
           <button className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100">
             <FiShare2 />
             <span>Share</span>
           </button>
         </div>
+
 
         {/* Sticky Navigation - DESKTOP ONLY */}
         <motion.div
@@ -270,6 +337,7 @@ export default function Blog() {
             </span>
           </motion.button>
 
+
           <motion.button
             className="group relative w-12 h-12 xl:w-14 xl:h-14 rounded-2xl bg-white/80 dark:bg-white/20 border border-white/50 dark:border-white/30 shadow-lg backdrop-blur-xl text-gray-800 dark:text-gray-300 hover:bg-white/95 dark:hover:bg-white/30 transition-all duration-300 flex items-center justify-center text-lg xl:text-xl hover:shadow-xl hover:border-orange-400/50"
             whileHover={{ scale: 1.1 }}
@@ -281,6 +349,7 @@ export default function Blog() {
             </span>
           </motion.button>
         </motion.div>
+
 
         {/* Article Content */}
         <motion.div
@@ -302,6 +371,7 @@ export default function Blog() {
             </p>
           </motion.div>
 
+
           {/* Sections */}
           {blogData.sections.map((section, index) => (
             <motion.div
@@ -321,9 +391,11 @@ export default function Blog() {
                   {section.title}
                 </motion.h2>
 
+
                 <p className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light">
                   {section.content}
                 </p>
+
 
                 {section.sectionImage && (
                   <motion.div
@@ -341,6 +413,7 @@ export default function Blog() {
             </motion.div>
           ))}
         </motion.div>
+
 
         {/* TABLE OF CONTENTS STICKY - DESKTOP ONLY */}
         <motion.div
@@ -368,7 +441,8 @@ export default function Blog() {
         </motion.div>
       </div>
 
-      {/* COMMENTS SECTION */}
+
+      {/* COMMENTS SECTION WITH PAGINATION */}
       <motion.div
         className="bg-white/60 dark:bg-white/20 backdrop-blur-2xl border-y border-white/30 dark:border-white/20 py-16 sm:py-20"
         initial={{ opacity: 0, y: 40 }}
@@ -377,8 +451,9 @@ export default function Blog() {
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-0">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-8 sm:mb-12">
-            Comments ({commentData.length})
+            Comments ({totalComments})
           </h2>
+
 
           {/* Add Comment */}
           {user && (
@@ -410,7 +485,8 @@ export default function Blog() {
             </motion.form>
           )}
 
-          {/* Comments List */}
+
+          {/* Comments List with Pagination */}
           <div className="space-y-4 sm:space-y-6">
             {commentData.length === 0 ? (
               <motion.div
@@ -423,50 +499,92 @@ export default function Blog() {
                 </p>
               </motion.div>
             ) : (
-              [...commentData].reverse().map((comment, index) => (
-                <motion.div
-                  key={comment._id}
-                  className="group bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl hover:border-orange-400/50 transition-all duration-500"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ y: -4 }}
-                >
-                  <div className="flex gap-4 sm:gap-6">
-                    <div className="flex-shrink-0">
-                      {comment.userId.image ? (
-                        <img
-                          src={comment.userId.image}
-                          alt={comment.userId.name}
-                          className="w-12 h-12 sm:w-16 sm:h-16 rounded-3xl object-cover ring-4 ring-white/50 shadow-lg"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-yellow-400 rounded-3xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl ring-4 ring-white/50 shadow-lg">
-                          {comment.userId.name.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                        <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
-                          {comment.userId.name}
-                        </h4>
-                        <span className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
-                          {format(new Date(comment.date), "MMM dd, yyyy")}
-                        </span>
+              <>
+                {[...commentData].reverse().map((comment, index) => (
+                  <motion.div
+                    key={comment._id}
+                    className="group bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl hover:border-orange-400/50 transition-all duration-500"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.05 }}
+                    whileHover={{ y: -4 }}
+                  >
+                    <div className="flex gap-4 sm:gap-6">
+                      <div className="flex-shrink-0">
+                        {comment.userId.image ? (
+                          <img
+                            src={comment.userId.image}
+                            alt={comment.userId.name}
+                            className="w-12 h-12 sm:w-16 sm:h-16 rounded-3xl object-cover ring-4 ring-white/50 shadow-lg"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-yellow-400 rounded-3xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl ring-4 ring-white/50 shadow-lg">
+                            {comment.userId.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
                       </div>
-                      <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-light">
-                        {comment.content}
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                          <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                            {comment.userId.name}
+                          </h4>
+                          <span className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
+                            {format(new Date(comment.date), "MMM dd, yyyy")}
+                          </span>
+                        </div>
+                        <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-light">
+                          {comment.content}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </motion.div>
+                ))}
+
+                {/* Load More Comments Button */}
+                {hasMoreComments && (
+                  <motion.div
+                    className="flex justify-center mt-8 sm:mt-12"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <motion.button
+                      onClick={loadMoreComments}
+                      disabled={loadingMoreComments}
+                      className="px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 hover:from-orange-500/20 hover:to-yellow-500/20 border border-orange-400/30 rounded-2xl text-orange-600 dark:text-orange-400 font-semibold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-3"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {loadingMoreComments ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-orange-400/50 border-t-orange-500 rounded-full animate-spin" />
+                          Loading more comments...
+                        </>
+                      ) : (
+                        <>
+                          <span>📝 Load More Comments ({commentData.length}/{totalComments})</span>
+                        </>
+                      )}
+                    </motion.button>
+                  </motion.div>
+                )}
+
+                {/* Pagination Info */}
+                <motion.div
+                  className="text-center mt-8 sm:mt-12"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium">
+                    Showing {Math.min(commentData.length, totalComments)} of {totalComments} comments
+                  </p>
                 </motion.div>
-              ))
+              </>
             )}
           </div>
         </div>
       </motion.div>
+
 
       {/* RECOMMENDED ARTICLES */}
       <motion.div
@@ -479,6 +597,7 @@ export default function Blog() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white text-center mb-10 sm:mb-16">
             Keep Reading
           </h2>
+
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
             {[1, 2, 3].map((card, index) => (
@@ -503,6 +622,7 @@ export default function Blog() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent group-hover:from-black/60 transition-all duration-500"></div>
                 </motion.div>
 
+
                 <motion.div
                   className="relative -mt-16 sm:-mt-20 mx-3 sm:mx-4 bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-2xl group-hover:shadow-3xl group-hover:border-orange-400/60 transition-all duration-500"
                   whileHover={{ y: -8 }}
@@ -510,6 +630,7 @@ export default function Blog() {
                   <h3 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 line-clamp-2 group-hover:text-orange-500 transition-colors">
                     Insights into Progressive Policies
                   </h3>
+
 
                   <div className="flex items-center gap-3 sm:gap-4">
                     <motion.button

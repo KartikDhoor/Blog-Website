@@ -319,13 +319,19 @@ export default function News() {
               to="/videos"
               className="w-full lg:w-[15%] flex justify-center lg:justify-end"
             >
-              <motion.button
-                className="flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-white/80 dark:bg-white/20 backdrop-blur-2xl border-white/50 dark:border-white/20 rounded-2xl font-bold text-sm sm:text-lg text-gray-800 dark:text-gray-300 shadow-xl hover:bg-white/95 dark:hover:bg-white/30 hover:shadow-2xl hover:border-orange-400/50 hover:text-orange-500 transition-all duration-300"
-                whileHover={{ scale: 1.05, y: -2 }}
-              >
-                <span>View All</span>
-                <BsArrowUpRight className="text-base sm:text-xl" />
-              </motion.button>
+               {/* View All Button in Header - Always Visible */}
+          <motion.div 
+            whileHover={{ scale: 1.03 }}
+            className="flex-shrink-0"
+          >
+            <Link
+              to="/blog/search"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-500 text-white font-bold text-sm rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 whitespace-nowrap border border-orange-400/30 backdrop-blur-xl"
+            >
+              View All
+              <BsArrowUpRight className="text-base" />
+            </Link>
+          </motion.div>
             </Link>
           </div>
         </motion.div>
