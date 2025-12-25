@@ -5,6 +5,7 @@ const blogController=require('../controller/blogController');
 const categoryController=require('../controller/categoryController');
 const commentController=require("../controller/commentController");
 const likeController=require("../controller/likeController");
+const contactController= require("../controller/contactController");
 const jwtchecker=require('../config/jwtChecker');
 const { upload, uploadToCloudinaryMiddleware } = require("../config/multer"); // ✅ SINGLE import
 
@@ -22,6 +23,7 @@ router.post("/find/comment",commentController.findComment);
 router.post('/create/comment',commentController.createComment);
 router.post('/update/comment',commentController.updateComment);
 router.post('/blog/find',blogController.findBlog);
+router.post('/contact',contactController.submitContact);
 
 //Protected routes
 router.use('/',jwtchecker.customer);

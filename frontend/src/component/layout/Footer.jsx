@@ -141,7 +141,7 @@ export default function Footer() {
             <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Community</p>
           </div>
 
-          <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-auto sm:w-[90%] sm:mx-auto belowSm:h-auto belowSm:w-[90%] belowSm:mx-auto text-base font-base dark:text-gray-400 text-gray-600 space-y-6">
+          {/* <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-auto sm:w-[90%] sm:mx-auto belowSm:h-auto belowSm:w-[90%] belowSm:mx-auto text-base font-base dark:text-gray-400 text-gray-600 space-y-6">
             <p className="text-xl dark:text-gray-400 text-gray-600 my-2 font-medium">Newsletters</p>
             <div className="space-y-3">
               <input 
@@ -152,7 +152,7 @@ export default function Footer() {
                 Subscribe
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Divider */}

@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 export default function Profile() {
   const { user, token } = useAuth();
   const [userData, setUserData] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false); // ✅ NEW
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,50 +60,60 @@ export default function Profile() {
   };
 
   const handleUpdateProfile = async () => {
-  if (!userData) return;
-  try {
-    const formData = new FormData();
-    
-    // ✅ Create userData object with all fields
-    const dataToSend = {
-      name: userData.name || "",
-      email: userData.email || "",
-      phoneNo: userData.phoneNo || "",
-      introduction: userData.introduction || "",
-    };
-    
-    // ✅ Append as JSON string
-    formData.append("userData", JSON.stringify(dataToSend));
-    
-    // ✅ Append image file if it's a new File
-    if (userData.image instanceof File) {
-      formData.append("image", userData.image);
-    }
+    if (!userData) return;
 
-    const response = await AxiosInstance.post(
-      "/customer/profile/update",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: token,
-        },
+    try {
+      setIsUpdating(true); // ✅ start loading
+
+      toast.info(
+        userData.image instanceof File
+          ? "Uploading image and updating profile..."
+          : "Updating profile..."
+      );
+
+      const formData = new FormData();
+
+      const dataToSend = {
+        name: userData.name || "",
+        email: userData.email || "",
+        phoneNo: userData.phoneNo || "",
+        introduction: userData.introduction || "",
+      };
+
+      formData.append("userData", JSON.stringify(dataToSend));
+
+      if (userData.image instanceof File) {
+        formData.append("image", userData.image);
       }
-    );
-    console.log(response)
 
-    if (response.data.success) {
-      setUserData(response.data.data);
-      toast.success("Profile updated successfully");
-    } else {
-      toast.error("Failed to update profile");
+      const response = await AxiosInstance.post(
+        "/customer/profile/update",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: token,
+          },
+        }
+      );
+      console.log(response);
+
+      toast.dismiss();
+
+      if (response.data.success) {
+        setUserData(response.data.data);
+        toast.success("Profile updated successfully");
+      } else {
+        toast.error(response.data.message || "Failed to update profile");
+      }
+    } catch (err) {
+      console.error("Update failed:", err);
+      toast.dismiss();
+      toast.error("Something went wrong while updating");
+    } finally {
+      setIsUpdating(false); // ✅ stop loading
     }
-  } catch (err) {
-    console.error("Update failed:", err);
-    toast.error("Something went wrong while updating");
-  }
-};
-
+  };
 
   if (!userData) {
     return (
@@ -152,7 +163,18 @@ export default function Profile() {
                       />
                     )}
                   </div>
+
+                  {/* ✅ Small overlay when updating image */}
+                  {isUpdating && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
+                      <div className="flex items-center gap-2 text-xs sm:text-sm text-orange-100">
+                        <span className="h-4 w-4 border-2 border-orange-200 border-t-transparent rounded-full animate-spin" />
+                        <span>Updating...</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
+
                 <label className="w-full">
                   <span className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                     Profile photo
@@ -161,7 +183,8 @@ export default function Profile() {
                     type="file"
                     name="image"
                     onChange={handleFileChange}
-                    className="block w-full text-xs sm:text-sm text-gray-700 dark:text-gray-200 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-orange-500/90 file:text-white hover:file:bg-orange-600/90 bg-white/70 dark:bg-black/40 border border-gray-200/70 dark:border-gray-700/70 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400/70"
+                    disabled={isUpdating}
+                    className="block w-full text-xs sm:text-sm text-gray-700 dark:text-gray-200 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-orange-500/90 file:text-white hover:file:bg-orange-600/90 bg-white/70 dark:bg-black/40 border border-gray-200/70 dark:border-gray-700/70 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400/70 disabled:opacity-70 disabled:cursor-not-allowed"
                   />
                 </label>
               </div>
@@ -179,6 +202,7 @@ export default function Profile() {
                     onChange={updateUserProfile}
                     className="w-full h-11 sm:h-12 px-3 sm:px-4 rounded-2xl bg-white/80 dark:bg-black/40 border border-gray-200/70 dark:border-gray-700/70 text-sm sm:text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400/70 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                     placeholder="Your full name"
+                    disabled={isUpdating}
                   />
                 </div>
 
@@ -194,6 +218,7 @@ export default function Profile() {
                       onChange={updateUserProfile}
                       className="w-full h-11 sm:h-12 px-3 sm:px-4 rounded-2xl bg-white/80 dark:bg-black/40 border border-gray-200/70 dark:border-gray-700/70 text-sm sm:text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400/70"
                       placeholder="you@example.com"
+                      disabled={isUpdating}
                     />
                   </div>
                   <div>
@@ -207,6 +232,7 @@ export default function Profile() {
                       onChange={updateUserProfile}
                       className="w-full h-11 sm:h-12 px-3 sm:px-4 rounded-2xl bg-white/80 dark:bg-black/40 border border-gray-200/70 dark:border-gray-700/70 text-sm sm:text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400/70"
                       placeholder="+91 00000 00000"
+                      disabled={isUpdating}
                     />
                   </div>
                 </div>
@@ -221,6 +247,7 @@ export default function Profile() {
                     onChange={updateUserProfile}
                     className="w-full min-h-[120px] sm:min-h-[150px] px-3 sm:px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-black/40 border border-gray-200/70 dark:border-gray-700/70 text-sm sm:text-base text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400/70 resize-y"
                     placeholder="Tell us a bit about yourself..."
+                    disabled={isUpdating}
                   />
                 </div>
 
@@ -228,9 +255,22 @@ export default function Profile() {
                   <button
                     type="button"
                     onClick={handleUpdateProfile}
-                    className="inline-flex items-center justify-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-500 shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 transition-all"
+                    disabled={isUpdating}
+                    className={`inline-flex items-center justify-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 shadow-lg shadow-orange-500/30 transition-all
+                      ${
+                        isUpdating
+                          ? "cursor-not-allowed opacity-90"
+                          : "hover:from-orange-600 hover:to-yellow-500 hover:shadow-orange-500/40"
+                      }`}
                   >
-                    Save changes
+                    {isUpdating ? (
+                      <>
+                        <span className="mr-2 h-4 w-4 border-2 border-white/70 border-t-transparent rounded-full animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      "Save changes"
+                    )}
                   </button>
                 </div>
               </div>
