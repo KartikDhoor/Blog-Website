@@ -28,7 +28,8 @@ app.use(express.json());
 // ✅ Updated CORS
 const allowedOrigins = [
   'http://localhost:5173', // local dev
-  'https://blog-website-to47.vercel.app' // deployed frontend
+  'https://blog-website-to47.vercel.app', // deployed frontend
+  'https://neuradhoor.kartikdhoor.com'
 ];
 
 app.use(cors({
