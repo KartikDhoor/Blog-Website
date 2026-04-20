@@ -1,32 +1,14 @@
 // ==========================================
-// UPDATED index.js (ADD ANALYTICS ROUTES + CORS FOR VERCEL)
+// UPDATED index.js (FIXED CORS ORDER)
 // ==========================================
 
 const express = require('express');
 const app = express();
 const path = require('path');
+const cors = require('cors'); // ← MOVED UP
 require('dotenv').config();
 
-app.use('/uploads', express.static(path.join(__dirname, './public/image')));
-
-// Connect DB
-require('./server/config/db');
-
-// Import routes
-const customerRoutes = require('./server/routes/customerRoutes');
-const adminRoutes = require('./server/routes/adminRoutes');
-const analyticsRoutes = require('./server/routes/analyticsRoutes'); // ← NEW
-
-// Import config
-const seedAdmin = require('./server/config/adminSeeder.js');
-const seedCategories = require('./server/config/seedCategory.js'); // ← NEW
-const cors = require('cors');
-
-// Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// ✅ Updated CORS
+// ✅ 1. ADD CORS FIRST (Before ANY other middleware or routes)
 const allowedOrigins = [
   'http://localhost:5173', // local dev
   'https://blog-website-to47.vercel.app', // deployed frontend
@@ -42,22 +24,42 @@ app.use(cors({
     }
     return callback(null, true);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ← ADDED 'OPTIONS' for preflight
   credentials: true
 }));
+
+// ✅ 2. Body parsing middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// ✅ 3. Static files
+app.use('/uploads', express.static(path.join(__dirname, './public/image')));
+
+// Connect DB
+require('./server/config/db');
+
+// Import routes
+const customerRoutes = require('./server/routes/customerRoutes');
+const adminRoutes = require('./server/routes/adminRoutes');
+const analyticsRoutes = require('./server/routes/analyticsRoutes');
+
+// Import config
+const seedAdmin = require('./server/config/adminSeeder.js');
+const seedCategories = require('./server/config/seedCategory.js'); 
 
 // Seed admin
 seedAdmin();
 
-// Register routes
+// ✅ 4. Register routes
 app.use('/customer', customerRoutes);
 app.use('/admin', adminRoutes);
-app.use('/analytics', analyticsRoutes); // ← NEW
+app.use('/analytics', analyticsRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.get("/health",(req,res)=>{
-  res.send({sucess:true,status:200, message:"Blog applicaiton backend is working"})
-})
+
+app.get("/health", (req, res) => {
+  res.send({ success: true, status: 200, message: "Blog application backend is working" });
+});
 
 app.listen(PORT, (err) => {
   if (err) {
