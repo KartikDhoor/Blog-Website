@@ -49,6 +49,7 @@ const seedCategories = require('./server/config/seedCategory.js');
 
 // Seed admin
 seedAdmin();
+seedCategories(); // ← SEED CATEGORIES ON SERVER STARTUP
 
 // ✅ 4. Register routes
 app.use('/customer', customerRoutes);
