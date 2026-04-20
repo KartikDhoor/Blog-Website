@@ -1,9 +1,6 @@
-require("dotenv").config();
-const mongoose = require("mongoose");
-const Category = require("../modules/categoryModel"); // Adjust the path to your categoryModel.js
+const Category = require("../modules/categoryModel");
 
 // ===== 20 CATEGORIES SEED DATA =====
-// Replace "YOUR_IMAGE_URL_HERE" with your actual image URLs
 const categoriesData = [
   {
     categoryName: "Artificial Intelligence",
@@ -69,27 +66,20 @@ const categoriesData = [
 
 const seedCategories = async () => {
   try {
-    // 1. Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log("✅ Connected to MongoDB");
+    // Check if categories already exist
+    const existingCount = await Category.countDocuments();
+    
+    if (existingCount > 0) {
+      console.log(`ℹ️  Categories already seeded (${existingCount} found). Skipping...`);
+      return;
+    }
 
-    // Optional: Clear existing categories to avoid duplicates 
-    // Uncomment the next line if you want to wipe the categories collection first
-    // await Category.deleteMany({});
-    // console.log("🗑️ Cleared existing Categories");
-
-    // 2. Insert the 20 categories into the database
+    // Insert the 20 categories into the database
     const insertedCategories = await Category.insertMany(categoriesData);
-    
-    console.log(`\n🎉 Successfully seeded ${insertedCategories.length} categories!`);
-    
-    // 3. Exit the script
-    process.exit(0);
+    console.log(`✅ Successfully seeded ${insertedCategories.length} categories!`);
   } catch (error) {
-    console.error("❌ Error seeding categories:", error);
-    process.exit(1);
+    console.error("❌ Error seeding categories:", error.message);
   }
 };
 
-// Run the seeder
-seedCategories();
+module.exports = seedCategories;
