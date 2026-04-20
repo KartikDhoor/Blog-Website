@@ -19,6 +19,7 @@ const analyticsRoutes = require('./server/routes/analyticsRoutes'); // ← NEW
 
 // Import config
 const seedAdmin = require('./server/config/adminSeeder.js');
+const seedCategories = require('./server/config/seedCategory.js'); // ← NEW
 const cors = require('cors');
 
 // Middleware
