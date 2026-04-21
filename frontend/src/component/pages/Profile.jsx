@@ -96,7 +96,6 @@ export default function Profile() {
           },
         }
       );
-      console.log(response);
 
       toast.dismiss();
 

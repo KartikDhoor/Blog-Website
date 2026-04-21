@@ -105,7 +105,6 @@ export default function Login() {
                 setmessage(response.data.message || "Login failed");
             }
         } catch (err) {
-            console.log(err);
             setmessage(err.response?.data?.message || "Login failed. Please try again.");
         }
     };

@@ -45,7 +45,6 @@ export default function OtpConformation() {
         setMessage(data.message || "OTP verification failed.");
       }
     } catch (err) {
-      console.log(err);
       setMessage(err.message || "Something went wrong.");
     }
   };

@@ -4,7 +4,6 @@ export default function BlogPagination({ totalPages, currentPage, setCurrentPage
     if (totalPages <= 1) return null// Hide pagination if there's only one page
 
   const handlePageChange = (page) => {
-    console.log(page)
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }

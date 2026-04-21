@@ -39,20 +39,16 @@ export default function Register() {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            console.log(userRegisterForm);
             const response = await AxiosInstance.post("/customer/register", userRegisterForm);
             
             if (response) {
-                console.log(response.data);
                 const token = response.data?.token;
-                console.log(token);
                 updateToken(token);
                 setmessage(response.data.message);
                 navigate("/otp");
                 return;
             }
         } catch (err) {
-            console.log(err);
             setmessage(err.message);
         }
     };

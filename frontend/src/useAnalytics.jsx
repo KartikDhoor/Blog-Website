@@ -12,6 +12,7 @@ export const useAnalytics = () => {
     pageUrl: '',
     postId: null,
     postTitle: null,
+    postCategory: null,
   });
   
   // ✅ Refs for stable tracking
@@ -53,13 +54,11 @@ export const useAnalytics = () => {
   // ✅ Track page entry (5s after arrival)
   const trackPageView = useCallback(async () => {
     if (hasTrackedRef.current) {
-      console.log('⏭️ Already tracked page entry');
       return;
     }
 
     const timeSpent = Math.round((Date.now() - startTimeRef.current) / 1000);
     if (timeSpent < 5) {
-      console.log(`⏳ Entry wait... (${timeSpent}s)`);
       return;
     }
 
@@ -69,34 +68,56 @@ export const useAnalytics = () => {
         pageUrl: currentPageDataRef.current.pageUrl,
         postId: currentPageDataRef.current.postId,
         postTitle: currentPageDataRef.current.postTitle,
+        postCategory: currentPageDataRef.current.postCategory,
         timeSpent,
         scrollDepth: scrollDepthRef.current,
         liked: likedRef.current,
-        commented: commentedRef.current,  // ✅ Captures comments up to this point
+        commented: commentedRef.current,
+        pageLoadTime: performance?.timing?.loadEventEnd - performance?.timing?.navigationStart || null,
         screenResolution: `${window.innerWidth}x${window.innerHeight}`,
         language: navigator.language,
       };
 
-      console.log('📥 ENTRY Analytics:', {
-        pageKey: pageKeyRef.current,
-        timeSpent,
-        comments: commentedRef.current ? 1 : 0,
-        pageType: currentPageDataRef.current.pageType,
-      });
-
       await AxiosInstance.post('/analytics/track', payload);
       
       hasTrackedRef.current = true;
-      console.log('✅ Page entry tracked');
     } catch (error) {
       console.error('❌ Entry tracking failed:', error);
+    }
+  }, []);
+
+  // ✅ IMMEDIATE Like tracking (separate event)
+  const trackLikeImmediately = useCallback(async () => {
+    if (likedRef.current) {
+      return;
+    }
+
+    likedRef.current = true;
+    
+    try {
+      const payload = {
+        pageType: currentPageDataRef.current.pageType,
+        pageUrl: currentPageDataRef.current.pageUrl,
+        postId: currentPageDataRef.current.postId,
+        postTitle: currentPageDataRef.current.postTitle,
+        postCategory: currentPageDataRef.current.postCategory,
+        timeSpent: Math.round((Date.now() - startTimeRef.current) / 1000),
+        scrollDepth: scrollDepthRef.current,
+        liked: true,
+        screenResolution: `${window.innerWidth}x${window.innerHeight}`,
+        language: navigator.language,
+        eventType: 'like',
+      };
+      
+      await AxiosInstance.post('/analytics/track', payload);
+    } catch (error) {
+      console.error('❌ Like tracking failed:', error);
     }
   }, []);
 
   // ✅ IMMEDIATE Comment tracking (separate event)
   const trackCommentImmediately = useCallback(async () => {
     if (commentedRef.current) {
-      console.log('💬 Comment already tracked');
       return;
     }
 
@@ -108,20 +129,16 @@ export const useAnalytics = () => {
         pageUrl: currentPageDataRef.current.pageUrl,
         postId: currentPageDataRef.current.postId,
         postTitle: currentPageDataRef.current.postTitle,
+        postCategory: currentPageDataRef.current.postCategory,
         timeSpent: Math.round((Date.now() - startTimeRef.current) / 1000),
         scrollDepth: scrollDepthRef.current,
-        interaction: {
-          commented: true,  // ✅ Explicit comment event
-        },
+        commented: true,
         screenResolution: `${window.innerWidth}x${window.innerHeight}`,
         language: navigator.language,
-        eventType: 'comment',  // ✅ Special event type
+        eventType: 'comment',
       };
-
-      console.log('💬 IMMEDIATE Comment tracked:', payload);
-      await AxiosInstance.post('/analytics/track', payload);
       
-      console.log('✅ Comment tracked INSTANTLY');
+      await AxiosInstance.post('/analytics/track', payload);
     } catch (error) {
       console.error('❌ Comment tracking failed:', error);
     }
@@ -130,8 +147,6 @@ export const useAnalytics = () => {
   // ✅ MAIN EFFECT: Page entry tracking
   useEffect(() => {
     const currentPageKey = `${location.pathname}-${location.search}`;
-    
-    console.log('🚀 ENTERED:', currentPageKey);
 
     // Reset for new page
     pageKeyRef.current = currentPageKey;
@@ -147,13 +162,13 @@ export const useAnalytics = () => {
       pageUrl: location.pathname + location.search,
       postId: pageData.postId,
       postTitle: pageData.postTitle,
+      postCategory: pageData.postCategory,
     };
     setPageData(newPageData);
 
     // ✅ Track entry after 5s
     const entryTimeout = setTimeout(() => {
       if (!hasTrackedRef.current) {
-        console.log('🎯 Tracking page entry...');
         trackPageView();
       }
     }, 5000);
@@ -170,30 +185,28 @@ export const useAnalytics = () => {
     };
   }, [location.pathname, location.search, trackPageView]);
 
-  // ✅ Public API
+  // ✅ Public API for Like
   const trackLike = useCallback(() => {
-    likedRef.current = true;
-    console.log('👍 Like interaction marked');
-  }, []);
+    trackLikeImmediately();
+  }, [trackLikeImmediately]);
 
-  // ✅ FIXED: Track comments IMMEDIATELY
-  const trackComment = useCallback(async () => {
-    console.log('💬 Comment button clicked');
-    await trackCommentImmediately();  // ✅ Instant tracking
+  // ✅ Public API for Comment
+  const trackComment = useCallback(() => {
+    trackCommentImmediately();
   }, [trackCommentImmediately]);
 
-  const setPostData = useCallback((postId, postTitle) => {
+  const setPostData = useCallback((postId, postTitle, postCategory = null) => {
     setPageData(prev => ({
       ...prev,
       postId,
       postTitle,
+      postCategory,
     }));
-    console.log('📝 Post updated:', { postId, postTitle });
   }, []);
 
   return {
     trackLike,
-    trackComment,      // ✅ Now works instantly!
+    trackComment,
     setPostData,
     pageData,
   };

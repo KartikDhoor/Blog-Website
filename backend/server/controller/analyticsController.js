@@ -148,6 +148,7 @@ const trackEvent = async (req, res) => {
       largestContentfulPaint,
       screenResolution,
       language,
+      eventType,
     } = req.body;
 
     if (!pageType || !pageUrl) {
@@ -189,6 +190,14 @@ const trackEvent = async (req, res) => {
 
     const trafficSource = detectTrafficSource(referrer, utmSource, utmMedium);
 
+    // ✅ ENHANCED: Better engagement tracking
+    const interaction = {
+      liked: liked === true || (eventType === 'like' ? true : false),
+      commented: commented === true || (eventType === 'comment' ? true : false),
+      copied: false,
+      shared: false,
+    };
+
     const event = new Analytics({
       sessionId,
       visitorId: sessionId,
@@ -203,12 +212,7 @@ const trackEvent = async (req, res) => {
 
       timeSpent: timeSpent || 0,
       scrollDepth: scrollDepth || 0,
-      interaction: {
-        liked: liked || false,
-        commented: commented || false,
-        copied: false,
-        shared: false,
-      },
+      interaction,
 
       ip,
       country: geoData.country,
@@ -248,10 +252,22 @@ const trackEvent = async (req, res) => {
 
     await event.save();
 
+    // ✅ Log for debugging
+    if (eventType === 'like' || eventType === 'comment') {
+      console.log(`✅ [${eventType.toUpperCase()}] Event tracked:`, {
+        postId,
+        postTitle,
+        eventType,
+        timeSpent,
+        scrollDepth,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     res.json({
       success: true,
       message: "Event tracked successfully",
-      data: { sessionId },
+      data: { sessionId, eventType },
     });
   } catch (err) {
     console.error("Track event error:", err);

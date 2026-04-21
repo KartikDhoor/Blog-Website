@@ -180,7 +180,6 @@ export default function DashboardBlog() {
         },
       });
        alert('Creating your blog 5 5 5 ...');
-       console.log(res.data);
 
       if (res?.data?.success) {
          alert('Creating your blog...');

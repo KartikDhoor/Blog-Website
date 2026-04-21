@@ -35,7 +35,6 @@ export function AuthProvider({ children }) {
       );
 
       if (response.data && response.data.data) {
-        console.log(response.data.data)
         setUser(response.data.data);
       } else {
         console.error("User data not found in response:", response);
@@ -46,16 +45,11 @@ export function AuthProvider({ children }) {
   };
 
   const updateToken = async (newToken) => {
-    console.log("this is auth context "+newToken)
     setToken(newToken);
     if (newToken) {
-      console.log("this is if auth context "+newToken)
-
       localStorage.setItem("blogsite_jwt_token", newToken);
       await fetchUserData(newToken);
     } else {
-      console.log("this is else auth context "+newToken)
-
       localStorage.removeItem("blogsite_jwt_token");
       setUser(null);
     }

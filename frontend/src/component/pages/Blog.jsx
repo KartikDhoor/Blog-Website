@@ -340,9 +340,10 @@ export default function Blog() {
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6">
               Overview
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-light">
-              {blogData.introduction}
-            </p>
+            <div 
+              className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap"
+              dangerouslySetInnerHTML={{ __html: blogData.introduction }}
+            />
           </motion.div>
 
           {/* Sections */}
@@ -364,9 +365,10 @@ export default function Blog() {
                   {section.title}
                 </motion.h2>
 
-                <p className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light">
-                  {section.content}
-                </p>
+                <div 
+                  className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light whitespace-pre-wrap"
+                  dangerouslySetInnerHTML={{ __html: section.content }}
+                />
 
                 {section.sectionImage && (
                   <motion.div
