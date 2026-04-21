@@ -20,13 +20,16 @@ export default function Blog() {
   const [likeTotal, setLikeTotal] = useState(0);
   const [blogData, setBlogData] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   // 🚀 COMMENT PAGINATION STATES
   const [commentsPage, setCommentsPage] = useState(1);
   const [loadingMoreComments, setLoadingMoreComments] = useState(false);
   const [hasMoreComments, setHasMoreComments] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
   const COMMENTS_PER_PAGE = 5;
+
+  // ✅ RECOMMENDED BLOGS STATE
+  const [recommendedBlogs, setRecommendedBlogs] = useState([]);
 
   useEffect(() => {
     if (slug) {
@@ -38,16 +41,14 @@ export default function Blog() {
     try {
       const response = await AxiosInstance.post(
         `/customer/blogs/${slugValue}`,
-        {
-          userId: user?._id,
-        }
+        { userId: user?._id }
       );
 
       const data = response.data.data;
       setBlogData(data);
       setLike(response.data.likedByUser);
       setLikeTotal(response.data.totalLikes || 0);
-      
+
       // 🚀 Load initial comments with pagination
       const allComments = data.comments || [];
       setTotalComments(allComments.length);
@@ -59,11 +60,40 @@ export default function Blog() {
         setPostData(data._id, data.title);
       }
 
+      // ✅ Fetch recommended blogs using same category ID from this blog
+      if (data?.category?._id) {
+        fetchRecommendedBlogs(data.category._id, data._id);
+      }
+
       setLoading(false);
     } catch (error) {
       console.error("Error fetching blog details:", error.message);
       setLoading(false);
       setBlogData(null);
+    }
+  };
+
+  // ✅ FETCH 3 RECOMMENDED BLOGS — same category, exclude current blog
+  const fetchRecommendedBlogs = async (categoryId, currentBlogId) => {
+    try {
+      const response = await AxiosInstance.post("/customer/blogs", {
+        category: categoryId,
+        limit: 4, // fetch 4 so after excluding current we still get up to 3
+        page: 1,
+        sortBy: "createdAt",
+        order: "desc",
+        status: "published",
+      });
+
+      if (response.data.success) {
+        const filtered = response.data.data
+          .filter((blog) => blog._id !== currentBlogId)
+          .slice(0, 3);
+        setRecommendedBlogs(filtered);
+      }
+    } catch (error) {
+      console.error("Error fetching recommended blogs:", error.message);
+      setRecommendedBlogs([]);
     }
   };
 
@@ -73,19 +103,17 @@ export default function Blog() {
 
     setLoadingMoreComments(true);
     try {
-      // Fetch all comments from blog data
       const allComments = blogData.comments || [];
       const nextPage = commentsPage + 1;
       const startIndex = nextPage * COMMENTS_PER_PAGE - COMMENTS_PER_PAGE;
       const endIndex = nextPage * COMMENTS_PER_PAGE;
-      
+
       const newComments = allComments.slice(startIndex, endIndex);
-      
+
       if (newComments.length > 0) {
-        setCommentData(prev => [...prev, ...newComments]);
+        setCommentData((prev) => [...prev, ...newComments]);
         setCommentsPage(nextPage);
-        
-        // Check if more comments exist
+
         if (endIndex >= allComments.length) {
           setHasMoreComments(false);
         }
@@ -103,13 +131,8 @@ export default function Blog() {
     try {
       const response = await AxiosInstance.post(
         "/customer/like/blog",
-        {
-          blogId: blogData._id,
-          userId: user._id,
-        },
-        {
-          headers: { authorization: token },
-        }
+        { blogId: blogData._id, userId: user._id },
+        { headers: { authorization: token } }
       );
 
       if (response.data.success) {
@@ -138,9 +161,7 @@ export default function Blog() {
           userId: user._id,
           content: newComment,
         },
-        {
-          headers: { authorization: token },
-        }
+        { headers: { authorization: token } }
       );
 
       if (response) {
@@ -194,25 +215,22 @@ export default function Blog() {
 
   return (
     <div className="bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 min-h-screen">
+
       {/* HERO SECTION WITH IMAGE BACKGROUND */}
       <motion.div
         className="relative min-h-[70vh] h-auto overflow-hidden pt-36 sm:pt-40 pb-16"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
           style={{
-            backgroundImage: `url('${
-              blogData.image || "https://picsum.photos/1920/1080"
-            }')`,
+            backgroundImage: `url('${blogData.image || "https://picsum.photos/1920/1080"}')`,
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
         </div>
 
-        {/* Content Overlay */}
         <motion.div
           className="relative z-10 flex flex-col justify-end h-full min-h-[50vh] px-4 sm:px-6 lg:px-16 pt-20 sm:pt-24 pb-10 sm:pb-14 lg:pb-16"
           initial={{ y: 20, opacity: 0 }}
@@ -249,9 +267,7 @@ export default function Blog() {
                   {blogData.author?.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-semibold text-sm sm:text-lg">
-                    {blogData.author}
-                  </p>
+                  <p className="font-semibold text-sm sm:text-lg">{blogData.author}</p>
                   <p className="text-xs sm:text-sm text-white/70">
                     {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
                   </p>
@@ -260,9 +276,7 @@ export default function Blog() {
               <div className="hidden sm:block h-10 w-px bg-white/30"></div>
               <div className="text-xs sm:text-sm">
                 <p className="text-white/70">Reading Time</p>
-                <p className="font-semibold text-sm sm:text-lg">
-                  {blogData.readingTime}
-                </p>
+                <p className="font-semibold text-sm sm:text-lg">{blogData.readingTime}</p>
               </div>
             </motion.div>
           </div>
@@ -271,6 +285,7 @@ export default function Blog() {
 
       {/* MAIN CONTENT AREA */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+
         {/* MOBILE ACTION BAR */}
         <div className="flex lg:hidden items-center gap-3 mb-8">
           <button
@@ -284,7 +299,6 @@ export default function Blog() {
             <FaHeart className={like ? "fill-current" : ""} />
             <span>{likeTotal}</span>
           </button>
-
           <button className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100">
             <FiShare2 />
             <span>Share</span>
@@ -340,7 +354,7 @@ export default function Blog() {
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6">
               Overview
             </h2>
-            <div 
+            <div
               className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap"
               dangerouslySetInnerHTML={{ __html: blogData.introduction }}
             />
@@ -364,12 +378,10 @@ export default function Blog() {
                 >
                   {section.title}
                 </motion.h2>
-
-                <div 
+                <div
                   className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{ __html: section.content }}
                 />
-
                 {section.sectionImage && (
                   <motion.div
                     className="my-8 sm:my-10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/40"
@@ -455,7 +467,7 @@ export default function Blog() {
             </motion.form>
           )}
 
-          {/* Comments List with Pagination */}
+          {/* Comments List */}
           <div className="space-y-4 sm:space-y-6">
             {commentData.length === 0 ? (
               <motion.div
@@ -530,9 +542,7 @@ export default function Blog() {
                           Loading more comments...
                         </>
                       ) : (
-                        <>
-                          <span>📝 Load More Comments ({commentData.length}/{totalComments})</span>
-                        </>
+                        <span>📝 Load More Comments ({commentData.length}/{totalComments})</span>
                       )}
                     </motion.button>
                   </motion.div>
@@ -554,70 +564,85 @@ export default function Blog() {
         </div>
       </motion.div>
 
-      {/* RECOMMENDED ARTICLES */}
-      <motion.div
-        className="py-16 sm:py-24"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white text-center mb-10 sm:mb-16">
-            Keep Reading
-          </h2>
+      {/* ✅ RECOMMENDED ARTICLES — real data, same category, hidden if empty */}
+      {recommendedBlogs.length > 0 && (
+        <motion.div
+          className="py-16 sm:py-24"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white text-center mb-10 sm:mb-16">
+              Keep Reading
+            </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-            {[1, 2, 3].map((card, index) => (
-              <motion.div
-                key={card}
-                className="group overflow-hidden"
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -12 }}
-              >
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+              {recommendedBlogs.map((blog, index) => (
                 <motion.div
-                  className="relative h-56 sm:h-64 lg:h-72 rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-3xl transition-all duration-500"
-                  whileHover={{ scale: 1.05 }}
+                  key={blog._id}
+                  className="group overflow-hidden"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -12 }}
                 >
-                  <img
-                    src="https://picsum.photos/400/300"
-                    alt="Article"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent group-hover:from-black/60 transition-all duration-500"></div>
-                </motion.div>
+                  {/* Card Image */}
+                  <motion.div
+                    className="relative h-56 sm:h-64 lg:h-72 rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-3xl transition-all duration-500"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <img
+                      src={blog.image || "https://picsum.photos/400/300"}
+                      alt={blog.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent group-hover:from-black/60 transition-all duration-500"></div>
+                  </motion.div>
 
-                <motion.div
-                  className="relative -mt-16 sm:-mt-20 mx-3 sm:mx-4 bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-2xl group-hover:shadow-3xl group-hover:border-orange-400/60 transition-all duration-500"
-                  whileHover={{ y: -8 }}
-                >
-                  <h3 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 line-clamp-2 group-hover:text-orange-500 transition-colors">
-                    Insights into Progressive Policies
-                  </h3>
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <motion.button
-                      className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/60 dark:bg-white/20 backdrop-blur-xl border border-white/40 rounded-2xl text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-300 hover:bg-white/80 hover:border-orange-400/50 hover:text-orange-500 transition-all"
-                      whileHover={{ scale: 1.08 }}
-                    >
-                      <FiMessageCircle /> 45
-                    </motion.button>
-                    <Link to="#" className="ml-auto">
-                      <motion.button
-                        className="px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 transition-colors"
-                        whileHover={{ scale: 1.05 }}
+                  {/* Card Body */}
+                  <motion.div
+                    className="relative -mt-16 sm:-mt-20 mx-3 sm:mx-4 bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-2xl group-hover:shadow-3xl group-hover:border-orange-400/60 transition-all duration-500"
+                    whileHover={{ y: -8 }}
+                  >
+                    {/* Category badge */}
+                    {blog.category?.categoryName && (
+                      <span className="inline-block text-[11px] font-bold text-orange-500 uppercase tracking-widest mb-2">
+                        {blog.category.categoryName}
+                      </span>
+                    )}
+
+                    <h3 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 line-clamp-2 group-hover:text-orange-500 transition-colors">
+                      {blog.title}
+                    </h3>
+
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <motion.div
+                        className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/60 dark:bg-white/20 backdrop-blur-xl border border-white/40 rounded-2xl text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-300"
+                        whileHover={{ scale: 1.08 }}
                       >
-                        Read →
-                      </motion.button>
-                    </Link>
-                  </div>
+                        <FiMessageCircle />
+                        <span>{blog.comments?.length || 0}</span>
+                      </motion.div>
+
+                      <Link to={`/blog/${blog.slug}`} className="ml-auto">
+                        <motion.button
+                          className="px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 transition-colors"
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          Read →
+                        </motion.button>
+                      </Link>
+                    </div>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
+
     </div>
   );
 }

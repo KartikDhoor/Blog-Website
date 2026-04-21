@@ -15,8 +15,8 @@ export default function Home() {
   const isInView2 = useInView(ref2, { once: true, amount: 0.3 });
 
   return (
-    <div className="min-h-screen pt-32 bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 from-slate-50 via-white to-slate-50 dark:text-white text-gray-900 overflow-hidden transition-colors duration-500">
-      {/* ✅ pt-32 = 128px top padding for floating navbar */}
+    <div className="min-h-screen pt-28 bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 from-slate-50 via-white to-slate-50 dark:text-white text-gray-900 overflow-hidden transition-colors duration-500">
+      {/* ✅ pt-28 = 112px top padding for floating navbar */}
       
       {/* Floating Particles */}
       <div className="fixed inset-0 pointer-events-none dark:opacity-20 opacity-10">
