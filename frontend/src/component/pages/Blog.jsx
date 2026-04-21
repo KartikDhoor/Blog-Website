@@ -9,12 +9,10 @@ import { useAuth } from "../AuthContext";
 import { useAnalyticsContext } from "../analytics/AnalyticsProvider";
 import { motion } from "framer-motion";
 
-
 export default function Blog() {
   const { user, token } = useAuth();
   const { slug } = useParams();
   const { setPostData, trackLike, trackComment } = useAnalyticsContext();
-
 
   const [like, setLike] = useState(false);
   const [commentData, setCommentData] = useState([]);
@@ -30,13 +28,11 @@ export default function Blog() {
   const [totalComments, setTotalComments] = useState(0);
   const COMMENTS_PER_PAGE = 5;
 
-
   useEffect(() => {
     if (slug) {
       fetchBlogDetails(slug);
     }
   }, [slug, user, like]);
-
 
   const fetchBlogDetails = async (slugValue) => {
     try {
@@ -46,7 +42,6 @@ export default function Blog() {
           userId: user?._id,
         }
       );
-
 
       const data = response.data.data;
       setBlogData(data);
@@ -60,11 +55,9 @@ export default function Blog() {
       setHasMoreComments(allComments.length > COMMENTS_PER_PAGE);
       setCommentsPage(1);
 
-
       if (data?._id && data?.title) {
         setPostData(data._id, data.title);
       }
-
 
       setLoading(false);
     } catch (error) {
@@ -73,7 +66,6 @@ export default function Blog() {
       setBlogData(null);
     }
   };
-
 
   // 🚀 LOAD MORE COMMENTS
   const loadMoreComments = async () => {
@@ -105,10 +97,8 @@ export default function Blog() {
     }
   };
 
-
   const handleLikeClick = async () => {
     if (!blogData || !user) return;
-
 
     try {
       const response = await AxiosInstance.post(
@@ -122,7 +112,6 @@ export default function Blog() {
         }
       );
 
-
       if (response.data.success) {
         trackLike();
         setLike((prev) => !prev);
@@ -133,16 +122,13 @@ export default function Blog() {
     }
   };
 
-
   const handleInputChange = (e) => {
     setNewComment(e.target.value);
   };
 
-
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!blogData || !user || !newComment.trim()) return;
-
 
     try {
       const response = await AxiosInstance.post(
@@ -157,7 +143,6 @@ export default function Blog() {
         }
       );
 
-
       if (response) {
         trackComment();
         setNewComment("");
@@ -167,7 +152,6 @@ export default function Blog() {
       console.error("Error creating comment:", error.message);
     }
   };
-
 
   if (loading) {
     return (
@@ -185,7 +169,6 @@ export default function Blog() {
       </motion.div>
     );
   }
-
 
   if (!blogData) {
     return (
@@ -209,18 +192,17 @@ export default function Blog() {
     );
   }
 
-
   return (
     <div className="bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 min-h-screen">
       {/* HERO SECTION WITH IMAGE BACKGROUND */}
       <motion.div
-        className="relative h-[70vh] overflow-hidden pt-28 sm:pt-32"
+        className="relative min-h-[70vh] h-auto overflow-hidden pt-36 sm:pt-40 pb-16"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
         {/* Background Image */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
+          className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
           style={{
             backgroundImage: `url('${
               blogData.image || "https://picsum.photos/1920/1080"
@@ -230,10 +212,9 @@ export default function Blog() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
         </div>
 
-
         {/* Content Overlay */}
         <motion.div
-          className="absolute inset-0 flex flex-col justify-end px-4 sm:px-6 lg:px-16 pb-10 sm:pb-14 lg:pb-16"
+          className="relative z-10 flex flex-col justify-end h-full min-h-[50vh] px-4 sm:px-6 lg:px-16 pt-20 sm:pt-24 pb-10 sm:pb-14 lg:pb-16"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -248,7 +229,6 @@ export default function Blog() {
               </span>
             </motion.div>
 
-
             <motion.h1
               className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-black text-white leading-tight drop-shadow-2xl max-w-3xl mb-4 sm:mb-8"
               initial={{ y: 20, opacity: 0 }}
@@ -257,7 +237,6 @@ export default function Blog() {
             >
               {blogData.title}
             </motion.h1>
-
 
             <motion.div
               className="flex flex-wrap gap-4 sm:gap-8 items-center text-white/90"
@@ -290,9 +269,8 @@ export default function Blog() {
         </motion.div>
       </motion.div>
 
-
       {/* MAIN CONTENT AREA */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 py-16 sm:py-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
         {/* MOBILE ACTION BAR */}
         <div className="flex lg:hidden items-center gap-3 mb-8">
           <button
@@ -307,13 +285,11 @@ export default function Blog() {
             <span>{likeTotal}</span>
           </button>
 
-
           <button className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100">
             <FiShare2 />
             <span>Share</span>
           </button>
         </div>
-
 
         {/* Sticky Navigation - DESKTOP ONLY */}
         <motion.div
@@ -337,7 +313,6 @@ export default function Blog() {
             </span>
           </motion.button>
 
-
           <motion.button
             className="group relative w-12 h-12 xl:w-14 xl:h-14 rounded-2xl bg-white/80 dark:bg-white/20 border border-white/50 dark:border-white/30 shadow-lg backdrop-blur-xl text-gray-800 dark:text-gray-300 hover:bg-white/95 dark:hover:bg-white/30 transition-all duration-300 flex items-center justify-center text-lg xl:text-xl hover:shadow-xl hover:border-orange-400/50"
             whileHover={{ scale: 1.1 }}
@@ -349,7 +324,6 @@ export default function Blog() {
             </span>
           </motion.button>
         </motion.div>
-
 
         {/* Article Content */}
         <motion.div
@@ -371,7 +345,6 @@ export default function Blog() {
             </p>
           </motion.div>
 
-
           {/* Sections */}
           {blogData.sections.map((section, index) => (
             <motion.div
@@ -391,11 +364,9 @@ export default function Blog() {
                   {section.title}
                 </motion.h2>
 
-
                 <p className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light">
                   {section.content}
                 </p>
-
 
                 {section.sectionImage && (
                   <motion.div
@@ -413,7 +384,6 @@ export default function Blog() {
             </motion.div>
           ))}
         </motion.div>
-
 
         {/* TABLE OF CONTENTS STICKY - DESKTOP ONLY */}
         <motion.div
@@ -441,7 +411,6 @@ export default function Blog() {
         </motion.div>
       </div>
 
-
       {/* COMMENTS SECTION WITH PAGINATION */}
       <motion.div
         className="bg-white/60 dark:bg-white/20 backdrop-blur-2xl border-y border-white/30 dark:border-white/20 py-16 sm:py-20"
@@ -449,11 +418,10 @@ export default function Blog() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-0">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-8 sm:mb-12">
             Comments ({totalComments})
           </h2>
-
 
           {/* Add Comment */}
           {user && (
@@ -484,7 +452,6 @@ export default function Blog() {
               </div>
             </motion.form>
           )}
-
 
           {/* Comments List with Pagination */}
           <div className="space-y-4 sm:space-y-6">
@@ -585,7 +552,6 @@ export default function Blog() {
         </div>
       </motion.div>
 
-
       {/* RECOMMENDED ARTICLES */}
       <motion.div
         className="py-16 sm:py-24"
@@ -597,7 +563,6 @@ export default function Blog() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white text-center mb-10 sm:mb-16">
             Keep Reading
           </h2>
-
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
             {[1, 2, 3].map((card, index) => (
@@ -622,7 +587,6 @@ export default function Blog() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent group-hover:from-black/60 transition-all duration-500"></div>
                 </motion.div>
 
-
                 <motion.div
                   className="relative -mt-16 sm:-mt-20 mx-3 sm:mx-4 bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-2xl group-hover:shadow-3xl group-hover:border-orange-400/60 transition-all duration-500"
                   whileHover={{ y: -8 }}
@@ -630,8 +594,6 @@ export default function Blog() {
                   <h3 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 line-clamp-2 group-hover:text-orange-500 transition-colors">
                     Insights into Progressive Policies
                   </h3>
-
-
                   <div className="flex items-center gap-3 sm:gap-4">
                     <motion.button
                       className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/60 dark:bg-white/20 backdrop-blur-xl border border-white/40 rounded-2xl text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-300 hover:bg-white/80 hover:border-orange-400/50 hover:text-orange-500 transition-all"
