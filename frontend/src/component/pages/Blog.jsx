@@ -8,7 +8,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { useAnalyticsContext } from "../analytics/AnalyticsProvider";
 import { motion } from "framer-motion";
-import { toast } from "react-toastify"; // Added toast for share feedback
+import { toast } from "react-toastify";
 
 export default function Blog() {
   const { user, token } = useAuth();
@@ -304,11 +304,12 @@ export default function Blog() {
         </motion.div>
       </motion.div>
 
-      {/* ✅ NEW: CLEAN LAYOUT CONTAINER (NO MORE WEIRD HOVERING ELEMENTS) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 flex flex-col lg:flex-row gap-12 xl:gap-16 relative">
+      {/* ✅ CLEAN LAYOUT CONTAINER */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 flex flex-col lg:flex-row items-start gap-12 xl:gap-16 relative">
         
         {/* LEFT COLUMN: MAIN ARTICLE */}
-        <div className="flex-1 min-w-0 max-w-4xl mx-auto lg:mx-0 w-full">
+        {/* ✅ FIXED: Removed max-w-4xl so it fills remaining space smoothly */}
+        <div className="flex-1 min-w-0 w-full">
           
           {/* MOBILE ACTION BAR (Hidden on desktop) */}
           <div className="flex lg:hidden items-center gap-3 mb-8">
@@ -384,7 +385,7 @@ export default function Blog() {
                       <img
                         src={section.sectionImage}
                         alt={section.title}
-                        className="w-full h-full max-h-[480px] object-contain rounded-xl" // Object contain ensures full image shows without crop or weird stretching
+                        className="w-full h-full max-h-[480px] object-contain rounded-xl" 
                       />
                     </motion.div>
                   )}
@@ -394,10 +395,10 @@ export default function Blog() {
           </motion.div>
         </div>
 
-        {/* ✅ FIXED: RIGHT COLUMN - SIDEBAR (TOC + Actions) */}
-        {/* This replaces the floaty absolute design with a clean, standard sidebar layout */}
-        <div className="hidden lg:block w-[300px] xl:w-[320px] shrink-0">
-          <div className="sticky top-32 space-y-6">
+        {/* RIGHT COLUMN - SIDEBAR (TOC + Actions) */}
+        {/* ✅ FIXED: Added self-start so it doesn't stretch to match the left column height */}
+        <div className="hidden lg:block w-[300px] xl:w-[320px] shrink-0 self-start sticky top-32">
+          <div className="space-y-6">
             
             {/* Desktop Actions */}
             <div className="flex gap-4 mb-2">
