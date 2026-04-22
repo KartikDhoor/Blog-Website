@@ -428,7 +428,7 @@ export default function Blog() {
             </div>
 
             {/* Table of Contents */}
-            <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 shadow-xl max-h-[50vh] overflow-y-auto custom-scrollbar">
+            <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 shadow-xl h-auto overflow-y-auto custom-scrollbar">
               <h3 className="text-lg font-black text-gray-900 dark:text-white mb-5 flex items-center gap-2">
                 Contents
               </h3>
