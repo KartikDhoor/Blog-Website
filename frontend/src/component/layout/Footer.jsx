@@ -1,25 +1,29 @@
 import { motion } from "framer-motion";
 import { GiRevolt } from "react-icons/gi";
-import { BsArrowUpRightCircleFill } from "react-icons/bs"; // ✅ FIXED: Only Bs icon
+import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import { Link } from "react-router-dom"; // ✅ Added Link for routing
 
 const features = [
   {
-    id: "resources", // ✅ FIXED: Unique IDs
-    title: "Resource Access",
-    description: "Instant access to ebooks, whitepapers, reports, and cutting-edge tech resources for developers.",
-    icon: BsArrowUpRightCircleFill
+    id: "inspire",
+    title: "Inspiring Stories",
+    description: "Read success stories and get inspired by tech innovators, leaders, and real-world projects.",
+    icon: BsArrowUpRightCircleFill,
+    link: "/inspire"
   },
   {
-    id: "community", // ✅ FIXED: Unique IDs
-    title: "Community Forums",
-    description: "Join discussions with 10K+ developers, share knowledge, and collaborate on real projects.",
-    icon: BsArrowUpRightCircleFill
+    id: "news",
+    title: "Latest Tech News",
+    description: "Stay updated with the latest announcements in tech, AI, and modern development frameworks.",
+    icon: BsArrowUpRightCircleFill,
+    link: "/news"
   },
   {
-    id: "events", // ✅ FIXED: Unique IDs
-    title: "Tech Events",
-    description: "Exclusive webinars, workshops, and conferences with industry leaders and AI pioneers.",
-    icon: BsArrowUpRightCircleFill
+    id: "podcasts",
+    title: "Insightful Podcasts",
+    description: "Listen to expert discussions and deep dives into modern software engineering and tech trends.",
+    icon: BsArrowUpRightCircleFill,
+    link: "/podcast"
   }
 ];
 
@@ -27,12 +31,12 @@ export default function Footer() {
   return (
     <footer className="bg-gradient-to-t dark:from-black dark:via-gray-900 dark:to-transparent from-slate-50 via-white to-transparent pt-32 pb-12 relative overflow-hidden transition-colors duration-500">
       {/* Background Effects */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute bottom-0 left-20 w-96 h-96 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-400/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute top-1/2 right-24 w-72 h-72 dark:bg-gradient-to-r dark:from-purple-500/10 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
@@ -77,105 +81,80 @@ export default function Footer() {
           className="grid lg:grid-cols-3 gap-6 mb-20 dark:bg-white/5 bg-slate-100/50 dark:backdrop-blur-xl backdrop-blur-xl dark:border-white/10 border-slate-200/50 rounded-3xl p-8 lg:p-12"
         >
           {features.map((feature, index) => (
-            <motion.div
-              key={feature.id} // ✅ FIXED: Unique key
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="group p-8 lg:p-10 rounded-3xl dark:bg-gray-900/50 bg-slate-50/50 dark:border-gray-800/50 border-slate-200/50 hover:dark:border-orange-400/50 hover:border-blue-400/50 hover:dark:bg-white/10 hover:bg-slate-100/70 transition-all duration-500 hover:shadow-2xl dark:hover:shadow-orange-500/20 hover:shadow-blue-500/20"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold dark:text-white text-gray-900 group-hover:text-orange-400 transition-colors">
-                  {feature.title}
-                </h3>
-                <feature.icon className="text-4xl lg:text-5xl dark:text-amber-400 text-blue-400 group-hover:scale-110 transition-transform" />
-              </div>
-              <p className="dark:text-gray-400 text-gray-600 text-lg leading-relaxed">{feature.description}</p>
-            </motion.div>
+            <Link to={feature.link} key={feature.id}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="group p-8 lg:p-10 rounded-3xl dark:bg-gray-900/50 bg-slate-50/50 dark:border-gray-800/50 border-slate-200/50 hover:dark:border-orange-400/50 hover:border-blue-400/50 hover:dark:bg-white/10 hover:bg-slate-100/70 transition-all duration-500 hover:shadow-2xl dark:hover:shadow-orange-500/20 hover:shadow-blue-500/20 h-full cursor-pointer"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold dark:text-white text-gray-900 group-hover:text-orange-400 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <feature.icon className="text-4xl lg:text-5xl dark:text-amber-400 text-blue-400 group-hover:scale-110 transition-transform" />
+                </div>
+                <p className="dark:text-gray-400 text-gray-600 text-lg leading-relaxed">{feature.description}</p>
+              </motion.div>
+            </Link>
           ))}
         </motion.div>
 
-        {/* Main Footer Links */}
-        <div className="lg:h-auto lg:w-[90%] lg:mx-auto lg:flex lg:justify-center lg:p-2
-                        md:h-auto md:w-[90%] md:mx-auto md:flex md:justify-center md:p-2
-                        sm:h-auto sm:w-[90%] sm:mx-auto sm:flex sm:justify-center sm:flex-wrap
-                        belowSm:h-auto belowSm:w-[90%] belowSm:mx-auto belowSm:flex belowSm:justify-center belowSm:p-2 belowSm:flex-wrap
-                        grid lg:grid-cols-5 gap-12 mb-16">
+        {/* Main Footer Links - ✅ Cleaned up responsive grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16 w-full lg:w-[90%] mx-auto">
           
-          <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-auto sm:w-[50%] belowSm:h-auto belowSm:w-[50%] text-base font-base dark:text-gray-400 text-gray-600 space-y-4">
-            <p className="text-xl dark:text-orange-400 text-blue-500 my-4 font-medium">Home</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Projects</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Tutorials</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Code Library</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Success Stories</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Contact</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Newsletter</p>
+          {/* Column 1: Explore */}
+          <div className="text-base font-base dark:text-gray-400 text-gray-600 flex flex-col space-y-3">
+            <p className="text-xl dark:text-orange-400 text-blue-500 mb-2 font-medium">Explore</p>
+            <Link to="/" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Home</Link>
+            <Link to="/blog/search" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Search Blogs</Link>
+            <Link to="/inspire" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Inspire</Link>
           </div>
 
-          <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-auto sm:w-[50%] belowSm:h-auto belowSm:w-[50%] text-base font-base dark:text-gray-400 text-gray-600 space-y-4">
-            <p className="text-xl dark:text-orange-400 text-blue-500 my-4 font-medium">News</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Latest Tutorials</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Video Guides</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Tech Stack</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Best Practices</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Industry News</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Open Source</p>
+          {/* Column 2: Media */}
+          <div className="text-base font-base dark:text-gray-400 text-gray-600 flex flex-col space-y-3">
+            <p className="text-xl dark:text-orange-400 text-blue-500 mb-2 font-medium">Media</p>
+            <Link to="/news" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Tech News</Link>
+            <Link to="/podcast" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Podcasts</Link>
           </div>
 
-          <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-auto sm:w-[50%] belowSm:h-auto belowSm:w-[50%] text-base font-base dark:text-gray-400 text-gray-600 space-y-4">
-            <p className="text-xl dark:text-orange-400 text-blue-500 my-4 font-medium">Category</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">AI & ML</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Backend Dev</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Cloud & DevOps</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Frontend Frameworks</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Mobile Development</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Database Design</p>
+          {/* Column 3: Account */}
+          <div className="text-base font-base dark:text-gray-400 text-gray-600 flex flex-col space-y-3">
+            <p className="text-xl dark:text-orange-400 text-blue-500 mb-2 font-medium">Account</p>
+            <Link to="/profile" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">My Profile</Link>
+            <Link to="/security" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Security</Link>
+            <Link to="/login" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Login</Link>
+            <Link to="/register" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Register</Link>
           </div>
 
-          <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-auto sm:w-[50%] belowSm:h-auto belowSm:w-[50%] text-base font-base dark:text-gray-400 text-gray-600 space-y-4">
-            <p className="text-xl dark:text-orange-400 text-blue-500 my-4 font-medium">About</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Our Mission</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">TechTalk AI</p>
-            <p className="my-2 dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Community</p>
+          {/* Column 4: Support */}
+          <div className="text-base font-base dark:text-gray-400 text-gray-600 flex flex-col space-y-3">
+            <p className="text-xl dark:text-orange-400 text-blue-500 mb-2 font-medium">Support</p>
+            <Link to="/contact" className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors">Contact Us</Link>
+            <span className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Terms & Conditions</span>
+            <span className="dark:text-gray-400 text-gray-600 hover:dark:text-white hover:text-gray-900 transition-colors cursor-pointer">Privacy Policy</span>
           </div>
 
-          {/* <div className="lg:h-full lg:w-[20%] md:h-full md:w-[20%] sm:h-auto sm:w-[90%] sm:mx-auto belowSm:h-auto belowSm:w-[90%] belowSm:mx-auto text-base font-base dark:text-gray-400 text-gray-600 space-y-6">
-            <p className="text-xl dark:text-gray-400 text-gray-600 my-2 font-medium">Newsletters</p>
-            <div className="space-y-3">
-              <input 
-                className="w-full h-[8vh] dark:bg-gray-900/50 bg-slate-100/50 dark:text-white text-gray-900 rounded-xl p-4 outline-none focus:dark:border-orange-400/50 focus:border-blue-400/50 dark:border-gray-800/50 border-slate-200/50 text-lg placeholder-gray-500 focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-offset-slate-50"
-                placeholder="Enter your email"
-              />
-              <button className="w-full py-4 px-6 dark:bg-amber-400 bg-blue-500 dark:text-black text-white rounded-xl font-medium text-lg hover:dark:bg-amber-500 hover:bg-blue-600 hover:scale-105 transition-all duration-300">
-                Subscribe
-              </button>
-            </div>
-          </div> */}
         </div>
 
         {/* Divider */}
-        <div className="h-px w-[90%] mx-auto dark:bg-gradient-to-r bg-gradient-to-r from-transparent via-gray-200/50 to-transparent my-12 rounded-full" />
+        <div className="h-px w-full lg:w-[90%] mx-auto dark:bg-gradient-to-r bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent my-10 rounded-full" />
 
         {/* Bottom Bar */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="lg:h-[5vh] lg:w-[90%] lg:mx-auto lg:flex lg:justify-center lg:p-2
-                        md:h-[5vh] md:w-[90%] md:mx-auto md:flex md:justify-center md:p-2
-                        sm:h-[10vh] sm:w-[90%] sm:mx-auto sm:flex sm:justify-center sm:p-2
-                        belowSm:h-[10vh] belowSm:w-[90%] belowSm:mx-auto belowSm:flex belowSm:justify-center belowSm:p-2
-                        flex flex-col lg:flex-row items-center justify-between gap-8 text-sm dark:text-gray-400 text-gray-600"
+          className="w-full lg:w-[90%] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm dark:text-gray-400 text-gray-600 text-center sm:text-left"
         >
-          <div className="text-start">
-            <span className="hover:dark:text-orange-400 hover:text-blue-500 transition-colors cursor-pointer mr-4">Terms & Conditions</span>
-            <span className="hover:dark:text-orange-400 hover:text-blue-500 transition-colors cursor-pointer">Privacy Policy</span>
+          <div>
+            <span className="font-semibold dark:text-gray-300 text-gray-800">Neuradhoor</span> — Empowering the tech community.
           </div>
           
-          <div className="text-end">
-            © 2025 Neuradhoor. All future rights reserved.
+          <div>
+            © 2026 Neuradhoor. All rights reserved.
           </div>
         </motion.div>
       </div>

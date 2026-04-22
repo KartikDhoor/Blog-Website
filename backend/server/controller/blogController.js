@@ -1,9 +1,7 @@
-
 const Blog = require('../modules/blogModel');
 const agenda = require('../config/agenda');
 const Like = require('../modules/likeModel');
 const mongoose = require('mongoose');
-
 
 // ==========================================
 // FILE: server/controller/blogController.js
@@ -259,10 +257,8 @@ const dashboardSlugFinder = (req, res) => {
   }
 };
 
-// ===== EXISTING CRUD (unchanged) =====
+// ===== EXISTING CRUD =====
 const createBlog = async (req, res) => {
-
-
   let validation = "";
   if (!req.body.title) validation += 'Title is required for the blog. ';
   if (!req.body.author) validation += "Author is required for the blog. ";
@@ -286,12 +282,22 @@ const createBlog = async (req, res) => {
     blog.title = req.body.title;
     blog.author = req.body.author;
     blog.readingTime = req.body.readingTime;
-    blog.sections = req.body.sections;
     blog.category = req.body.category;
     blog.publishAt = req.body.publishAt;
     blog.introduction = req.body.introduction;
     blog.slug = req.body.slug;
     blog.status = req.body.status;
+
+    // ✅ Safe JSON parsing for sections
+    if (req.body.sections) {
+      try {
+        blog.sections = typeof req.body.sections === 'string' 
+          ? JSON.parse(req.body.sections) 
+          : req.body.sections;
+      } catch (error) {
+        return res.status(400).send({ success: false, message: "Invalid JSON in sections" });
+      }
+    }
 
     // CLOUDINARY: Handle Cloudinary URLs
     if (req.cloudinaryFiles) {
@@ -312,7 +318,6 @@ const createBlog = async (req, res) => {
         }
       });
     }
-
 
     const data = await blog.save();
     if (data.status == 'draft') {
@@ -345,17 +350,20 @@ const updateBlog = async (req, res) => {
     try {
       if (req.body.title) blog.title = req.body.title;
       if (req.body.author) blog.author = req.body.author;
-      if (req.body.readingTime) blog.readingTime = req.body.readingTime; // Ensure parsed JSON
+      if (req.body.readingTime) blog.readingTime = req.body.readingTime;
       if (req.body.introduction) blog.introduction = req.body.introduction;
       if (req.body.slug) blog.slug = req.body.slug;
       if (req.body.category) blog.category = req.body.category;
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err.message);
     }
+
+    // ✅ Safe JSON parsing for sections
     if (req.body.sections) {
       try {
-        blog.sections = JSON.parse(req.body.sections);
+        blog.sections = typeof req.body.sections === 'string' 
+          ? JSON.parse(req.body.sections) 
+          : req.body.sections;
       } catch (error) {
         return res.status(400).send({ success: false, message: "Invalid JSON in sections" });
       }
@@ -382,7 +390,6 @@ const updateBlog = async (req, res) => {
       });
     }
 
-
     blog.updatedAt = Date.now();
 
     const updatedBlog = await blog.save();
@@ -401,8 +408,7 @@ const deleteBlog = (req, res) => {
   }
   if (!!validation) {
     res.send({ success: false, status: 400, message: validation })
-  }
-  else {
+  } else {
     Blog.findOne({ _id: req.body._id }).exec()
       .then((data) => {
         if (data == null) {
@@ -411,8 +417,7 @@ const deleteBlog = (req, res) => {
             status: 500,
             message: "blog did not exists"
           })
-        }
-        else {
+        } else {
           data.status = 'draft'
           data.deleteStatus = true
           data.save()
@@ -430,7 +435,6 @@ const deleteBlog = (req, res) => {
   }
 }
 
-
 module.exports = {
   findBlog,
   slugFinder,
@@ -441,6 +445,3 @@ module.exports = {
   updateBlog,
   deleteBlog
 };
-
-
-

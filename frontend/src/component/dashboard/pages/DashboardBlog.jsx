@@ -3,15 +3,510 @@ import { BiSolidLike } from "react-icons/bi";
 import { RiMessage2Fill } from "react-icons/ri";
 import { FaUpload } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
 import AxiosInstance from "../../utils/AxiosInstance";
 import { format } from "date-fns";
 import { ToastContainer, toast } from "react-toastify";
-import DashboardPopUp from "../DashboardPopUp";
+
+const getEmptySection = () => ({
+  title: "",
+  content: "",
+  sectionImage: "",
+  url: "",
+});
+
+const getEmptyCreateForm = () => ({
+  title: "",
+  author: "",
+  category: "",
+  image: "",
+  introduction: "",
+  slug: "",
+  readingTime: 0,
+  publishAt: "", // Will hold standard ISO string
+  status: "draft",
+  sections: [getEmptySection()],
+});
+
+function ModalShell({
+  open,
+  onClose,
+  kicker,
+  title,
+  subtitle,
+  footer,
+  children,
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const handleEscape = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[60] flex flex-col items-center justify-start sm:justify-center overflow-y-auto sm:p-6 bg-black/60 backdrop-blur-sm">
+      <div className="relative z-10 w-full sm:max-w-6xl sm:rounded-[30px] border-0 sm:border border-orange-100 dark:border-white/10 bg-white dark:bg-[#0b0b0f] shadow-[0_24px_80px_rgba(0,0,0,0.30)] dark:shadow-[0_24px_90px_rgba(0,0,0,0.85)] flex flex-col sm:overflow-hidden min-h-screen sm:min-h-[78vh] sm:max-h-[92vh]">
+        <div className="flex flex-1 flex-col lg:flex-row min-h-0">
+          <aside className="hidden lg:flex w-[280px] flex-col justify-between border-r border-orange-100 dark:border-white/10 bg-gradient-to-br from-orange-500 via-orange-500 to-yellow-500 text-white p-7 shrink-0">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/75 mb-3">
+                {kicker}
+              </p>
+              <h2 className="text-3xl font-black leading-tight">{title}</h2>
+              <p className="mt-4 text-sm leading-6 text-white/85">{subtitle}</p>
+            </div>
+            <div className="space-y-3 mt-8">
+              <div className="rounded-2xl bg-white/12 border border-white/15 px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.16em] text-white/70 mb-1">
+                  Layout
+                </p>
+                <p className="text-sm font-medium">
+                  Fully responsive, natural scrolling on mobile.
+                </p>
+              </div>
+            </div>
+          </aside>
+
+          <div className="flex flex-1 flex-col min-h-0">
+            <div className="sticky top-0 z-20 flex items-start justify-between gap-4 border-b border-orange-100 dark:border-white/10 bg-white/95 dark:bg-[#0b0b0f]/95 px-5 py-4 backdrop-blur-xl sm:px-6">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500 dark:text-orange-300 mb-1">
+                  {kicker}
+                </p>
+                <h3 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">
+                  {title}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-white/5 px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-white/10 transition"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+              {children}
+            </div>
+
+            <div className="sticky bottom-0 z-20 border-t border-orange-100 dark:border-white/10 bg-white/95 dark:bg-[#0b0b0f]/95 px-5 py-4 backdrop-blur-xl sm:px-6 pb-8 sm:pb-4">
+              {footer}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+// ✅ FIXED: Added isSubmitting prop to ConfirmDialog
+function ConfirmDialog({
+  open,
+  title,
+  message,
+  confirmLabel,
+  onConfirm,
+  onCancel,
+  tone = "orange",
+  isSubmitting = false, 
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && !isSubmitting) onCancel?.();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [open, onCancel, isSubmitting]);
+
+  if (!open) return null;
+
+  const confirmButtonClass =
+    tone === "red"
+      ? "bg-red-500 hover:bg-red-600 shadow-red-500/30"
+      : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-500 shadow-orange-500/30";
+
+  return createPortal(
+    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/55 backdrop-blur-sm">
+      <div className="relative z-10 w-full max-w-md rounded-[28px] border border-orange-100 dark:border-white/10 bg-white/95 dark:bg-[#0b0b0f]/95 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.30)] dark:shadow-[0_24px_90px_rgba(0,0,0,0.85)] backdrop-blur-2xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500 dark:text-orange-300 mb-2">
+          Confirmation
+        </p>
+        <h3 className="text-xl font-black text-gray-900 dark:text-white">
+          {title}
+        </h3>
+        <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
+          {message}
+        </p>
+
+        <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isSubmitting} // ✅ Disabled while loading
+            className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-white/5 px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 hover:bg-orange-50 dark:hover:bg-white/10 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={isSubmitting} // ✅ Disabled while loading
+            className={`rounded-2xl px-4 py-2.5 text-sm font-semibold text-white shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed ${confirmButtonClass}`}
+          >
+            {/* ✅ Show Processing text */}
+            {isSubmitting ? "Processing..." : confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+function FieldLabel({ children }) {
+  return (
+    <label className="mb-1.5 block text-xs font-semibold text-gray-600 dark:text-gray-400">
+      {children}
+    </label>
+  );
+}
+
+function FieldError({ error }) {
+  if (!error) return null;
+  return <p className="mt-1 text-xs text-red-500">{error}</p>;
+}
+
+function SectionEditor({
+  section,
+  index,
+  canRemove,
+  onChange,
+  onImageChange,
+  onRemove,
+}) {
+  return (
+    <div className="rounded-3xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-white/5 p-4 shadow-sm">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500 dark:text-orange-300">
+            Section {index + 1}
+          </p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-white">
+            Content block
+          </p>
+        </div>
+
+        {canRemove && (
+          <button
+            type="button"
+            onClick={() => onRemove(index)}
+            className="rounded-2xl border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
+          >
+            Remove
+          </button>
+        )}
+      </div>
+
+      <div className="grid gap-3">
+        <div>
+          <FieldLabel>Section title</FieldLabel>
+          <input
+            type="text"
+            name="title"
+            value={section.title}
+            onChange={(e) => onChange(e, index)}
+            placeholder="Section title"
+            className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+          />
+        </div>
+
+        <div>
+          <FieldLabel>Section content</FieldLabel>
+          <textarea
+            name="content"
+            value={section.content}
+            onChange={(e) => onChange(e, index)}
+            placeholder="Section content..."
+            className="min-h-[120px] w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 py-3 text-sm text-gray-900 dark:text-gray-100 outline-none resize-y focus:ring-2 focus:ring-orange-400/70"
+          />
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div>
+            <FieldLabel>Optional URL</FieldLabel>
+            <input
+              type="text"
+              name="url"
+              value={section.url}
+              onChange={(e) => onChange(e, index)}
+              placeholder="https://..."
+              className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+            />
+          </div>
+
+          <div>
+            <FieldLabel>Section image</FieldLabel>
+            <input
+              type="file"
+              onChange={(e) => onImageChange(e, index)}
+              className="w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 text-xs text-gray-700 dark:text-gray-200 file:mr-3 file:rounded-2xl file:border-0 file:bg-orange-500/90 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-orange-600/90"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BlogEditorForm({
+  data,
+  errors,
+  categoryData,
+  isUpdate,
+  onChange,
+  onImageChange,
+  onSectionChange,
+  onSectionImageChange,
+  addSection,
+  removeSection,
+}) {
+  return (
+    <div className="flex flex-col xl:flex-row gap-6">
+      <div className="flex-1 space-y-5 min-w-0">
+        <div className="rounded-3xl border border-orange-100 dark:border-white/10 bg-white/85 dark:bg-white/5 p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500 dark:text-orange-300 mb-3">
+            Main content
+          </p>
+
+          <div className="space-y-4">
+            <div>
+              <FieldLabel>Title</FieldLabel>
+              <input
+                type="text"
+                name="title"
+                value={data.title}
+                onChange={onChange}
+                placeholder="Enter blog title"
+                className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+              />
+              <FieldError error={errors.title} />
+            </div>
+
+            <div>
+              <FieldLabel>Introduction</FieldLabel>
+              <textarea
+                name="introduction"
+                value={data.introduction}
+                onChange={onChange}
+                placeholder="Short summary of the blog..."
+                className="min-h-[130px] w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 py-3 text-sm text-gray-900 dark:text-gray-100 outline-none resize-y focus:ring-2 focus:ring-orange-400/70"
+              />
+              <FieldError error={errors.introduction} />
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-orange-100 dark:border-white/10 bg-white/85 dark:bg-white/5 p-5 shadow-sm">
+          <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500 dark:text-orange-300">
+                Sections
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                Add as many content blocks as you need.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={addSection}
+              className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-white/5 px-4 py-2 text-xs font-semibold text-gray-800 dark:text-gray-100 hover:bg-orange-50 dark:hover:bg-white/10 transition"
+            >
+              Add Section
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {data.sections.map((section, index) => (
+              <SectionEditor
+                key={index}
+                section={section}
+                index={index}
+                canRemove={data.sections.length > 1}
+                onChange={onSectionChange}
+                onImageChange={onSectionImageChange}
+                onRemove={removeSection}
+              />
+            ))}
+          </div>
+          <FieldError error={errors.sections} />
+        </div>
+      </div>
+
+      <div className="xl:w-[320px] 2xl:w-[400px] shrink-0 space-y-5">
+        <div className="rounded-3xl border border-orange-100 dark:border-white/10 bg-gradient-to-br from-orange-50 to-white dark:from-white/10 dark:to-white/5 p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500 dark:text-orange-300 mb-3">
+            Publish settings
+          </p>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+            <div>
+              <FieldLabel>Author</FieldLabel>
+              <input
+                type="text"
+                name="author"
+                value={data.author}
+                onChange={onChange}
+                placeholder="Author name"
+                className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+              />
+              <FieldError error={errors.author} />
+            </div>
+
+            <div>
+              <FieldLabel>Category</FieldLabel>
+              <select
+                name="category"
+                value={data.category}
+                onChange={onChange}
+                className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+              >
+                <option value="">Select category</option>
+                {categoryData.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.categoryName}
+                  </option>
+                ))}
+              </select>
+              <FieldError error={errors.category} />
+            </div>
+
+            <div className="sm:col-span-2 xl:col-span-1">
+              <FieldLabel>
+                Cover Image {isUpdate ? "(leave empty to keep current)" : ""}
+              </FieldLabel>
+              <input
+                type="file"
+                onChange={onImageChange}
+                className="w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 text-xs text-gray-700 dark:text-gray-200 file:mr-3 file:rounded-2xl file:border-0 file:bg-orange-500/90 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-orange-600/90"
+              />
+              <FieldError error={errors.image} />
+            </div>
+
+            <div className="sm:col-span-2 xl:col-span-1">
+              <FieldLabel>Slug</FieldLabel>
+              <input
+                type="text"
+                name="slug"
+                value={data.slug}
+                onChange={onChange}
+                placeholder="unique-blog-slug"
+                className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+              />
+              <FieldError error={errors.slug} />
+            </div>
+
+            <div>
+              <FieldLabel>Reading Time (min)</FieldLabel>
+              <input
+                type="number"
+                name="readingTime"
+                value={data.readingTime}
+                onChange={onChange}
+                min={0}
+                className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+              />
+              <FieldError error={errors.readingTime} />
+            </div>
+
+            <div>
+              <FieldLabel>Publish At</FieldLabel>
+              <input
+                type="datetime-local"
+                name="publishAt"
+                value={data.publishAt}
+                onChange={onChange}
+                className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+              />
+              <FieldError error={errors.publishAt} />
+            </div>
+
+            <div className="sm:col-span-2 xl:col-span-1">
+              <FieldLabel>Status</FieldLabel>
+              <select
+                name="status"
+                value={data.status}
+                onChange={onChange}
+                className="h-11 w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-black/30 px-3 text-sm text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+              <FieldError error={errors.status} />
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-orange-100 dark:border-white/10 bg-white/85 dark:bg-white/5 p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500 dark:text-orange-300 mb-3">
+            Quick preview
+          </p>
+
+          <div className="space-y-3">
+            <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 p-4">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                Title
+              </p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white break-words">
+                {data.title || "Untitled blog"}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 p-4">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  Status
+                </p>
+                <p className="text-sm font-semibold capitalize text-gray-900 dark:text-white">
+                  {data.status || "draft"}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 p-4">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  Sections
+                </p>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {data.sections.length}
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 p-4">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                Intro preview
+              </p>
+              <p className="line-clamp-4 text-sm leading-6 text-gray-700 dark:text-gray-300">
+                {data.introduction || "Your short summary will appear here."}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function DashboardBlog() {
-  const navigate = useNavigate();
   const [categoryData, setCategoryData] = useState([]);
   const [blogsData, setBlogsData] = useState([]);
   const [createFormErrors, setCreateFormErrors] = useState({});
@@ -21,19 +516,15 @@ export default function DashboardBlog() {
   const [blogUpdate, setBlogUpdate] = useState(false);
   const [createPopup, setCreatePopup] = useState(false);
   const [updatePopup, setUpdatePopup] = useState(false);
+  
+  // ✅ FIXED: Added isSubmitting state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [blogUpdateFormData, setBlogUpdateFormData] = useState(null);
-  const [blogCreateFormData, setBlogCreateFormData] = useState({
-    title: "",
-    author: "",
-    category: "",
-    image: "",
-    introduction: "",
-    slug: "",
-    readingTime: 0,
-    publishAt: "",
-    status: "draft",
-    sections: [{ title: "", content: "", sectionImage: "", url: "" }],
-  });
+  const [blogCreateFormData, setBlogCreateFormData] = useState(
+    getEmptyCreateForm()
+  );
+  const [searchText, setSearchText] = useState("");
   const [queryParams, setQueryParams] = useState({
     sortBy: "createdAt",
     order: "desc",
@@ -41,10 +532,10 @@ export default function DashboardBlog() {
     page: 1,
   });
 
-  // ========== FETCH DATA ==========
   useEffect(() => {
     const fetchdata = async () => {
       const token = localStorage.getItem("blogsite_jwt_token");
+
       try {
         const blog = await AxiosInstance.post(
           "/admin/dashboard/blogs/find",
@@ -55,11 +546,13 @@ export default function DashboardBlog() {
             },
           }
         );
+
         const category = await AxiosInstance.post("/customer/category");
 
         if (category?.data?.data) {
           setCategoryData(category.data.data);
         }
+
         if (blog?.data?.data) {
           setBlogsData(blog.data.data);
         }
@@ -70,12 +563,43 @@ export default function DashboardBlog() {
         setLoading(false);
       }
     };
+
     fetchdata();
   }, [queryParams]);
 
-  // ========== CREATE HANDLERS ==========
+  useEffect(() => {
+    const shouldLockScroll =
+      blogCreate || blogUpdate || createPopup || updatePopup;
+    const previousOverflow = document.body.style.overflow;
+
+    if (shouldLockScroll) {
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [blogCreate, blogUpdate, createPopup, updatePopup]);
+
+  const filteredBlogs = useMemo(() => {
+    if (!searchText.trim()) return blogsData;
+
+    const q = searchText.toLowerCase();
+
+    return blogsData.filter((blog) => {
+      return [
+        blog.title,
+        blog.author,
+        blog.slug,
+        blog.introduction,
+        blog.category?.categoryName,
+      ].some((value) => String(value || "").toLowerCase().includes(q));
+    });
+  }, [blogsData, searchText]);
+
   const handleCreateChange = (e) => {
     const { name, value } = e.target;
+
     setBlogCreateFormData((prev) => ({
       ...prev,
       [name]: name === "readingTime" ? Number(value) : value,
@@ -84,6 +608,7 @@ export default function DashboardBlog() {
 
   const handleCreateImageChange = (e) => {
     const file = e.target.files[0];
+
     setBlogCreateFormData((prev) => ({
       ...prev,
       image: file,
@@ -92,6 +617,7 @@ export default function DashboardBlog() {
 
   const handleCreateSectionChange = (e, index) => {
     const { name, value } = e.target;
+
     setBlogCreateFormData((prev) => {
       const sections = [...prev.sections];
       sections[index] = { ...sections[index], [name]: value };
@@ -101,6 +627,7 @@ export default function DashboardBlog() {
 
   const handleCreateSectionImageChange = (e, index) => {
     const file = e.target.files[0];
+
     setBlogCreateFormData((prev) => {
       const sections = [...prev.sections];
       sections[index] = { ...sections[index], sectionImage: file };
@@ -111,10 +638,7 @@ export default function DashboardBlog() {
   const addCreateSection = () => {
     setBlogCreateFormData((prev) => ({
       ...prev,
-      sections: [
-        ...prev.sections,
-        { title: "", content: "", sectionImage: "", url: "" },
-      ],
+      sections: [...prev.sections, getEmptySection()],
     }));
   };
 
@@ -127,10 +651,9 @@ export default function DashboardBlog() {
 
   const validateCreateForm = () => {
     const errors = {};
-    if (!blogCreateFormData.title.trim())
-      errors.title = "Title is required";
-    if (!blogCreateFormData.author.trim())
-      errors.author = "Author is required";
+
+    if (!blogCreateFormData.title.trim()) errors.title = "Title is required";
+    if (!blogCreateFormData.author.trim()) errors.author = "Author is required";
     if (!blogCreateFormData.category) errors.category = "Category is required";
     if (!blogCreateFormData.image) errors.image = "Cover image is required";
     if (!blogCreateFormData.introduction.trim())
@@ -138,7 +661,8 @@ export default function DashboardBlog() {
     if (blogCreateFormData.readingTime <= 0)
       errors.readingTime = "Reading time must be greater than 0";
     if (!blogCreateFormData.slug.trim()) errors.slug = "Slug is required";
-    if (!blogCreateFormData.publishAt) errors.publishAt = "Publish date required";
+    if (!blogCreateFormData.publishAt)
+      errors.publishAt = "Publish date and time required";
     if (blogCreateFormData.sections.length === 0)
       errors.sections = "At least one section is required";
 
@@ -147,9 +671,11 @@ export default function DashboardBlog() {
   };
 
   const handleCreateSubmit = async () => {
-     alert('Creating your blog...');
+    // ✅ FIXED: Enable submitting state
+    setIsSubmitting(true);
     const token = localStorage.getItem("blogsite_jwt_token");
     const formData = new FormData();
+
     formData.append("title", blogCreateFormData.title);
     formData.append("author", blogCreateFormData.author);
     formData.append("category", blogCreateFormData.category);
@@ -166,9 +692,14 @@ export default function DashboardBlog() {
     blogCreateFormData.sections.forEach((section, index) => {
       formData.append(`sections[${index}][title]`, section.title);
       formData.append(`sections[${index}][content]`, section.content);
+
       if (section.sectionImage) {
-        formData.append(`sections[${index}][sectionImage]`, section.sectionImage);
+        formData.append(
+          `sections[${index}][sectionImage]`,
+          section.sectionImage
+        );
       }
+
       formData.append(`sections[${index}][url]`, section.url);
     });
 
@@ -179,36 +710,27 @@ export default function DashboardBlog() {
           "Content-Type": "multipart/form-data",
         },
       });
-       alert('Creating your blog 5 5 5 ...');
 
       if (res?.data?.success) {
-         alert('Creating your blog...');
         toast.success("Blog created successfully!");
         setBlogCreate(false);
         setCreatePopup(false);
-        setBlogCreateFormData({
-          title: "",
-          author: "",
-          category: "",
-          image: "",
-          introduction: "",
-          slug: "",
-          readingTime: 0,
-          publishAt: "",
-          status: "draft",
-          sections: [{ title: "", content: "", sectionImage: "", url: "" }],
-        });
+        setCreateFormErrors({});
+        setBlogCreateFormData(getEmptyCreateForm());
         setQueryParams((prev) => ({ ...prev, page: 1 }));
       }
     } catch (err) {
       console.error("Create error:", err);
       toast.error(err?.response?.data?.message || "Failed to create blog");
+    } finally {
+      // ✅ FIXED: Reset submitting state
+      setIsSubmitting(false);
     }
   };
 
-  // ========== UPDATE HANDLERS ==========
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
+
     setBlogUpdateFormData((prev) => ({
       ...prev,
       [name]: name === "readingTime" ? Number(value) : value,
@@ -217,6 +739,7 @@ export default function DashboardBlog() {
 
   const handleUpdateImageChange = (e) => {
     const file = e.target.files[0];
+
     setBlogUpdateFormData((prev) => ({
       ...prev,
       image: file,
@@ -225,6 +748,7 @@ export default function DashboardBlog() {
 
   const handleUpdateSectionChange = (e, index) => {
     const { name, value } = e.target;
+
     setBlogUpdateFormData((prev) => {
       const sections = [...prev.sections];
       sections[index] = { ...sections[index], [name]: value };
@@ -234,6 +758,7 @@ export default function DashboardBlog() {
 
   const handleUpdateSectionImageChange = (e, index) => {
     const file = e.target.files[0];
+
     setBlogUpdateFormData((prev) => {
       const sections = [...prev.sections];
       sections[index] = { ...sections[index], sectionImage: file };
@@ -244,10 +769,7 @@ export default function DashboardBlog() {
   const addUpdateSection = () => {
     setBlogUpdateFormData((prev) => ({
       ...prev,
-      sections: [
-        ...(prev.sections || []),
-        { title: "", content: "", sectionImage: "", url: "" },
-      ],
+      sections: [...(prev.sections || []), getEmptySection()],
     }));
   };
 
@@ -260,10 +782,9 @@ export default function DashboardBlog() {
 
   const validateUpdateForm = () => {
     const errors = {};
-    if (!blogUpdateFormData.title.trim())
-      errors.title = "Title is required";
-    if (!blogUpdateFormData.author.trim())
-      errors.author = "Author is required";
+
+    if (!blogUpdateFormData.title.trim()) errors.title = "Title is required";
+    if (!blogUpdateFormData.author.trim()) errors.author = "Author is required";
     if (!blogUpdateFormData.category) errors.category = "Category is required";
     if (!blogUpdateFormData.introduction.trim())
       errors.introduction = "Introduction is required";
@@ -271,7 +792,7 @@ export default function DashboardBlog() {
       errors.readingTime = "Reading time must be greater than 0";
     if (!blogUpdateFormData.slug.trim()) errors.slug = "Slug is required";
     if (!blogUpdateFormData.publishAt)
-      errors.publishAt = "Publish date required";
+      errors.publishAt = "Publish date and time required";
     if (!blogUpdateFormData.sections || blogUpdateFormData.sections.length === 0)
       errors.sections = "At least one section is required";
 
@@ -280,8 +801,13 @@ export default function DashboardBlog() {
   };
 
   const handleUpdateSubmit = async () => {
+    // ✅ FIXED: Enable submitting state
+    setIsSubmitting(true);
     const token = localStorage.getItem("blogsite_jwt_token");
     const formData = new FormData();
+    // console.log("Updating blog with data:", blogUpdateFormData);
+
+    formData.append("_id", blogUpdateFormData._id);
     formData.append("title", blogUpdateFormData.title);
     formData.append("author", blogUpdateFormData.author);
     formData.append("category", blogUpdateFormData.category);
@@ -291,22 +817,33 @@ export default function DashboardBlog() {
     formData.append("status", blogUpdateFormData.status);
     formData.append("slug", blogUpdateFormData.slug);
 
-    if (blogUpdateFormData.image && typeof blogUpdateFormData.image !== "string") {
+    if (
+      blogUpdateFormData.image &&
+      typeof blogUpdateFormData.image !== "string"
+    ) {
       formData.append("image", blogUpdateFormData.image);
     }
 
     (blogUpdateFormData.sections || []).forEach((section, index) => {
       formData.append(`sections[${index}][title]`, section.title);
       formData.append(`sections[${index}][content]`, section.content);
-      if (section.sectionImage && typeof section.sectionImage !== "string") {
-        formData.append(`sections[${index}][sectionImage]`, section.sectionImage);
+
+      if (
+        section.sectionImage &&
+        typeof section.sectionImage !== "string"
+      ) {
+        formData.append(
+          `sections[${index}][sectionImage]`,
+          section.sectionImage
+        );
       }
+
       formData.append(`sections[${index}][url]`, section.url);
     });
 
     try {
-      const res = await AxiosInstance.put(
-        `/admin/dashboard/blogs/${blogUpdateFormData._id}`,
+      const res = await AxiosInstance.post(
+        "/admin/update/blog",
         formData,
         {
           headers: {
@@ -320,22 +857,29 @@ export default function DashboardBlog() {
         toast.success("Blog updated successfully!");
         setBlogUpdate(false);
         setUpdatePopup(false);
+        setUpdateFormErrors({});
         setBlogUpdateFormData(null);
-        setQueryParams((prev) => ({ ...prev })); // Refetch
+        setQueryParams((prev) => ({ ...prev }));
       }
     } catch (err) {
       console.error("Update error:", err);
       toast.error(err?.response?.data?.message || "Failed to update blog");
+    } finally {
+      // ✅ FIXED: Reset submitting state
+      setIsSubmitting(false);
     }
   };
 
-  // ========== DELETE HANDLER ==========
   const handleDeleteBlog = async (blogId) => {
     const token = localStorage.getItem("blogsite_jwt_token");
+
     try {
-      const res = await AxiosInstance.delete(`/admin/dashboard/blogs/${blogId}`, {
-        headers: { authorization: token },
-      });
+      const res = await AxiosInstance.delete(
+        `/admin/dashboard/blogs/${blogId}`,
+        {
+          headers: { authorization: token },
+        }
+      );
 
       if (res?.data?.success) {
         toast.success("Blog deleted successfully!");
@@ -348,8 +892,45 @@ export default function DashboardBlog() {
   };
 
   const openUpdateModal = (blog) => {
-    setBlogUpdateFormData(blog);
+    setUpdateFormErrors({});
+
+    let formattedPublishDate = "";
+    if (blog?.publishAt) {
+      try {
+        const dateObj = new Date(blog.publishAt);
+        formattedPublishDate = dateObj.toISOString().slice(0, 16);
+      } catch (e) {
+        console.error("Error formatting date", e);
+      }
+    }
+
+    setBlogUpdateFormData({
+      ...blog,
+      category: blog?.category?._id || blog?.category || "",
+      publishAt: formattedPublishDate,
+      sections:
+        blog?.sections && blog.sections.length > 0
+          ? blog.sections.map((section) => ({
+              ...section,
+              sectionImage: section.sectionImage || "",
+            }))
+          : [getEmptySection()],
+    });
+
     setBlogUpdate(true);
+  };
+
+  const closeCreateModal = () => {
+    setBlogCreate(false);
+    setCreatePopup(false);
+    setCreateFormErrors({});
+  };
+
+  const closeUpdateModal = () => {
+    setBlogUpdate(false);
+    setUpdatePopup(false);
+    setUpdateFormErrors({});
+    setBlogUpdateFormData(null);
   };
 
   if (loading) {
@@ -365,91 +946,89 @@ export default function DashboardBlog() {
   return (
     <>
       <div className="w-full space-y-6">
-        {/* TOP TOOLBAR */}
-        <div className="rounded-3xl bg-white/90 dark:bg-white/5 border border-orange-100 dark:border-white/10 backdrop-blur-2xl px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500 dark:text-orange-300 mb-1">
-              Blog Manager
-            </p>
-            <h1 className="text-2xl font-black text-gray-900 dark:text-white">
-              Blogs
-            </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Search, create, update and manage all blog posts.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-            {/* Search */}
-            <div className="flex items-center gap-2 rounded-2xl bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 px-3 py-2 shadow-sm">
-              <IoSearch className="w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search blogs..."
-                className="bg-transparent outline-none text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 w-40 sm:w-52"
-              />
+        <div className="rounded-3xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-white/5 px-4 py-4 shadow-sm backdrop-blur-2xl sm:px-5">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500 dark:text-orange-300 mb-1">
+                Blog Manager
+              </p>
+              <h1 className="text-2xl font-black text-gray-900 dark:text-white">
+                Blogs
+              </h1>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                Search, create, update and manage all blog posts.
+              </p>
             </div>
 
-            {/* New blog button */}
-            <button
-              type="button"
-              onClick={() => {
-                setBlogCreate(true);
-                setCreateFormErrors({});
-              }}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/30 hover:from-orange-600 hover:to-yellow-500 transition-all"
-            >
-              <FaUpload className="w-4 h-4" />
-              New Blog
-            </button>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="flex items-center gap-2 rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 px-3 py-2 shadow-sm">
+                <IoSearch className="h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  placeholder="Search blogs..."
+                  className="w-48 bg-transparent text-sm text-gray-800 outline-none placeholder:text-gray-400 dark:text-gray-100 dark:placeholder:text-gray-500 sm:w-60"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setCreateFormErrors({});
+                  setBlogCreateFormData(getEmptyCreateForm());
+                  setBlogCreate(true);
+                }}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-yellow-500"
+              >
+                <FaUpload className="h-4 w-4" />
+                New Blog
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* BLOG LIST */}
         <div className="space-y-4">
-          {blogsData && blogsData.length > 0 ? (
-            blogsData.map((blog) => (
+          {filteredBlogs && filteredBlogs.length > 0 ? (
+            filteredBlogs.map((blog) => (
               <div
                 key={blog._id}
-                className="rounded-3xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-white/5 backdrop-blur-2xl overflow-hidden shadow-md shadow-orange-200/40 dark:shadow-[0_14px_40px_rgba(0,0,0,0.85)]"
+                className="overflow-hidden rounded-3xl border border-orange-100 dark:border-white/10 bg-white/90 dark:bg-white/5 shadow-md shadow-orange-200/30 backdrop-blur-2xl dark:shadow-[0_14px_40px_rgba(0,0,0,0.70)]"
               >
-                <div className="grid md:grid-cols-[260px,1fr]">
-                  {/* Image */}
-                  <div className="h-48 md:h-full w-full">
+                <div className="grid md:grid-cols-[280px,1fr]">
+                  <div className="h-52 w-full md:h-full">
                     <img
                       src={blog.image}
                       alt={blog.title}
-                      className="w-full h-full object-cover md:rounded-l-3xl md:rounded-tr-none rounded-t-3xl"
+                      className="h-full w-full object-cover"
                     />
                   </div>
 
-                  {/* Content */}
-                  <div className="p-4 md:p-5 flex flex-col gap-3">
-                    <div className="flex justify-between gap-3 items-start">
+                  <div className="flex flex-col gap-4 p-4 md:p-5">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-orange-500 dark:text-orange-300 mb-1">
+                        <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-orange-500 dark:text-orange-300">
                           {blog.category?.categoryName ?? "Uncategorized"}
                         </p>
-                        <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-1">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                           {blog.title}
                         </h2>
-                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                        <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
                           by {blog.author}
                         </p>
                       </div>
 
-                      {/* Delete / Edit buttons */}
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          className="px-3 py-2 rounded-xl bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-xs font-semibold text-orange-600 dark:text-orange-300 hover:bg-orange-50/80 dark:hover:bg-white/10"
                           onClick={() => openUpdateModal(blog)}
+                          className="rounded-xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 px-3 py-2 text-xs font-semibold text-orange-600 transition hover:bg-orange-50 dark:text-orange-300 dark:hover:bg-white/10"
                         >
                           Edit
                         </button>
+
                         <button
                           type="button"
-                          className="px-3 py-2 rounded-xl bg-red-500/90 text-white hover:bg-red-600 flex items-center justify-center"
                           onClick={() => {
                             if (
                               window.confirm(
@@ -459,73 +1038,80 @@ export default function DashboardBlog() {
                               handleDeleteBlog(blog._id);
                             }
                           }}
+                          className="flex items-center justify-center rounded-xl bg-red-500/90 px-3 py-2 text-white transition hover:bg-red-600"
                         >
-                          <MdDelete className="w-4 h-4" />
+                          <MdDelete className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
 
-                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 md:line-clamp-3">
+                    <p className="text-sm leading-6 text-gray-600 dark:text-gray-300 line-clamp-3">
                       {blog.introduction}
                     </p>
 
-                    {/* Meta grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-gray-600 dark:text-gray-300">
-                      <div>
+                    <div className="grid grid-cols-2 gap-3 text-xs text-gray-600 dark:text-gray-300 md:grid-cols-4">
+                      <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/70 dark:bg-black/25 px-3 py-3">
                         <p className="font-semibold text-gray-500 dark:text-gray-400">
                           Created
                         </p>
-                        <p>
+                        <p className="mt-1">
                           {format(new Date(blog.createdAt), "MMM dd, yyyy")}
                         </p>
                       </div>
-                      <div>
+
+                      <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/70 dark:bg-black/25 px-3 py-3">
                         <p className="font-semibold text-gray-500 dark:text-gray-400">
                           Published
                         </p>
-                        <p>{format(new Date(blog.publishAt), "MMM dd, yyyy")}</p>
+                        <p className="mt-1">
+                          {format(new Date(blog.publishAt), "MMM dd, yyyy hh:mm a")}
+                        </p>
                       </div>
-                      <div>
+
+                      <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/70 dark:bg-black/25 px-3 py-3">
                         <p className="font-semibold text-gray-500 dark:text-gray-400">
                           Updated
                         </p>
-                        <p>
+                        <p className="mt-1">
                           {format(new Date(blog.updatedAt), "MMM dd, yyyy")}
                         </p>
                       </div>
-                      <div>
+
+                      <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/70 dark:bg-black/25 px-3 py-3">
                         <p className="font-semibold text-gray-500 dark:text-gray-400">
                           Status
                         </p>
-                        <p className="capitalize">{blog.status}</p>
+                        <p className="mt-1 capitalize">{blog.status}</p>
                       </div>
                     </div>
 
-                    {/* Footer stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3 pt-1">
-                      <div className="flex items-center justify-center gap-2 rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/40 px-3 py-2">
+                    <div className="grid grid-cols-1 gap-3 pt-1 md:grid-cols-4">
+                      <div className="flex items-center justify-center gap-2 rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 px-3 py-2">
                         <BiSolidLike className="text-lg text-orange-500" />
                         <p className="text-xs font-semibold text-gray-800 dark:text-gray-100">
                           {blog.likes?.length || 0} Likes
                         </p>
                       </div>
-                      <div className="flex items-center justify-center gap-2 rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/40 px-3 py-2">
+
+                      <div className="flex items-center justify-center gap-2 rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 px-3 py-2">
                         <RiMessage2Fill className="text-lg text-orange-500" />
                         <p className="text-xs font-semibold text-gray-800 dark:text-gray-100">
                           {blog.comments?.length || 0} Comments
                         </p>
                       </div>
+
                       <Link
                         to={`/blog/${blog.slug}`}
                         className="flex items-center justify-center"
                       >
-                        <div className="w-full text-center rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold px-4 py-2 shadow-md shadow-orange-500/40 hover:from-orange-600 hover:to-yellow-500 transition-all">
+                        <div className="w-full rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-center text-xs font-semibold text-white shadow-md shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-yellow-500">
                           View Blog
                         </div>
                       </Link>
+
                       <button
                         type="button"
-                        className="w-full text-center rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/40 text-xs font-semibold text-gray-800 dark:text-gray-100 px-4 py-2 hover:bg-orange-50/70 dark:hover:bg-white/10"
+                        className="w-full rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 px-4 py-2 text-center text-xs font-semibold text-gray-800 hover:bg-orange-50/70 dark:text-gray-100 dark:hover:bg-white/10"
                       >
                         Publish
                       </button>
@@ -535,7 +1121,7 @@ export default function DashboardBlog() {
               </div>
             ))
           ) : (
-            <div className="text-center py-12">
+            <div className="rounded-3xl border border-dashed border-orange-200 dark:border-white/10 bg-white/70 dark:bg-white/5 py-14 text-center">
               <p className="text-gray-600 dark:text-gray-400">
                 No blogs found. Create your first blog!
               </p>
@@ -546,643 +1132,116 @@ export default function DashboardBlog() {
         <ToastContainer position="bottom-right" />
       </div>
 
-      {/* ========== CREATE MODAL ========== */}
-      {blogCreate && (
-        <div className="fixed inset-0 z-50 flex items-top justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setBlogCreate(false)}
-          />
+      <ModalShell
+        open={blogCreate}
+        onClose={closeCreateModal}
+        kicker="New Blog"
+        title="Create Blog"
+        subtitle="This modal behaves as a full scrolling page on mobile, and a constrained scrolling window on desktop."
+        footer={
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={closeCreateModal}
+              className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-white/5 px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 hover:bg-orange-50 dark:hover:bg-white/10 transition"
+            >
+              Cancel
+            </button>
 
-          <div className="relative z-10 w-full max-w-3xl rounded-3xl bg-white/95 dark:bg-black/85 border border-orange-100 dark:border-white/15 backdrop-blur-2xl p-5 sm:p-6 lg:p-7 shadow-[0_18px_60px_rgba(0,0,0,0.25)] dark:shadow-[0_24px_80px_rgba(0,0,0,0.95)] max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4 sticky top-0 bg-white/95 dark:bg-black/85 pb-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500 dark:text-orange-300 mb-1">
-                  New Blog
-                </p>
-                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">
-                  Create Blog
-                </h2>
-              </div>
-              <button
-                type="button"
-                className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-orange-500"
-                onClick={() => setBlogCreate(false)}
-              >
-                Close
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {/* Title */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={blogCreateFormData.title}
-                  onChange={handleCreateChange}
-                  className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                  placeholder="Enter blog title"
-                />
-                {createFormErrors.title && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {createFormErrors.title}
-                  </p>
-                )}
-              </div>
-
-              {/* Author & Category */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Author
-                  </label>
-                  <input
-                    type="text"
-                    name="author"
-                    value={blogCreateFormData.author}
-                    onChange={handleCreateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                    placeholder="Author name"
-                  />
-                  {createFormErrors.author && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {createFormErrors.author}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Category
-                  </label>
-                  <select
-                    name="category"
-                    value={blogCreateFormData.category}
-                    onChange={handleCreateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                  >
-                    <option value="">Select category</option>
-                    {categoryData.map((cat) => (
-                      <option key={cat._id} value={cat._id}>
-                        {cat.categoryName}
-                      </option>
-                    ))}
-                  </select>
-                  {createFormErrors.category && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {createFormErrors.category}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Image & Slug */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Cover Image
-                  </label>
-                  <input
-                    type="file"
-                    onChange={handleCreateImageChange}
-                    className="w-full text-xs text-gray-700 dark:text-gray-200 file:mr-3 file:py-2 file:px-3 file:rounded-2xl file:border-0 file:text-xs file:font-semibold file:bg-orange-500/90 file:text-white hover:file:bg-orange-600/90 bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400/70"
-                  />
-                  {createFormErrors.image && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {createFormErrors.image}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Slug
-                  </label>
-                  <input
-                    type="text"
-                    name="slug"
-                    value={blogCreateFormData.slug}
-                    onChange={handleCreateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                    placeholder="unique-blog-slug"
-                  />
-                  {createFormErrors.slug && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {createFormErrors.slug}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Introduction */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                  Introduction
-                </label>
-                <textarea
-                  name="introduction"
-                  value={blogCreateFormData.introduction}
-                  onChange={handleCreateChange}
-                  className="w-full min-h-[90px] rounded-2xl px-3 py-2 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70 resize-y"
-                  placeholder="Short summary of the blog..."
-                />
-                {createFormErrors.introduction && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {createFormErrors.introduction}
-                  </p>
-                )}
-              </div>
-
-              {/* Reading time / Publish date / Status */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Reading Time (min)
-                  </label>
-                  <input
-                    type="number"
-                    name="readingTime"
-                    value={blogCreateFormData.readingTime}
-                    onChange={handleCreateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                    min={0}
-                  />
-                  {createFormErrors.readingTime && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {createFormErrors.readingTime}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Publish At
-                  </label>
-                  <input
-                    type="date"
-                    name="publishAt"
-                    value={blogCreateFormData.publishAt}
-                    onChange={handleCreateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                  />
-                  {createFormErrors.publishAt && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {createFormErrors.publishAt}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Status
-                  </label>
-                  <select
-                    name="status"
-                    value={blogCreateFormData.status}
-                    onChange={handleCreateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                  >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                  </select>
-                  {createFormErrors.status && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {createFormErrors.status}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Sections */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-600 dark:text-gray-400">
-                    Sections
-                  </p>
-                  <button
-                    type="button"
-                    onClick={addCreateSection}
-                    className="px-3 py-1.5 rounded-2xl text-xs font-semibold bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-800 dark:text-gray-100 hover:bg-orange-50/80 dark:hover:bg-white/10"
-                  >
-                    Add Section
-                  </button>
-                </div>
-
-                {blogCreateFormData.sections.map((section, index) => (
-                  <div
-                    key={index}
-                    className="rounded-2xl border border-orange-100 dark:border-white/15 bg-white/70 dark:bg-black/40 px-3 py-3 space-y-2"
-                  >
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-200">
-                        Section {index + 1}
-                      </p>
-                      {blogCreateFormData.sections.length > 1 && (
-                        <button
-                          type="button"
-                          className="text-[11px] font-semibold text-red-500 hover:text-red-400"
-                          onClick={() => removeCreateSection(index)}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-
-                    <input
-                      type="text"
-                      name="title"
-                      value={section.title}
-                      onChange={(e) => handleCreateSectionChange(e, index)}
-                      placeholder="Section title"
-                      className="w-full h-9 rounded-2xl px-3 text-xs bg-white/90 dark:bg-black/50 border border-orange-100 dark:border-white/20 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70 mb-1"
-                    />
-
-                    <textarea
-                      name="content"
-                      value={section.content}
-                      onChange={(e) => handleCreateSectionChange(e, index)}
-                      placeholder="Section content..."
-                      className="w-full min-h-[70px] rounded-2xl px-3 py-2 text-xs bg-white/90 dark:bg-black/50 border border-orange-100 dark:border-white/20 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70 mb-1 resize-y"
-                    />
-
-                    <input
-                      type="text"
-                      name="url"
-                      value={section.url}
-                      onChange={(e) => handleCreateSectionChange(e, index)}
-                      placeholder="Optional URL"
-                      className="w-full h-9 rounded-2xl px-3 text-xs bg-white/90 dark:bg-black/50 border border-orange-100 dark:border-white/20 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70 mb-1"
-                    />
-
-                    <input
-                      type="file"
-                      onChange={(e) =>
-                        handleCreateSectionImageChange(e, index)
-                      }
-                      className="w-full text-[11px] text-gray-700 dark:text-gray-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-2xl file:border-0 file:text-[11px] file:font-semibold file:bg-orange-500/90 file:text-white hover:file:bg-orange-600/90 bg-white/90 dark:bg-black/50 border border-orange-100 dark:border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400/70"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end gap-3 mt-5 sticky bottom-0 bg-white/95 dark:bg-black/85 pt-3">
-              <button
-                type="button"
-                onClick={() => {
-                  if (validateCreateForm()) {
-                    setCreatePopup(true);
-                  }
-                }}
-                className="px-4 py-2 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold shadow-md shadow-orange-500/40 hover:from-orange-600 hover:to-yellow-500 transition-all"
-              >
-                Save Blog
-              </button>
-              <button
-                type="button"
-                className="px-4 py-2 rounded-2xl border border-orange-100 dark:border-white/15 bg-white/80 dark:bg-black/40 text-sm font-semibold text-gray-800 dark:text-gray-100"
-                onClick={() => setBlogCreate(false)}
-              >
-                Cancel
-              </button>
-            </div>
-
-            {createPopup && (
-              <DashboardPopUp
-                message="Do you want to create this blog?"
-                onConfirm={handleCreateSubmit}
-                onCancel={() => setCreatePopup(false)}
-              />
-            )}
+            <button
+              type="button"
+              onClick={() => {
+                if (validateCreateForm()) {
+                  setCreatePopup(true);
+                }
+              }}
+              className="rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-yellow-500"
+            >
+              Save Blog
+            </button>
           </div>
-        </div>
-      )}
+        }
+      >
+        <BlogEditorForm
+          data={blogCreateFormData}
+          errors={createFormErrors}
+          categoryData={categoryData}
+          isUpdate={false}
+          onChange={handleCreateChange}
+          onImageChange={handleCreateImageChange}
+          onSectionChange={handleCreateSectionChange}
+          onSectionImageChange={handleCreateSectionImageChange}
+          addSection={addCreateSection}
+          removeSection={removeCreateSection}
+        />
+      </ModalShell>
 
-      {/* ========== UPDATE MODAL ========== */}
-      {blogUpdate && blogUpdateFormData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setBlogUpdate(false)}
-          />
+      <ModalShell
+        open={blogUpdate && !!blogUpdateFormData}
+        onClose={closeUpdateModal}
+        kicker="Edit Blog"
+        title="Update Blog"
+        subtitle="This modal behaves as a full scrolling page on mobile, and a constrained scrolling window on desktop."
+        footer={
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={closeUpdateModal}
+              className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-white/5 px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 hover:bg-orange-50 dark:hover:bg-white/10 transition"
+            >
+              Cancel
+            </button>
 
-          <div className="relative z-10 w-full max-w-3xl rounded-3xl bg-white/95 dark:bg-black/85 border border-orange-100 dark:border-white/15 backdrop-blur-2xl p-5 sm:p-6 lg:p-7 shadow-[0_18px_60px_rgba(0,0,0,0.25)] dark:shadow-[0_24px_80px_rgba(0,0,0,0.95)] max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4 sticky top-0 bg-white/95 dark:bg-black/85 pb-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-500 dark:text-orange-300 mb-1">
-                  Edit Blog
-                </p>
-                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">
-                  Update Blog
-                </h2>
-              </div>
-              <button
-                type="button"
-                className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-orange-500"
-                onClick={() => setBlogUpdate(false)}
-              >
-                Close
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {/* Title */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={blogUpdateFormData.title}
-                  onChange={handleUpdateChange}
-                  className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                  placeholder="Enter blog title"
-                />
-                {updateFormErrors.title && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {updateFormErrors.title}
-                  </p>
-                )}
-              </div>
-
-              {/* Author & Category */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Author
-                  </label>
-                  <input
-                    type="text"
-                    name="author"
-                    value={blogUpdateFormData.author}
-                    onChange={handleUpdateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                    placeholder="Author name"
-                  />
-                  {updateFormErrors.author && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {updateFormErrors.author}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Category
-                  </label>
-                  <select
-                    name="category"
-                    value={blogUpdateFormData.category}
-                    onChange={handleUpdateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                  >
-                    <option value="">Select category</option>
-                    {categoryData.map((cat) => (
-                      <option key={cat._id} value={cat._id}>
-                        {cat.categoryName}
-                      </option>
-                    ))}
-                  </select>
-                  {updateFormErrors.category && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {updateFormErrors.category}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Image & Slug */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Cover Image (leave empty to keep current)
-                  </label>
-                  <input
-                    type="file"
-                    onChange={handleUpdateImageChange}
-                    className="w-full text-xs text-gray-700 dark:text-gray-200 file:mr-3 file:py-2 file:px-3 file:rounded-2xl file:border-0 file:text-xs file:font-semibold file:bg-orange-500/90 file:text-white hover:file:bg-orange-600/90 bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400/70"
-                  />
-                  {updateFormErrors.image && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {updateFormErrors.image}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Slug
-                  </label>
-                  <input
-                    type="text"
-                    name="slug"
-                    value={blogUpdateFormData.slug}
-                    onChange={handleUpdateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                    placeholder="unique-blog-slug"
-                  />
-                  {updateFormErrors.slug && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {updateFormErrors.slug}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Introduction */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                  Introduction
-                </label>
-                <textarea
-                  name="introduction"
-                  value={blogUpdateFormData.introduction}
-                  onChange={handleUpdateChange}
-                  className="w-full min-h-[90px] rounded-2xl px-3 py-2 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70 resize-y"
-                  placeholder="Short summary of the blog..."
-                />
-                {updateFormErrors.introduction && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {updateFormErrors.introduction}
-                  </p>
-                )}
-              </div>
-
-              {/* Reading time / Publish date / Status */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Reading Time (min)
-                  </label>
-                  <input
-                    type="number"
-                    name="readingTime"
-                    value={blogUpdateFormData.readingTime}
-                    onChange={handleUpdateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                    min={0}
-                  />
-                  {updateFormErrors.readingTime && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {updateFormErrors.readingTime}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Publish At
-                  </label>
-                  <input
-                    type="date"
-                    name="publishAt"
-                    value={
-                      blogUpdateFormData.publishAt
-                        ? blogUpdateFormData.publishAt.slice(0, 10)
-                        : ""
-                    }
-                    onChange={handleUpdateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                  />
-                  {updateFormErrors.publishAt && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {updateFormErrors.publishAt}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5">
-                    Status
-                  </label>
-                  <select
-                    name="status"
-                    value={blogUpdateFormData.status}
-                    onChange={handleUpdateChange}
-                    className="w-full h-10 rounded-2xl px-3 text-sm bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70"
-                  >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                  </select>
-                  {updateFormErrors.status && (
-                    <p className="mt-1 text-xs text-red-500">
-                      {updateFormErrors.status}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Sections */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-600 dark:text-gray-400">
-                    Sections
-                  </p>
-                  <button
-                    type="button"
-                    onClick={addUpdateSection}
-                    className="px-3 py-1.5 rounded-2xl text-xs font-semibold bg-white/80 dark:bg-black/40 border border-orange-100 dark:border-white/15 text-gray-800 dark:text-gray-100 hover:bg-orange-50/80 dark:hover:bg-white/10"
-                  >
-                    Add Section
-                  </button>
-                </div>
-
-                {blogUpdateFormData.sections?.map((section, index) => (
-                  <div
-                    key={index}
-                    className="rounded-2xl border border-orange-100 dark:border-white/15 bg-white/70 dark:bg-black/40 px-3 py-3 space-y-2"
-                  >
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-200">
-                        Section {index + 1}
-                      </p>
-                      {blogUpdateFormData.sections.length > 1 && (
-                        <button
-                          type="button"
-                          className="text-[11px] font-semibold text-red-500 hover:text-red-400"
-                          onClick={() => removeUpdateSection(index)}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-
-                    <input
-                      type="text"
-                      name="title"
-                      value={section.title}
-                      onChange={(e) => handleUpdateSectionChange(e, index)}
-                      placeholder="Section title"
-                      className="w-full h-9 rounded-2xl px-3 text-xs bg-white/90 dark:bg-black/50 border border-orange-100 dark:border-white/20 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70 mb-1"
-                    />
-
-                    <textarea
-                      name="content"
-                      value={section.content}
-                      onChange={(e) => handleUpdateSectionChange(e, index)}
-                      placeholder="Section content..."
-                      className="w-full min-h-[70px] rounded-2xl px-3 py-2 text-xs bg-white/90 dark:bg-black/50 border border-orange-100 dark:border-white/20 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70 mb-1 resize-y"
-                    />
-
-                    <input
-                      type="text"
-                      name="url"
-                      value={section.url}
-                      onChange={(e) => handleUpdateSectionChange(e, index)}
-                      placeholder="Optional URL"
-                      className="w-full h-9 rounded-2xl px-3 text-xs bg-white/90 dark:bg-black/50 border border-orange-100 dark:border-white/20 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400/70 mb-1"
-                    />
-
-                    <input
-                      type="file"
-                      onChange={(e) =>
-                        handleUpdateSectionImageChange(e, index)
-                      }
-                      className="w-full text-[11px] text-gray-700 dark:text-gray-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-2xl file:border-0 file:text-[11px] file:font-semibold file:bg-orange-500/90 file:text-white hover:file:bg-orange-600/90 bg-white/90 dark:bg-black/50 border border-orange-100 dark:border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-400/70"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end gap-3 mt-5 sticky bottom-0 bg-white/95 dark:bg-black/85 pt-3">
-              <button
-                type="button"
-                onClick={() => {
-                  if (validateUpdateForm()) {
-                    setUpdatePopup(true);
-                  }
-                }}
-                className="px-4 py-2 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold shadow-md shadow-orange-500/40 hover:from-orange-600 hover:to-yellow-500 transition-all"
-              >
-                Update Blog
-              </button>
-              <button
-                type="button"
-                className="px-4 py-2 rounded-2xl border border-orange-100 dark:border-white/15 bg-white/80 dark:bg-black/40 text-sm font-semibold text-gray-800 dark:text-gray-100"
-                onClick={() => setBlogUpdate(false)}
-              >
-                Cancel
-              </button>
-            </div>
-
-            {updatePopup && (
-              <DashboardPopUp
-                message="Do you want to update this blog?"
-                onConfirm={handleUpdateSubmit}
-                onCancel={() => setUpdatePopup(false)}
-              />
-            )}
+            <button
+              type="button"
+              onClick={() => {
+                if (validateUpdateForm()) {
+                  setUpdatePopup(true);
+                }
+              }}
+              className="rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-orange-500/30 transition-all hover:from-orange-600 hover:to-yellow-500"
+            >
+              Update Blog
+            </button>
           </div>
-        </div>
-      )}
+        }
+      >
+        {blogUpdateFormData && (
+          <BlogEditorForm
+            data={blogUpdateFormData}
+            errors={updateFormErrors}
+            categoryData={categoryData}
+            isUpdate={true}
+            onChange={handleUpdateChange}
+            onImageChange={handleUpdateImageChange}
+            onSectionChange={handleUpdateSectionChange}
+            onSectionImageChange={handleUpdateSectionImageChange}
+            addSection={addUpdateSection}
+            removeSection={removeUpdateSection}
+          />
+        )}
+      </ModalShell>
+
+      {/* ✅ FIXED: Passed isSubmitting prop to dialogs */}
+      <ConfirmDialog
+        open={createPopup}
+        title="Create this blog?"
+        message="Are you sure you want to proceed?"
+        confirmLabel="Yes, Create"
+        onConfirm={handleCreateSubmit}
+        onCancel={() => setCreatePopup(false)}
+        isSubmitting={isSubmitting} 
+      />
+
+      <ConfirmDialog
+        open={updatePopup}
+        title="Update this blog?"
+        message="Are you sure you want to save these changes?"
+        confirmLabel="Yes, Update"
+        onConfirm={handleUpdateSubmit}
+        onCancel={() => setUpdatePopup(false)}
+        isSubmitting={isSubmitting} 
+      />
     </>
   );
 }

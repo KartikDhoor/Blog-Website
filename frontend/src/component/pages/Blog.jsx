@@ -8,6 +8,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { useAnalyticsContext } from "../analytics/AnalyticsProvider";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify"; // Added toast for share feedback
 
 export default function Blog() {
   const { user, token } = useAuth();
@@ -73,12 +74,12 @@ export default function Blog() {
     }
   };
 
-  // ✅ FETCH 3 RECOMMENDED BLOGS — same category, exclude current blog
+  // ✅ FETCH 3 RECOMMENDED BLOGS
   const fetchRecommendedBlogs = async (categoryId, currentBlogId) => {
     try {
       const response = await AxiosInstance.post("/customer/blogs", {
         category: categoryId,
-        limit: 4, // fetch 4 so after excluding current we still get up to 3
+        limit: 4, 
         page: 1,
         sortBy: "createdAt",
         order: "desc",
@@ -142,6 +143,27 @@ export default function Blog() {
       }
     } catch (error) {
       console.error("Error liking blog:", error.message);
+    }
+  };
+
+  // ✅ NEW SHARE FUNCTIONALITY
+  const handleShare = async () => {
+    const shareData = {
+      title: blogData?.title || "Check out this blog",
+      text: "I thought you might find this interesting!",
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      // Fallback for browsers that don't support Web Share API (copy link)
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard!");
     }
   };
 
@@ -215,7 +237,6 @@ export default function Blog() {
 
   return (
     <div className="bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 min-h-screen">
-
       {/* HERO SECTION WITH IMAGE BACKGROUND */}
       <motion.div
         className="relative min-h-[70vh] h-auto overflow-hidden pt-36 sm:pt-40 pb-16"
@@ -276,153 +297,156 @@ export default function Blog() {
               <div className="hidden sm:block h-10 w-px bg-white/30"></div>
               <div className="text-xs sm:text-sm">
                 <p className="text-white/70">Reading Time</p>
-                <p className="font-semibold text-sm sm:text-lg">{blogData.readingTime}</p>
+                <p className="font-semibold text-sm sm:text-lg">{blogData.readingTime} min</p>
               </div>
             </motion.div>
           </div>
         </motion.div>
       </motion.div>
 
-      {/* MAIN CONTENT AREA */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      {/* ✅ NEW: CLEAN LAYOUT CONTAINER (NO MORE WEIRD HOVERING ELEMENTS) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 flex flex-col lg:flex-row gap-12 xl:gap-16 relative">
+        
+        {/* LEFT COLUMN: MAIN ARTICLE */}
+        <div className="flex-1 min-w-0 max-w-4xl mx-auto lg:mx-0 w-full">
+          
+          {/* MOBILE ACTION BAR (Hidden on desktop) */}
+          <div className="flex lg:hidden items-center gap-3 mb-8">
+            <button
+              onClick={handleLikeClick}
+              className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold ${
+                like
+                  ? "bg-red-500 text-white"
+                  : "bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100"
+              }`}
+            >
+              <FaHeart className={like ? "fill-current" : ""} />
+              <span>{likeTotal}</span>
+            </button>
+            <button 
+              onClick={handleShare}
+              className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100"
+            >
+              <FiShare2 />
+              <span>Share</span>
+            </button>
+          </div>
 
-        {/* MOBILE ACTION BAR */}
-        <div className="flex lg:hidden items-center gap-3 mb-8">
-          <button
-            onClick={handleLikeClick}
-            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold ${
-              like
-                ? "bg-red-500 text-white"
-                : "bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100"
-            }`}
+          {/* Article Content */}
+          <motion.div
+            className="prose prose-base sm:prose-lg dark:prose-invert max-w-none mb-16 sm:mb-20"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            <FaHeart className={like ? "fill-current" : ""} />
-            <span>{likeTotal}</span>
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100">
-            <FiShare2 />
-            <span>Share</span>
-          </button>
+            {/* Overview */}
+            <motion.div
+              className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl mb-10 sm:mb-12"
+              whileHover={{ y: -2 }}
+            >
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6">
+                Overview
+              </h2>
+              <div
+                className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap"
+                dangerouslySetInnerHTML={{ __html: blogData.introduction }}
+              />
+            </motion.div>
+
+            {/* Sections */}
+            {blogData.sections.map((section, index) => (
+              <motion.div
+                key={section._id}
+                id={`section-${index}`}
+                className="scroll-mt-32 mb-12 sm:mb-16"
+                // ✅ FIXED: Fast, simple animation so users don't have to wait to read
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4 }} 
+              >
+                <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl hover:shadow-2xl hover:border-orange-400/50 transition-all duration-500">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/30">
+                    {section.title}
+                  </h2>
+                  <div
+                    className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{ __html: section.content }}
+                  />
+                  
+                  {/* ✅ FIXED: Image Constraint so it doesn't span massive height */}
+                  {section.sectionImage && (
+                    <motion.div
+                      className="my-8 sm:my-10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-white/40 bg-gray-100 dark:bg-gray-800/40 flex items-center justify-center p-2"
+                      style={{ maxHeight: '500px' }} // Restricts maximum height
+                      whileHover={{ scale: 1.01 }}
+                    >
+                      <img
+                        src={section.sectionImage}
+                        alt={section.title}
+                        className="w-full h-full max-h-[480px] object-contain rounded-xl" // Object contain ensures full image shows without crop or weird stretching
+                      />
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
 
-        {/* Sticky Navigation - DESKTOP ONLY */}
-        <motion.div
-          className="hidden lg:flex fixed top-32 right-4 z-40 flex-col gap-3"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <motion.button
-            onClick={handleLikeClick}
-            className={`group relative w-12 h-12 xl:w-14 xl:h-14 rounded-2xl shadow-lg backdrop-blur-xl transition-all duration-300 flex items-center justify-center font-bold text-lg xl:text-xl ${
-              like
-                ? "bg-gradient-to-br from-red-500 to-red-600 text-white shadow-red-500/30"
-                : "bg-white/80 dark:bg-white/20 border border-white/50 dark:border-white/30 text-gray-800 dark:text-gray-300 hover:bg-white/95 dark:hover:bg-white/30 hover:shadow-xl hover:border-orange-400/50"
-            }`}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FaHeart className={like ? "fill-current" : ""} />
-            <span className="absolute -top-9 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] xl:text-xs font-bold px-2.5 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              {likeTotal} {likeTotal === 1 ? "Like" : "Likes"}
-            </span>
-          </motion.button>
+        {/* ✅ FIXED: RIGHT COLUMN - SIDEBAR (TOC + Actions) */}
+        {/* This replaces the floaty absolute design with a clean, standard sidebar layout */}
+        <div className="hidden lg:block w-[300px] xl:w-[320px] shrink-0">
+          <div className="sticky top-32 space-y-6">
+            
+            {/* Desktop Actions */}
+            <div className="flex gap-4 mb-2">
+              <motion.button
+                onClick={handleLikeClick}
+                className={`flex-1 flex flex-col items-center justify-center gap-1 py-4 rounded-3xl shadow-lg border backdrop-blur-xl transition-all duration-300 font-bold ${
+                  like
+                    ? "bg-gradient-to-br from-red-500 to-red-600 text-white shadow-red-500/30 border-red-500"
+                    : "bg-white/80 dark:bg-white/20 border-white/50 dark:border-white/30 text-gray-800 dark:text-gray-300 hover:bg-white/95 hover:border-orange-400/50"
+                }`}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FaHeart className={like ? "fill-current text-xl" : "text-xl"} />
+                <span className="text-xs mt-1">{likeTotal} {likeTotal === 1 ? "Like" : "Likes"}</span>
+              </motion.button>
 
-          <motion.button
-            className="group relative w-12 h-12 xl:w-14 xl:h-14 rounded-2xl bg-white/80 dark:bg-white/20 border border-white/50 dark:border-white/30 shadow-lg backdrop-blur-xl text-gray-800 dark:text-gray-300 hover:bg-white/95 dark:hover:bg-white/30 transition-all duration-300 flex items-center justify-center text-lg xl:text-xl hover:shadow-xl hover:border-orange-400/50"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FiShare2 />
-            <span className="absolute -top-9 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] xl:text-xs font-bold px-2.5 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              Share
-            </span>
-          </motion.button>
-        </motion.div>
+              <motion.button
+                onClick={handleShare}
+                className="flex-1 flex flex-col items-center justify-center gap-1 py-4 rounded-3xl bg-white/80 dark:bg-white/20 border border-white/50 dark:border-white/30 shadow-lg backdrop-blur-xl text-gray-800 dark:text-gray-300 hover:bg-white/95 hover:border-orange-400/50 transition-all duration-300 font-bold"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FiShare2 className="text-xl" />
+                <span className="text-xs mt-1">Share</span>
+              </motion.button>
+            </div>
 
-        {/* Article Content */}
-        <motion.div
-          className="prose prose-base sm:prose-lg dark:prose-invert max-w-none mb-16 sm:mb-20"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          {/* Overview */}
-          <motion.div
-            className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl mb-10 sm:mb-12"
-            whileHover={{ y: -4 }}
-          >
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6">
-              Overview
-            </h2>
-            <div
-              className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap"
-              dangerouslySetInnerHTML={{ __html: blogData.introduction }}
-            />
-          </motion.div>
-
-          {/* Sections */}
-          {blogData.sections.map((section, index) => (
-            <motion.div
-              key={section._id}
-              id={`section-${index}`}
-              className="scroll-mt-32 mb-12 sm:mb-16"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl hover:shadow-2xl hover:border-orange-400/50 transition-all duration-500">
-                <motion.h2
-                  className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/30"
-                  whileHover={{ x: 4 }}
-                >
-                  {section.title}
-                </motion.h2>
-                <div
-                  className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light whitespace-pre-wrap"
-                  dangerouslySetInnerHTML={{ __html: section.content }}
-                />
-                {section.sectionImage && (
-                  <motion.div
-                    className="my-8 sm:my-10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/40"
-                    whileHover={{ scale: 1.02 }}
+            {/* Table of Contents */}
+            <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 shadow-xl max-h-[50vh] overflow-y-auto custom-scrollbar">
+              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-5 flex items-center gap-2">
+                Contents
+              </h3>
+              <div className="space-y-4">
+                {blogData.sections.map((section, index) => (
+                  <motion.a
+                    key={section._id}
+                    href={`#section-${index}`}
+                    className="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors"
+                    whileHover={{ x: 4 }}
                   >
-                    <img
-                      src={section.sectionImage}
-                      alt={section.title}
-                      className="w-full h-auto object-cover"
-                    />
-                  </motion.div>
-                )}
+                    <span className="text-orange-400 mr-2 text-xs">{index + 1}.</span>
+                    <span className="line-clamp-2 inline-block align-top">{section.title}</span>
+                  </motion.a>
+                ))}
               </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* TABLE OF CONTENTS STICKY - DESKTOP ONLY */}
-        <motion.div
-          className="hidden 2xl:block fixed left-6 top-[55vh] z-30 max-w-xs"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-        >
-          <div className="bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 shadow-xl max-h-[60vh] overflow-y-auto">
-            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-6">
-              Contents
-            </h3>
-            <div className="space-y-3">
-              {blogData.sections.map((section, index) => (
-                <motion.a
-                  key={section._id}
-                  href={`#section-${index}`}
-                  className="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors line-clamp-2"
-                  whileHover={{ x: 4 }}
-                >
-                  {section.title}
-                </motion.a>
-              ))}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* COMMENTS SECTION WITH PAGINATION */}
@@ -457,11 +481,11 @@ export default function Blog() {
                 <motion.button
                   type="submit"
                   disabled={!newComment.trim()}
-                  className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-sm sm:text-lg rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-sm sm:text-lg rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Post Comment
+                  Post Comment <PiPaperPlaneTiltBold />
                 </motion.button>
               </div>
             </motion.form>
@@ -564,7 +588,7 @@ export default function Blog() {
         </div>
       </motion.div>
 
-      {/* ✅ RECOMMENDED ARTICLES — real data, same category, hidden if empty */}
+      {/* RECOMMENDED ARTICLES */}
       {recommendedBlogs.length > 0 && (
         <motion.div
           className="py-16 sm:py-24"
