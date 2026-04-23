@@ -817,25 +817,29 @@ export default function DashboardBlog() {
     formData.append("status", blogUpdateFormData.status);
     formData.append("slug", blogUpdateFormData.slug);
 
-    if (
-      blogUpdateFormData.image &&
-      typeof blogUpdateFormData.image !== "string"
-    ) {
-      formData.append("image", blogUpdateFormData.image);
+    if (blogUpdateFormData.image) {
+      if (typeof blogUpdateFormData.image !== "string") {
+        // New file selected — upload it
+        formData.append("image", blogUpdateFormData.image);
+      } else {
+        // No new file — send existing URL so backend keeps it
+        formData.append("existingImage", blogUpdateFormData.image);
+      }
     }
 
     (blogUpdateFormData.sections || []).forEach((section, index) => {
       formData.append(`sections[${index}][title]`, section.title);
       formData.append(`sections[${index}][content]`, section.content);
 
-      if (
-        section.sectionImage &&
-        typeof section.sectionImage !== "string"
-      ) {
-        formData.append(
-          `sections[${index}][sectionImage]`,
-          section.sectionImage
-        );
+      if (section.sectionImage) {
+        if (typeof section.sectionImage !== "string") {
+          formData.append(
+            `sections[${index}][sectionImage]`,
+            section.sectionImage
+          );
+        } else {
+          formData.append(`sections[${index}][existingSectionImage]`, section.sectionImage);
+        }
       }
 
       formData.append(`sections[${index}][url]`, section.url);
