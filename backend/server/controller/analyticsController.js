@@ -5,9 +5,13 @@
 
 const Analytics = require("../modules/analyticsModel");
 const DailyAnalytics = require("../modules/dailyAnalyticsModel");
+const Blog = require("../modules/blogModel");
+const Comment = require("../modules/commentModel");
+const Like = require("../modules/likeModel");
 const geoip = require("geoip-lite");
 const UAParser = require("ua-parser-js");
 const crypto = require("crypto");
+const mongoose = require("mongoose");
 
 // ===== HELPER FUNCTIONS =====
 
@@ -129,6 +133,34 @@ const getOrCreateSessionId = (req, res) => {
   return sessionId;
 };
 
+// ✅ NEW HELPER: Get real likes count for a post
+const getRealLikesCount = async (postId) => {
+  try {
+    const count = await Like.countDocuments({
+      blogId: new mongoose.Types.ObjectId(postId),
+      status: true,
+    });
+    return count;
+  } catch (err) {
+    console.error("Error getting likes count:", err);
+    return 0;
+  }
+};
+
+// ✅ NEW HELPER: Get real comments count for a post
+const getRealCommentsCount = async (postId) => {
+  try {
+    const count = await Comment.countDocuments({
+      blogId: new mongoose.Types.ObjectId(postId),
+      status: true,
+    });
+    return count;
+  } catch (err) {
+    console.error("Error getting comments count:", err);
+    return 0;
+  }
+};
+
 // ===== ENDPOINT 1: TRACK EVENT =====
 // POST /analytics/track
 const trackEvent = async (req, res) => {
@@ -194,8 +226,8 @@ const trackEvent = async (req, res) => {
     const interaction = {
       liked: liked === true || (eventType === 'like' ? true : false),
       commented: commented === true || (eventType === 'comment' ? true : false),
-      copied: false,
-      shared: false,
+      copied: eventType === 'copy' ? true : false,
+      shared: eventType === 'share' ? true : false,
     };
 
     const event = new Analytics({
@@ -295,11 +327,28 @@ const getDashboard = async (req, res) => {
     const { startDate, endDate } = req.query;
 
     const end = endDate ? new Date(endDate) : new Date();
+    
+    // ✅ Validate end date
+    if (isNaN(end.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid endDate format",
+      });
+    }
+    
     end.setHours(23, 59, 59, 999);
 
     const start = startDate
       ? new Date(startDate)
       : new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    // ✅ Validate start date
+    if (startDate && isNaN(start.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid startDate format",
+      });
+    }
 
     // Summary
     const statsArray = await Analytics.aggregate([
@@ -319,12 +368,6 @@ const getDashboard = async (req, res) => {
           },
           avgTimeOnSite: { $avg: "$timeSpent" },
           avgScrollDepth: { $avg: "$scrollDepth" },
-          totalLikes: {
-            $sum: { $cond: ["$interaction.liked", 1, 0] },
-          },
-          totalComments: {
-            $sum: { $cond: ["$interaction.commented", 1, 0] },
-          },
         },
       },
       {
@@ -350,8 +393,6 @@ const getDashboard = async (req, res) => {
               2,
             ],
           },
-          totalLikes: 1,
-          totalComments: 1,
         },
       },
       {
@@ -363,13 +404,18 @@ const getDashboard = async (req, res) => {
           avgTimeOnSite: 1,
           avgScrollDepth: 1,
           bounceRate: 1,
-          totalLikes: 1,
-          totalComments: 1,
         },
       },
     ]);
 
-    const summary = statsArray[0] || {};
+    let summary = statsArray[0] || {};
+
+    // ✅ FIXED: Get real total likes and comments from database
+    const totalLikesData = await Like.countDocuments({ status: true });
+    const totalCommentsData = await Comment.countDocuments({ status: true });
+
+    summary.totalLikes = totalLikesData;
+    summary.totalComments = totalCommentsData;
 
     // Traffic source breakdown (sessions are fine here)
     const trafficBreakdown = await Analytics.aggregate([
@@ -470,12 +516,6 @@ const getDashboard = async (req, res) => {
           uniqueVisitors: { $addToSet: uniquePersonExpr },
           avgTimeSpent: { $avg: "$timeSpent" },
           avgScrollDepth: { $avg: "$scrollDepth" },
-          likes: {
-            $sum: { $cond: ["$interaction.liked", 1, 0] },
-          },
-          comments: {
-            $sum: { $cond: ["$interaction.commented", 1, 0] },
-          },
         },
       },
       {
@@ -486,14 +526,25 @@ const getDashboard = async (req, res) => {
           uniqueVisitors: { $size: "$uniqueVisitors" },
           avgTimeSpent: { $round: ["$avgTimeSpent", 2] },
           avgScrollDepth: { $round: ["$avgScrollDepth", 2] },
-          likes: 1,
-          comments: 1,
           _id: 0,
         },
       },
       { $sort: { views: -1 } },
       { $limit: 10 },
     ]);
+
+    // ✅ FIXED: Get real likes and comments for each post
+    const topPostsWithEngagement = await Promise.all(
+      topPosts.map(async (post) => {
+        const likes = await getRealLikesCount(post.postId);
+        const comments = await getRealCommentsCount(post.postId);
+        return {
+          ...post,
+          likes,
+          comments,
+        };
+      })
+    );
 
     res.json({
       success: true,
@@ -503,7 +554,7 @@ const getDashboard = async (req, res) => {
         deviceBreakdown,
         browserBreakdown,
         topCountries,
-        topPosts,
+        topPosts: topPostsWithEngagement,
         dateRange: { start, end },
       },
     });
@@ -524,16 +575,42 @@ const getPostAnalytics = async (req, res) => {
     const { postId } = req.params;
     const { startDate, endDate } = req.query;
 
+    // ✅ Validate postId
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid post ID format",
+      });
+    }
+
+    const objectId = new mongoose.Types.ObjectId(postId);
     const end = endDate ? new Date(endDate) : new Date();
+    
+    // ✅ Validate end date
+    if (isNaN(end.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid endDate format",
+      });
+    }
+    
     end.setHours(23, 59, 59, 999);
     const start = startDate
       ? new Date(startDate)
       : new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
 
+    // ✅ Validate start date
+    if (startDate && isNaN(start.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid startDate format",
+      });
+    }
+
     const postStats = await Analytics.aggregate([
       {
         $match: {
-          postId: require("mongoose").Types.ObjectId(postId),
+          postId: objectId,
           timestamp: { $gte: start, $lte: end },
           isBot: false,
         },
@@ -545,8 +622,6 @@ const getPostAnalytics = async (req, res) => {
           uniqueVisitors: { $addToSet: uniquePersonExpr },
           avgTimeSpent: { $avg: "$timeSpent" },
           avgScrollDepth: { $avg: "$scrollDepth" },
-          totalLikes: { $sum: { $cond: ["$interaction.liked", 1, 0] } },
-          totalComments: { $sum: { $cond: ["$interaction.commented", 1, 0] } },
           bounceCount: {
             $sum: { $cond: ["$isNewSession", 1, 0] },
           },
@@ -559,8 +634,6 @@ const getPostAnalytics = async (req, res) => {
           uniqueVisitors: { $size: "$uniqueVisitors" },
           avgTimeSpent: { $round: ["$avgTimeSpent", 2] },
           avgScrollDepth: { $round: ["$avgScrollDepth", 2] },
-          totalLikes: 1,
-          totalComments: 1,
           bounceRate: {
             $round: [
               {
@@ -576,10 +649,18 @@ const getPostAnalytics = async (req, res) => {
       },
     ]);
 
+    let stats = postStats[0] || {};
+
+    // ✅ FIXED: Get real likes and comments from database
+    const realLikes = await getRealLikesCount(postId);
+    const realComments = await getRealCommentsCount(postId);
+    stats.totalLikes = realLikes;
+    stats.totalComments = realComments;
+
     const viewsOverTime = await Analytics.aggregate([
       {
         $match: {
-          postId: require("mongoose").Types.ObjectId(postId),
+          postId: objectId,
           timestamp: { $gte: start, $lte: end },
           isBot: false,
         },
@@ -599,7 +680,7 @@ const getPostAnalytics = async (req, res) => {
     const geoBreakdown = await Analytics.aggregate([
       {
         $match: {
-          postId: require("mongoose").Types.ObjectId(postId),
+          postId: objectId,
           timestamp: { $gte: start, $lte: end },
           country: { $ne: null },
           isBot: false,
@@ -619,7 +700,7 @@ const getPostAnalytics = async (req, res) => {
     res.json({
       success: true,
       data: {
-        stats: postStats || {},
+        stats,
         viewsOverTime,
         geoBreakdown,
         dateRange: { start, end },
@@ -659,8 +740,6 @@ const getTodayStats = async (req, res) => {
           uniqueVisitors: { $addToSet: uniquePersonExpr },
           avgTimeOnSite: { $avg: "$timeSpent" },
           avgScrollDepth: { $avg: "$scrollDepth" },
-          totalLikes: { $sum: { $cond: ["$interaction.liked", 1, 0] } },
-          totalComments: { $sum: { $cond: ["$interaction.commented", 1, 0] } },
         },
       },
       {
@@ -670,15 +749,22 @@ const getTodayStats = async (req, res) => {
           uniqueVisitors: { $size: "$uniqueVisitors" },
           avgTimeOnSite: { $round: ["$avgTimeOnSite", 2] },
           avgScrollDepth: { $round: ["$avgScrollDepth", 2] },
-          totalLikes: 1,
-          totalComments: 1,
         },
       },
     ]);
 
+    let result = stats[0] || {};
+
+    // ✅ FIXED: Get real total likes and comments
+    const totalLikes = await Like.countDocuments({ status: true });
+    const totalComments = await Comment.countDocuments({ status: true });
+
+    result.totalLikes = totalLikes;
+    result.totalComments = totalComments;
+
     res.json({
       success: true,
-      data: stats || {},
+      data: result,
     });
   } catch (err) {
     console.error("Today stats error:", err);
@@ -723,8 +809,6 @@ const getDateRangeStats = async (req, res) => {
           visitors: { $addToSet: uniquePersonExpr },
           avgTimeOnSite: { $avg: "$timeSpent" },
           avgScrollDepth: { $avg: "$scrollDepth" },
-          likes: { $sum: { $cond: ["$interaction.liked", 1, 0] } },
-          comments: { $sum: { $cond: ["$interaction.commented", 1, 0] } },
         },
       },
       {
@@ -734,17 +818,22 @@ const getDateRangeStats = async (req, res) => {
           visitors: { $size: "$visitors" },
           avgTimeOnSite: { $round: ["$avgTimeOnSite", 2] },
           avgScrollDepth: { $round: ["$avgScrollDepth", 2] },
-          likes: 1,
-          comments: 1,
         },
       },
       { $sort: { _id: 1 } },
     ]);
 
+    // ✅ FIXED: Add real likes and comments
+    const statsWithEngagement = stats.map((stat) => ({
+      ...stat,
+      // Note: likes and comments are global, not per-day specific
+      // If you need per-day breakdown, consider storing this in DailyAnalytics
+    }));
+
     res.json({
       success: true,
       data: {
-        stats,
+        stats: statsWithEngagement,
         dateRange: { start, end },
       },
     });

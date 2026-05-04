@@ -42,7 +42,7 @@ const register = async (req, res) => {
                                     const token = jwt.sign(
                                         { _id: user._id, email: user.email, image: user.image, userType: user.userType },
                                         JWT_SECRET,
-                                        { expiresIn: "1d" }
+                                        { expiresIn: "24d" }
                                     );
                                     const { password, ...userWithoutpassword } = savedUser.toObject();
                                     res.send({ success: true, status: 200, message: "New user is created", data: userWithoutpassword, token: token });
@@ -91,7 +91,7 @@ const login = (req, res) => {
                                 const token = jwt.sign(
                                     { _id: user._id, email: user.email, image: user.image, userType: user.userType },
                                     JWT_SECRET,
-                                    { expiresIn: "1d" }
+                                    { expiresIn: "24d" }
                                 );
                                 const { password, ...userWithoutpassword } = user.toObject();
                                 res.send({
