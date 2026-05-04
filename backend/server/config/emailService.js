@@ -2,11 +2,14 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 // Create a transporter for sending emails
+// Create a transporter for sending emails
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER, // Your email
-    pass: process.env.EMAIL_PASS, // Your email password or app password
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS, 
   },
 });
 // 🚀 Neuradhoor GLASS OTP - FULLY RESPONSIVE (Mobile + Desktop)
