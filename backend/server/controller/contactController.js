@@ -1,16 +1,9 @@
-// controller/contactController.js
-const emailService = require("../config/emailService"); // your file above
-const nodemailer = require("nodemailer");
+const emailService = require("../config/emailService"); // your template file
+const { Resend } = require("resend");
 require("dotenv").config();
 
-// create a local transporter here because emailService doesn't export it
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const submitContact = async (req, res) => {
   try {
@@ -32,11 +25,12 @@ const submitContact = async (req, res) => {
       });
     }
 
-    // 1) Email to admin (you)
-    await transporter.sendMail({
-      from: `"Neuradhoor Contact" <${process.env.EMAIL_USER}>`,
-      to: "kartikdhoor121@gmail.com",
+    // 1) Email to admin (Pulled from .env)
+    const adminEmail = await resend.emails.send({
+      from: process.env.SENDER_EMAIL,
+      to: process.env.ADMIN_EMAIL,
       subject: `New contact message from ${firstName} ${lastName}`,
+      replyTo: email, // ⭐ MAGIC TRICK: If you hit 'Reply', it emails the user directly!
       html: emailService.contactAdminTemplate({
         firstName,
         lastName,
@@ -46,13 +40,24 @@ const submitContact = async (req, res) => {
       }),
     });
 
+    // Resend returns an error object if it fails
+    if (adminEmail.error) {
+      console.error("Admin email failed to send:", adminEmail.error);
+      throw new Error(adminEmail.error.message);
+    }
+
     // 2) Email to user (confirmation)
-    await transporter.sendMail({
-      from: `"Neuradhoor Team" <${process.env.EMAIL_USER}>`,
+    const userEmail = await resend.emails.send({
+      from: process.env.SENDER_EMAIL,
       to: email,
       subject: "We received your message",
       html: emailService.contactUserTemplate({ firstName }),
     });
+
+    if (userEmail.error) {
+      console.error("User confirmation email failed:", userEmail.error);
+      // We don't throw an error here because the admin still got the message successfully.
+    }
 
     return res.status(200).json({
       success: true,
