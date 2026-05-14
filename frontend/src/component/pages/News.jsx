@@ -7,6 +7,7 @@ import AxiosInstance from "../utils/AxiosInstance";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 
 export default function News() {
   const [popularBlog, setPopularBlog] = useState(null);
@@ -75,20 +76,102 @@ export default function News() {
     }
   };
 
+  const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+  const currentUrl =
+    typeof window !== "undefined" ? window.location.href : `${siteUrl}/news`;
+
+  const seoTitle = "News & Articles | Neuradhoor";
+  const seoDescription =
+    "Explore the latest AI news, featured articles, popular reads, and expert insights on Neuradhoor.";
+  const seoImage =
+    blogsData?.[0]?.image || `${siteUrl}/og-news.jpg`;
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "News",
+        item: `${siteUrl}/news`,
+      },
+    ],
+  };
+
+  const blogCollectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Neuradhoor News",
+    url: `${siteUrl}/news`,
+    description: seoDescription,
+    publisher: {
+      "@type": "Organization",
+      name: "Neuradhoor",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/logo.png`,
+      },
+    },
+  };
+
+  const itemListJsonLd =
+    blogsData && blogsData.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: blogsData.map((blog, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `${siteUrl}/blog/${blog.slug}`,
+            name: blog.title,
+          })),
+        }
+      : null;
+
   if (loading)
     return (
-      <p className="dark:text-white text-gray-900 text-xl text-center py-20 pt-32">
-        Loading blogs...
-      </p>
+      <>
+        <Helmet>
+          <title>Loading News... | Neuradhoor</title>
+          <meta
+            name="description"
+            content="Loading the latest news and articles from Neuradhoor."
+          />
+          <meta name="robots" content="noindex,follow" />
+        </Helmet>
+
+        <p className="dark:text-white text-gray-900 text-xl text-center py-20 pt-32">
+          Loading blogs...
+        </p>
+      </>
     );
 
   if (!blogsData || blogsData.length === 0) {
     return (
-      <div className="min-h-screen pt-32 flex items-center justify-center dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 bg-gradient-to-br from-orange-50 via-white to-yellow-50">
-        <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-200">
-          No blogs found.
-        </p>
-      </div>
+      <>
+        <Helmet>
+          <title>No Blogs Found | Neuradhoor</title>
+          <meta
+            name="description"
+            content="No blog articles are available right now on Neuradhoor."
+          />
+          <meta name="robots" content="noindex,follow" />
+        </Helmet>
+
+        <div className="min-h-screen pt-32 flex items-center justify-center dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 bg-gradient-to-br from-orange-50 via-white to-yellow-50">
+          <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-200">
+            No blogs found.
+          </p>
+        </div>
+      </>
     );
   }
 
@@ -97,6 +180,43 @@ export default function News() {
 
   return (
     <>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta
+          name="keywords"
+          content="AI news, blog articles, Neuradhoor news, featured blogs, technology news"
+        />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <link rel="canonical" href={`${siteUrl}/news`} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Neuradhoor" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={`${siteUrl}/news`} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbJsonLd)}
+        </script>
+
+        <script type="application/ld+json">
+          {JSON.stringify(blogCollectionJsonLd)}
+        </script>
+
+        {itemListJsonLd && (
+          <script type="application/ld+json">
+            {JSON.stringify(itemListJsonLd)}
+          </script>
+        )}
+      </Helmet>
+
       <div className="min-h-screen pt-28 sm:pt-32 dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:text-white text-gray-900">
         {/* Hero Banner */}
         <motion.div
@@ -319,19 +439,18 @@ export default function News() {
               to="/videos"
               className="w-full lg:w-[15%] flex justify-center lg:justify-end"
             >
-               {/* View All Button in Header - Always Visible */}
-          <motion.div 
-            whileHover={{ scale: 1.03 }}
-            className="flex-shrink-0"
-          >
-            <Link
-              to="/blog/search"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-500 text-white font-bold text-sm rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 whitespace-nowrap border border-orange-400/30 backdrop-blur-xl"
-            >
-              View All
-              <BsArrowUpRight className="text-base" />
-            </Link>
-          </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.03 }}
+                className="flex-shrink-0"
+              >
+                <Link
+                  to="/blog/search"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-yellow-500 text-white font-bold text-sm rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 whitespace-nowrap border border-orange-400/30 backdrop-blur-xl"
+                >
+                  View All
+                  <BsArrowUpRight className="text-base" />
+                </Link>
+              </motion.div>
             </Link>
           </div>
         </motion.div>

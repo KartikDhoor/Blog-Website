@@ -9,6 +9,7 @@ import { useAuth } from "../AuthContext";
 import { useAnalyticsContext } from "../analytics/AnalyticsProvider";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
+import { Helmet } from "react-helmet-async";
 
 export default function Blog() {
   const { user, token } = useAuth();
@@ -79,7 +80,7 @@ export default function Blog() {
     try {
       const response = await AxiosInstance.post("/customer/blogs", {
         category: categoryId,
-        limit: 4, 
+        limit: 4,
         page: 1,
         sortBy: "createdAt",
         order: "desc",
@@ -161,7 +162,6 @@ export default function Blog() {
         console.error("Error sharing:", err);
       }
     } else {
-      // Fallback for browsers that don't support Web Share API (copy link)
       navigator.clipboard.writeText(window.location.href);
       toast.success("Link copied to clipboard!");
     }
@@ -195,479 +195,627 @@ export default function Blog() {
       console.error("Error creating comment:", error.message);
     }
   };
+const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+  const currentUrl =
+    typeof window !== "undefined"
+      ? window.location.href
+      : `${siteUrl}/blog/${slug}`;
+
+  const seoTitle = blogData?.title
+    ? `${blogData.title} | Neuradhoor`
+    : "Blog | Neuradhoor";
+
+  const seoDescription = blogData?.introduction
+    ? String(blogData.introduction).replace(/<[^>]*>/g, "").slice(0, 160)
+    : "Read the latest blog article on Neuradhoor.";
+
+  const seoImage =
+    blogData?.image || "https://picsum.photos/1200/630";
+
+  const articleJsonLd = blogData
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: blogData.title,
+        description: seoDescription,
+        image: blogData.image ? [blogData.image] : [],
+        author: {
+          "@type": "Person",
+          name: blogData.author || "Neuradhoor",
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Neuradhoor",
+          logo: {
+            "@type": "ImageObject",
+            url: `${siteUrl}/logo.png`,
+          },
+        },
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": currentUrl,
+        },
+        datePublished: blogData.createdAt,
+        dateModified: blogData.updatedAt || blogData.createdAt,
+        articleSection: blogData.category?.categoryName || "Blog",
+      }
+    : null;
+
+  const breadcrumbJsonLd = blogData
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: siteUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Blog",
+            item: `${siteUrl}/blog`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: blogData.title,
+            item: currentUrl,
+          },
+        ],
+      }
+    : null;
 
   if (loading) {
     return (
-      <motion.div
-        className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 flex items-center justify-center pt-32"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-      >
-        <div className="text-center">
-          <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-full animate-pulse mx-auto mb-6 shadow-2xl shadow-orange-500/40"></div>
-          <p className="text-2xl font-black text-gray-900 dark:text-white">
-            Loading Article...
-          </p>
-        </div>
-      </motion.div>
+      <>
+        <Helmet>
+          <title>Loading Article... | Neuradhoor</title>
+          <meta
+            name="description"
+            content="Loading blog article on Neuradhoor."
+          />
+          <meta name="robots" content="noindex,follow" />
+        </Helmet>
+
+        <motion.div
+          className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 flex items-center justify-center pt-32"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="text-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-full animate-pulse mx-auto mb-6 shadow-2xl shadow-orange-500/40"></div>
+            <p className="text-2xl font-black text-gray-900 dark:text-white">
+              Loading Article...
+            </p>
+          </div>
+        </motion.div>
+      </>
     );
   }
 
   if (!blogData) {
     return (
-      <motion.div
-        className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 flex items-center justify-center pt-32"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-      >
-        <div className="text-center">
-          <p className="text-3xl font-black text-gray-900 dark:text-white mb-6">
-            Article Not Found
-          </p>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl hover:shadow-orange-500/40 hover:-translate-y-1 transition-all"
-          >
-            Back to Home
-          </Link>
-        </div>
-      </motion.div>
+      <>
+        <Helmet>
+          <title>Article Not Found | Neuradhoor</title>
+          <meta
+            name="description"
+            content="The article you are looking for could not be found."
+          />
+          <meta name="robots" content="noindex,follow" />
+        </Helmet>
+
+        <motion.div
+          className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 flex items-center justify-center pt-32"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="text-center">
+            <p className="text-3xl font-black text-gray-900 dark:text-white mb-6">
+              Article Not Found
+            </p>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl hover:shadow-orange-500/40 hover:-translate-y-1 transition-all"
+            >
+              Back to Home
+            </Link>
+          </div>
+        </motion.div>
+      </>
     );
   }
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 min-h-screen">
-      {/* HERO SECTION WITH IMAGE BACKGROUND */}
-      <motion.div
-        className="relative min-h-[70vh] h-auto overflow-hidden pt-36 sm:pt-40 pb-16"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-      >
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
-          style={{
-            backgroundImage: `url('${blogData.image || "https://picsum.photos/1920/1080"}')`,
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
-        </div>
+    <>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta
+          name="keywords"
+          content={`${blogData.title}, ${blogData.category?.categoryName || "blog"}, Neuradhoor`}
+        />
+        <meta name="author" content={blogData.author || "Neuradhoor"} />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <link rel="canonical" href={currentUrl} />
 
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="Neuradhoor" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:image" content={seoImage} />
+        <meta
+          property="article:published_time"
+          content={blogData.createdAt}
+        />
+        <meta
+          property="article:modified_time"
+          content={blogData.updatedAt || blogData.createdAt}
+        />
+        <meta
+          property="article:author"
+          content={blogData.author || "Neuradhoor"}
+        />
+        {blogData.category?.categoryName && (
+          <meta
+            property="article:section"
+            content={blogData.category.categoryName}
+          />
+        )}
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+
+        {articleJsonLd && (
+          <script type="application/ld+json">
+            {JSON.stringify(articleJsonLd)}
+          </script>
+        )}
+
+        {breadcrumbJsonLd && (
+          <script type="application/ld+json">
+            {JSON.stringify(breadcrumbJsonLd)}
+          </script>
+        )}
+      </Helmet>
+
+      <div className="bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-black dark:to-gray-900 min-h-screen">
+        {/* HERO SECTION WITH IMAGE BACKGROUND */}
         <motion.div
-          className="relative z-10 flex flex-col justify-end h-full min-h-[50vh] px-4 sm:px-6 lg:px-16 pt-20 sm:pt-24 pb-10 sm:pb-14 lg:pb-16"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          className="relative min-h-[70vh] h-auto overflow-hidden pt-36 sm:pt-40 pb-16"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
         >
-          <div className="max-w-4xl">
-            <motion.div
-              className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500/20 to-yellow-400/20 backdrop-blur-xl border border-orange-400/40 rounded-2xl mb-4 sm:mb-8"
-              whileHover={{ scale: 1.05 }}
-            >
-              <span className="text-xs sm:text-sm font-bold text-orange-400 uppercase tracking-widest">
-                {blogData.category?.categoryName}
-              </span>
-            </motion.div>
-
-            <motion.h1
-              className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-black text-white leading-tight drop-shadow-2xl max-w-3xl mb-4 sm:mb-8"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              {blogData.title}
-            </motion.h1>
-
-            <motion.div
-              className="flex flex-wrap gap-4 sm:gap-8 items-center text-white/90"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-yellow-400 rounded-full flex items-center justify-center font-bold text-white shadow-lg">
-                  {blogData.author?.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <p className="font-semibold text-sm sm:text-lg">{blogData.author}</p>
-                  <p className="text-xs sm:text-sm text-white/70">
-                    {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
-                  </p>
-                </div>
-              </div>
-              <div className="hidden sm:block h-10 w-px bg-white/30"></div>
-              <div className="text-xs sm:text-sm">
-                <p className="text-white/70">Reading Time</p>
-                <p className="font-semibold text-sm sm:text-lg">{blogData.readingTime} min</p>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* ✅ CLEAN LAYOUT CONTAINER */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 flex flex-col lg:flex-row items-start gap-12 xl:gap-16 relative">
-        
-        {/* LEFT COLUMN: MAIN ARTICLE */}
-        {/* ✅ FIXED: Removed max-w-4xl so it fills remaining space smoothly */}
-        <div className="flex-1 min-w-0 w-full">
-          
-          {/* MOBILE ACTION BAR (Hidden on desktop) */}
-          <div className="flex lg:hidden items-center gap-3 mb-8">
-            <button
-              onClick={handleLikeClick}
-              className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold ${
-                like
-                  ? "bg-red-500 text-white"
-                  : "bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100"
-              }`}
-            >
-              <FaHeart className={like ? "fill-current" : ""} />
-              <span>{likeTotal}</span>
-            </button>
-            <button 
-              onClick={handleShare}
-              className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100"
-            >
-              <FiShare2 />
-              <span>Share</span>
-            </button>
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
+            style={{
+              backgroundImage: `url('${blogData.image || "https://picsum.photos/1920/1080"}')`,
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
           </div>
 
-          {/* Article Content */}
           <motion.div
-            className="prose prose-base sm:prose-lg dark:prose-invert max-w-none mb-16 sm:mb-20"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="relative z-10 flex flex-col justify-end h-full min-h-[50vh] px-4 sm:px-6 lg:px-16 pt-20 sm:pt-24 pb-10 sm:pb-14 lg:pb-16"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            {/* Overview */}
-            <motion.div
-              className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl mb-10 sm:mb-12"
-              whileHover={{ y: -2 }}
-            >
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6">
-                Overview
-              </h2>
-              <div
-                className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap"
-                dangerouslySetInnerHTML={{ __html: blogData.introduction }}
-              />
-            </motion.div>
-
-            {/* Sections */}
-            {blogData.sections.map((section, index) => (
+            <div className="max-w-4xl">
               <motion.div
-                key={section._id}
-                id={`section-${index}`}
-                className="scroll-mt-32 mb-12 sm:mb-16"
-                // ✅ FIXED: Fast, simple animation so users don't have to wait to read
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4 }} 
+                className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500/20 to-yellow-400/20 backdrop-blur-xl border border-orange-400/40 rounded-2xl mb-4 sm:mb-8"
+                whileHover={{ scale: 1.05 }}
               >
-                <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl hover:shadow-2xl hover:border-orange-400/50 transition-all duration-500">
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/30">
-                    {section.title}
-                  </h2>
-                  <div
-                    className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light whitespace-pre-wrap"
-                    dangerouslySetInnerHTML={{ __html: section.content }}
-                  />
-                  
-                  {/* ✅ FIXED: Image Constraint so it doesn't span massive height */}
-                  {section.sectionImage && (
-                    <motion.div
-                      className="my-8 sm:my-10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-white/40 bg-gray-100 dark:bg-gray-800/40 flex items-center justify-center p-2"
-                      style={{ maxHeight: '500px' }} // Restricts maximum height
-                      whileHover={{ scale: 1.01 }}
-                    >
-                      <img
-                        src={section.sectionImage}
-                        alt={section.title}
-                        className="w-full h-full max-h-[480px] object-contain rounded-xl" 
-                      />
-                    </motion.div>
-                  )}
+                <span className="text-xs sm:text-sm font-bold text-orange-400 uppercase tracking-widest">
+                  {blogData.category?.categoryName}
+                </span>
+              </motion.div>
+
+              <motion.h1
+                className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-black text-white leading-tight drop-shadow-2xl max-w-3xl mb-4 sm:mb-8"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                {blogData.title}
+              </motion.h1>
+
+              <motion.div
+                className="flex flex-wrap gap-4 sm:gap-8 items-center text-white/90"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-yellow-400 rounded-full flex items-center justify-center font-bold text-white shadow-lg">
+                    {blogData.author?.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm sm:text-lg">{blogData.author}</p>
+                    <p className="text-xs sm:text-sm text-white/70">
+                      {format(new Date(blogData.createdAt), "MMMM dd, yyyy")}
+                    </p>
+                  </div>
+                </div>
+                <div className="hidden sm:block h-10 w-px bg-white/30"></div>
+                <div className="text-xs sm:text-sm">
+                  <p className="text-white/70">Reading Time</p>
+                  <p className="font-semibold text-sm sm:text-lg">{blogData.readingTime} min</p>
                 </div>
               </motion.div>
-            ))}
+            </div>
           </motion.div>
-        </div>
+        </motion.div>
 
-        {/* RIGHT COLUMN - SIDEBAR (TOC + Actions) */}
-        {/* ✅ FIXED: Added self-start so it doesn't stretch to match the left column height */}
-        <div className="hidden lg:block w-[300px] xl:w-[320px] shrink-0 self-start sticky top-32">
-          <div className="space-y-6">
+        {/* ✅ CLEAN LAYOUT CONTAINER */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 flex flex-col lg:flex-row items-start gap-12 xl:gap-16 relative">
+          
+          {/* LEFT COLUMN: MAIN ARTICLE */}
+          {/* ✅ FIXED: Removed max-w-4xl so it fills remaining space smoothly */}
+          <div className="flex-1 min-w-0 w-full">
             
-            {/* Desktop Actions */}
-            <div className="flex gap-4 mb-2">
-              <motion.button
+            {/* MOBILE ACTION BAR (Hidden on desktop) */}
+            <div className="flex lg:hidden items-center gap-3 mb-8">
+              <button
                 onClick={handleLikeClick}
-                className={`flex-1 flex flex-col items-center justify-center gap-1 py-4 rounded-3xl shadow-lg border backdrop-blur-xl transition-all duration-300 font-bold ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold ${
                   like
-                    ? "bg-gradient-to-br from-red-500 to-red-600 text-white shadow-red-500/30 border-red-500"
-                    : "bg-white/80 dark:bg-white/20 border-white/50 dark:border-white/30 text-gray-800 dark:text-gray-300 hover:bg-white/95 hover:border-orange-400/50"
+                    ? "bg-red-500 text-white"
+                    : "bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100"
                 }`}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.95 }}
               >
-                <FaHeart className={like ? "fill-current text-xl" : "text-xl"} />
-                <span className="text-xs mt-1">{likeTotal} {likeTotal === 1 ? "Like" : "Likes"}</span>
-              </motion.button>
-
-              <motion.button
+                <FaHeart className={like ? "fill-current" : ""} />
+                <span>{likeTotal}</span>
+              </button>
+              <button 
                 onClick={handleShare}
-                className="flex-1 flex flex-col items-center justify-center gap-1 py-4 rounded-3xl bg-white/80 dark:bg-white/20 border border-white/50 dark:border-white/30 shadow-lg backdrop-blur-xl text-gray-800 dark:text-gray-300 hover:bg-white/95 hover:border-orange-400/50 transition-all duration-300 font-bold"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-semibold bg-white/90 dark:bg-white/10 text-gray-800 dark:text-gray-100"
               >
-                <FiShare2 className="text-xl" />
-                <span className="text-xs mt-1">Share</span>
-              </motion.button>
+                <FiShare2 />
+                <span>Share</span>
+              </button>
             </div>
 
-            {/* Table of Contents */}
-            <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 shadow-xl h-auto overflow-y-auto custom-scrollbar">
-              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-5 flex items-center gap-2">
-                Contents
-              </h3>
-              <div className="space-y-4">
-                {blogData.sections.map((section, index) => (
-                  <motion.a
-                    key={section._id}
-                    href={`#section-${index}`}
-                    className="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors"
-                    whileHover={{ x: 4 }}
-                  >
-                    <span className="text-orange-400 mr-2 text-xs">{index + 1}.</span>
-                    <span className="line-clamp-2 inline-block align-top">{section.title}</span>
-                  </motion.a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* COMMENTS SECTION WITH PAGINATION */}
-      <motion.div
-        className="bg-white/60 dark:bg-white/20 backdrop-blur-2xl border-y border-white/30 dark:border-white/20 py-16 sm:py-20"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-8 sm:mb-12">
-            Comments ({totalComments})
-          </h2>
-
-          {/* Add Comment */}
-          {user && (
-            <motion.form
-              onSubmit={handleCommentSubmit}
-              className="mb-12 sm:mb-16 bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl"
-              whileHover={{ y: -2 }}
+            {/* Article Content */}
+            <motion.div
+              className="prose prose-base sm:prose-lg dark:prose-invert max-w-none mb-16 sm:mb-20"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
             >
-              <div className="mb-4 sm:mb-6">
-                <textarea
-                  name="comment"
-                  value={newComment}
-                  onChange={handleInputChange}
-                  placeholder="Share your thoughts..."
-                  className="w-full min-h-[120px] sm:min-h-[140px] bg-white/50 dark:bg-white/20 backdrop-blur-xl border border-white/40 dark:border-white/20 rounded-2xl p-4 sm:p-6 text-base sm:text-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-orange-400/50 focus:shadow-lg focus:shadow-orange-500/20 transition-all resize-none"
+              {/* Overview */}
+              <motion.div
+                className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl mb-10 sm:mb-12"
+                whileHover={{ y: -2 }}
+              >
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6">
+                  Overview
+                </h2>
+                <div
+                  className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-light whitespace-pre-wrap"
+                  dangerouslySetInnerHTML={{ __html: blogData.introduction }}
                 />
-              </div>
-              <div className="flex justify-end">
-                <motion.button
-                  type="submit"
-                  disabled={!newComment.trim()}
-                  className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-sm sm:text-lg rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+              </motion.div>
+
+              {/* Sections */}
+              {blogData.sections.map((section, index) => (
+                <motion.div
+                  key={section._id}
+                  id={`section-${index}`}
+                  className="scroll-mt-32 mb-12 sm:mb-16"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.4 }} 
                 >
-                  Post Comment <PiPaperPlaneTiltBold />
+                  <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl hover:shadow-2xl hover:border-orange-400/50 transition-all duration-500">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-white/30">
+                      {section.title}
+                    </h2>
+                    <div
+                      className="text-base sm:text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6 sm:mb-8 font-light whitespace-pre-wrap"
+                      dangerouslySetInnerHTML={{ __html: section.content }}
+                    />
+                    
+                    {/* ✅ FIXED: Image Constraint so it doesn't span massive height */}
+                    {section.sectionImage && (
+                      <motion.div
+                        className="my-8 sm:my-10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-white/40 bg-gray-100 dark:bg-gray-800/40 flex items-center justify-center p-2"
+                        style={{ maxHeight: "500px" }}
+                        whileHover={{ scale: 1.01 }}
+                      >
+                        <img
+                          src={section.sectionImage}
+                          alt={section.title}
+                          className="w-full h-full max-h-[480px] object-contain rounded-xl"
+                        />
+                      </motion.div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* RIGHT COLUMN - SIDEBAR (TOC + Actions) */}
+          {/* ✅ FIXED: Added self-start so it doesn't stretch to match the left column height */}
+          <div className="hidden lg:block w-[300px] xl:w-[320px] shrink-0 self-start sticky top-32">
+            <div className="space-y-6">
+              
+              {/* Desktop Actions */}
+              <div className="flex gap-4 mb-2">
+                <motion.button
+                  onClick={handleLikeClick}
+                  className={`flex-1 flex flex-col items-center justify-center gap-1 py-4 rounded-3xl shadow-lg border backdrop-blur-xl transition-all duration-300 font-bold ${
+                    like
+                      ? "bg-gradient-to-br from-red-500 to-red-600 text-white shadow-red-500/30 border-red-500"
+                      : "bg-white/80 dark:bg-white/20 border-white/50 dark:border-white/30 text-gray-800 dark:text-gray-300 hover:bg-white/95 hover:border-orange-400/50"
+                  }`}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FaHeart className={like ? "fill-current text-xl" : "text-xl"} />
+                  <span className="text-xs mt-1">{likeTotal} {likeTotal === 1 ? "Like" : "Likes"}</span>
+                </motion.button>
+
+                <motion.button
+                  onClick={handleShare}
+                  className="flex-1 flex flex-col items-center justify-center gap-1 py-4 rounded-3xl bg-white/80 dark:bg-white/20 border border-white/50 dark:border-white/30 shadow-lg backdrop-blur-xl text-gray-800 dark:text-gray-300 hover:bg-white/95 hover:border-orange-400/50 transition-all duration-300 font-bold"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FiShare2 className="text-xl" />
+                  <span className="text-xs mt-1">Share</span>
                 </motion.button>
               </div>
-            </motion.form>
-          )}
 
-          {/* Comments List */}
-          <div className="space-y-4 sm:space-y-6">
-            {commentData.length === 0 ? (
-              <motion.div
-                className="text-center py-12 sm:py-16"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-              >
-                <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 font-light">
-                  No comments yet. Be the first to share your thoughts!
-                </p>
-              </motion.div>
-            ) : (
-              <>
-                {[...commentData].reverse().map((comment, index) => (
-                  <motion.div
-                    key={comment._id}
-                    className="group bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl hover:border-orange-400/50 transition-all duration-500"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ y: -4 }}
-                  >
-                    <div className="flex gap-4 sm:gap-6">
-                      <div className="flex-shrink-0">
-                        {comment.userId.image ? (
-                          <img
-                            src={comment.userId.image}
-                            alt={comment.userId.name}
-                            className="w-12 h-12 sm:w-16 sm:h-16 rounded-3xl object-cover ring-4 ring-white/50 shadow-lg"
-                          />
-                        ) : (
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-yellow-400 rounded-3xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl ring-4 ring-white/50 shadow-lg">
-                            {comment.userId.name.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                          <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
-                            {comment.userId.name}
-                          </h4>
-                          <span className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
-                            {format(new Date(comment.date), "MMM dd, yyyy")}
-                          </span>
-                        </div>
-                        <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-light">
-                          {comment.content}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-
-                {/* Load More Comments Button */}
-                {hasMoreComments && (
-                  <motion.div
-                    className="flex justify-center mt-8 sm:mt-12"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    <motion.button
-                      onClick={loadMoreComments}
-                      disabled={loadingMoreComments}
-                      className="px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 hover:from-orange-500/20 hover:to-yellow-500/20 border border-orange-400/30 rounded-2xl text-orange-600 dark:text-orange-400 font-semibold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-3"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+              {/* Table of Contents */}
+              <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 shadow-xl h-auto overflow-y-auto custom-scrollbar">
+                <h3 className="text-lg font-black text-gray-900 dark:text-white mb-5 flex items-center gap-2">
+                  Contents
+                </h3>
+                <div className="space-y-4">
+                  {blogData.sections.map((section, index) => (
+                    <motion.a
+                      key={section._id}
+                      href={`#section-${index}`}
+                      className="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors"
+                      whileHover={{ x: 4 }}
                     >
-                      {loadingMoreComments ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-orange-400/50 border-t-orange-500 rounded-full animate-spin" />
-                          Loading more comments...
-                        </>
-                      ) : (
-                        <span>📝 Load More Comments ({commentData.length}/{totalComments})</span>
-                      )}
-                    </motion.button>
-                  </motion.div>
-                )}
-
-                {/* Pagination Info */}
-                <motion.div
-                  className="text-center mt-8 sm:mt-12"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium">
-                    Showing {Math.min(commentData.length, totalComments)} of {totalComments} comments
-                  </p>
-                </motion.div>
-              </>
-            )}
+                      <span className="text-orange-400 mr-2 text-xs">{index + 1}.</span>
+                      <span className="line-clamp-2 inline-block align-top">{section.title}</span>
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </motion.div>
 
-      {/* RECOMMENDED ARTICLES */}
-      {recommendedBlogs.length > 0 && (
+        {/* COMMENTS SECTION WITH PAGINATION */}
         <motion.div
-          className="py-16 sm:py-24"
+          className="bg-white/60 dark:bg-white/20 backdrop-blur-2xl border-y border-white/30 dark:border-white/20 py-16 sm:py-20"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white text-center mb-10 sm:mb-16">
-              Keep Reading
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-8 sm:mb-12">
+              Comments ({totalComments})
             </h2>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-              {recommendedBlogs.map((blog, index) => (
+            {/* Add Comment */}
+            {user && (
+              <motion.form
+                onSubmit={handleCommentSubmit}
+                className="mb-12 sm:mb-16 bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-xl"
+                whileHover={{ y: -2 }}
+              >
+                <div className="mb-4 sm:mb-6">
+                  <textarea
+                    name="comment"
+                    value={newComment}
+                    onChange={handleInputChange}
+                    placeholder="Share your thoughts..."
+                    className="w-full min-h-[120px] sm:min-h-[140px] bg-white/50 dark:bg-white/20 backdrop-blur-xl border border-white/40 dark:border-white/20 rounded-2xl p-4 sm:p-6 text-base sm:text-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-orange-400/50 focus:shadow-lg focus:shadow-orange-500/20 transition-all resize-none"
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <motion.button
+                    type="submit"
+                    disabled={!newComment.trim()}
+                    className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-sm sm:text-lg rounded-2xl shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Post Comment <PiPaperPlaneTiltBold />
+                  </motion.button>
+                </div>
+              </motion.form>
+            )}
+
+            {/* Comments List */}
+            <div className="space-y-4 sm:space-y-6">
+              {commentData.length === 0 ? (
                 <motion.div
-                  key={blog._id}
-                  className="group overflow-hidden"
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -12 }}
+                  className="text-center py-12 sm:py-16"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
                 >
-                  {/* Card Image */}
-                  <motion.div
-                    className="relative h-56 sm:h-64 lg:h-72 rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-3xl transition-all duration-500"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <img
-                      src={blog.image || "https://picsum.photos/400/300"}
-                      alt={blog.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent group-hover:from-black/60 transition-all duration-500"></div>
-                  </motion.div>
-
-                  {/* Card Body */}
-                  <motion.div
-                    className="relative -mt-16 sm:-mt-20 mx-3 sm:mx-4 bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-2xl group-hover:shadow-3xl group-hover:border-orange-400/60 transition-all duration-500"
-                    whileHover={{ y: -8 }}
-                  >
-                    {/* Category badge */}
-                    {blog.category?.categoryName && (
-                      <span className="inline-block text-[11px] font-bold text-orange-500 uppercase tracking-widest mb-2">
-                        {blog.category.categoryName}
-                      </span>
-                    )}
-
-                    <h3 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 line-clamp-2 group-hover:text-orange-500 transition-colors">
-                      {blog.title}
-                    </h3>
-
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <motion.div
-                        className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/60 dark:bg-white/20 backdrop-blur-xl border border-white/40 rounded-2xl text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-300"
-                        whileHover={{ scale: 1.08 }}
-                      >
-                        <FiMessageCircle />
-                        <span>{blog.comments?.length || 0}</span>
-                      </motion.div>
-
-                      <Link to={`/blog/${blog.slug}`} className="ml-auto">
-                        <motion.button
-                          className="px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 transition-colors"
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          Read →
-                        </motion.button>
-                      </Link>
-                    </div>
-                  </motion.div>
+                  <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 font-light">
+                    No comments yet. Be the first to share your thoughts!
+                  </p>
                 </motion.div>
-              ))}
+              ) : (
+                <>
+                  {[...commentData].reverse().map((comment, index) => (
+                    <motion.div
+                      key={comment._id}
+                      className="group bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl hover:border-orange-400/50 transition-all duration-500"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ y: -4 }}
+                    >
+                      <div className="flex gap-4 sm:gap-6">
+                        <div className="flex-shrink-0">
+                          {comment.userId.image ? (
+                            <img
+                              src={comment.userId.image}
+                              alt={comment.userId.name}
+                              className="w-12 h-12 sm:w-16 sm:h-16 rounded-3xl object-cover ring-4 ring-white/50 shadow-lg"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-yellow-400 rounded-3xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl ring-4 ring-white/50 shadow-lg">
+                              {comment.userId.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                            <h4 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                              {comment.userId.name}
+                            </h4>
+                            <span className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
+                              {format(new Date(comment.date), "MMM dd, yyyy")}
+                            </span>
+                          </div>
+                          <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-light">
+                            {comment.content}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+
+                  {/* Load More Comments Button */}
+                  {hasMoreComments && (
+                    <motion.div
+                      className="flex justify-center mt-8 sm:mt-12"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <motion.button
+                        onClick={loadMoreComments}
+                        disabled={loadingMoreComments}
+                        className="px-8 py-3 sm:py-4 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 hover:from-orange-500/20 hover:to-yellow-500/20 border border-orange-400/30 rounded-2xl text-orange-600 dark:text-orange-400 font-semibold text-sm sm:text-base transition-all duration-300 flex items-center justify-center gap-3"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {loadingMoreComments ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-orange-400/50 border-t-orange-500 rounded-full animate-spin" />
+                            Loading more comments...
+                          </>
+                        ) : (
+                          <span>📝 Load More Comments ({commentData.length}/{totalComments})</span>
+                        )}
+                      </motion.button>
+                    </motion.div>
+                  )}
+
+                  {/* Pagination Info */}
+                  <motion.div
+                    className="text-center mt-8 sm:mt-12"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium">
+                      Showing {Math.min(commentData.length, totalComments)} of {totalComments} comments
+                    </p>
+                  </motion.div>
+                </>
+              )}
             </div>
           </div>
         </motion.div>
-      )}
 
-    </div>
+        {/* RECOMMENDED ARTICLES */}
+        {recommendedBlogs.length > 0 && (
+          <motion.div
+            className="py-16 sm:py-24"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white text-center mb-10 sm:mb-16">
+                Keep Reading
+              </h2>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+                {recommendedBlogs.map((blog, index) => (
+                  <motion.div
+                    key={blog._id}
+                    className="group overflow-hidden"
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ y: -12 }}
+                  >
+                    {/* Card Image */}
+                    <motion.div
+                      className="relative h-56 sm:h-64 lg:h-72 rounded-3xl overflow-hidden shadow-2xl group-hover:shadow-3xl transition-all duration-500"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <img
+                        src={blog.image || "https://picsum.photos/400/300"}
+                        alt={blog.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent group-hover:from-black/60 transition-all duration-500"></div>
+                    </motion.div>
+
+                    {/* Card Body */}
+                    <motion.div
+                      className="relative -mt-16 sm:-mt-20 mx-3 sm:mx-4 bg-white/80 dark:bg-white/15 backdrop-blur-2xl border border-white/50 dark:border-white/30 rounded-3xl p-6 sm:p-8 shadow-2xl group-hover:shadow-3xl group-hover:border-orange-400/60 transition-all duration-500"
+                      whileHover={{ y: -8 }}
+                    >
+                      {/* Category badge */}
+                      {blog.category?.categoryName && (
+                        <span className="inline-block text-[11px] font-bold text-orange-500 uppercase tracking-widest mb-2">
+                          {blog.category.categoryName}
+                        </span>
+                      )}
+
+                      <h3 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white mb-3 sm:mb-4 line-clamp-2 group-hover:text-orange-500 transition-colors">
+                        {blog.title}
+                      </h3>
+
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <motion.div
+                          className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/60 dark:bg-white/20 backdrop-blur-xl border border-white/40 rounded-2xl text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-300"
+                          whileHover={{ scale: 1.08 }}
+                        >
+                          <FiMessageCircle />
+                          <span>{blog.comments?.length || 0}</span>
+                        </motion.div>
+
+                        <Link to={`/blog/${blog.slug}`} className="ml-auto">
+                          <motion.button
+                            className="px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 transition-colors"
+                            whileHover={{ scale: 1.05 }}
+                          >
+                            Read →
+                          </motion.button>
+                        </Link>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    </>
   );
 }

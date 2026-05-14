@@ -6,6 +6,7 @@ import { GiBugleCall } from "react-icons/gi";
 import { ToastContainer, toast } from "react-toastify";
 import AxiosInstance from "../utils/AxiosInstance";
 import Reviews from "./Reviews";
+import { Helmet } from "react-helmet-async";
 
 export default function Contact() {
   // ✅ Form state
@@ -18,6 +19,85 @@ export default function Contact() {
     agree: false,
   });
   const [sending, setSending] = useState(false);
+
+  const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+  const pageUrl = `${siteUrl}/contact`;
+  const seoTitle = "Contact Us | Neuradhoor";
+  const seoDescription =
+    "Get in touch with Neuradhoor for general inquiries, technical support, collaborations, and project discussions.";
+  const seoImage = `${siteUrl}/og-contact.png`;
+
+  const contactPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: "Contact Neuradhoor",
+    url: pageUrl,
+    description: seoDescription,
+    mainEntity: {
+      "@type": "Organization",
+      name: "Neuradhoor",
+      url: siteUrl,
+    },
+  };
+
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Neuradhoor",
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    email: "contact@neuradhoor.com",
+    telephone: "+91 99238 38448",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "231 AI Tech Avenue",
+      addressLocality: "Techvilla",
+      postalCode: "647878",
+      addressCountry: "IN",
+    },
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: "+91 62808 87657",
+        contactType: "customer support",
+        email: "kartikdhoor121@gmail.com",
+        areaServed: "IN",
+        availableLanguage: ["English"],
+      },
+      {
+        "@type": "ContactPoint",
+        telephone: "+91 62808 87657",
+        contactType: "technical support",
+        email: "kartikdhoor121@gmail.com",
+        areaServed: "IN",
+        availableLanguage: ["English"],
+      },
+    ],
+    sameAs: [
+      "https://twitter.com/neuradhoor",
+      "https://www.linkedin.com/in/kartik-56970b247/",
+      "https://instagram.com/neuradhoor",
+    ],
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Contact",
+        item: pageUrl,
+      },
+    ],
+  };
 
   // ✅ Handle input changes
   const handleChange = (e) => {
@@ -79,7 +159,9 @@ export default function Contact() {
       toast.dismiss();
 
       if (res.data.success) {
-        toast.success(res.data.message || "Message sent successfully! We'll get back to you soon.");
+        toast.success(
+          res.data.message || "Message sent successfully! We'll get back to you soon."
+        );
         // Reset form
         setForm({
           firstName: "",
@@ -105,6 +187,41 @@ export default function Contact() {
 
   return (
     <>
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta
+          name="keywords"
+          content="contact Neuradhoor, AI support, technical support, customer support, contact form"
+        />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <link rel="canonical" href={pageUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Neuradhoor" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={seoImage} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+
+        <script type="application/ld+json">
+          {JSON.stringify(contactPageJsonLd)}
+        </script>
+
+        <script type="application/ld+json">
+          {JSON.stringify(organizationJsonLd)}
+        </script>
+
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbJsonLd)}
+        </script>
+      </Helmet>
+
       <div className="min-h-screen pt-32 dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:text-white text-gray-900">
         {/* Contact Info Section */}
         <motion.div
@@ -139,26 +256,28 @@ export default function Contact() {
                   </h3>
                 </motion.div>
                 <div className="space-y-3">
-                  <motion.button
+                  <motion.a
+                    href="mailto:kartikdhoor121@gmail.com"
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center justify-between gap-3 p-4 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-500/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border dark:border-orange-400/40 border-blue-400/40 rounded-xl hover:dark:bg-orange-500/20 hover:bg-blue-500/20 transition-all backdrop-blur-xl shadow-lg hover:shadow-xl text-sm"
                   >
                     <span className="flex-1 font-semibold dark:text-gray-100 text-gray-900 truncate pr-2 break-all">
-                      contact@neuradhoor.com
+                      Kartikdhoor121@gmail.com
                     </span>
                     <MdShare className="text-lg dark:text-orange-400 text-blue-500 flex-shrink-0" />
-                  </motion.button>
-                  <motion.button
+                  </motion.a>
+                  <motion.a
+                    href="tel:+916280887657"
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center justify-between gap-3 p-4 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-500/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border dark:border-orange-400/40 border-blue-400/40 rounded-xl hover:dark:bg-orange-500/20 hover:bg-blue-500/20 transition-all backdrop-blur-xl shadow-lg hover:shadow-xl text-sm"
                   >
                     <span className="flex-1 font-semibold dark:text-gray-100 text-gray-900 truncate pr-2">
-                      +91 99238 38448
+                      +91 62808 87657
                     </span>
                     <MdShare className="text-lg dark:text-orange-400 text-blue-500 flex-shrink-0" />
-                  </motion.button>
+                  </motion.a>
                 </div>
               </motion.div>
 
@@ -181,26 +300,28 @@ export default function Contact() {
                   </h3>
                 </motion.div>
                 <div className="space-y-3">
-                  <motion.button
+                  <motion.a
+                    href="mailto:kartikdhoor121@gmail.com"
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center justify-between gap-3 p-4 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-500/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border dark:border-orange-400/40 border-blue-400/40 rounded-xl hover:dark:bg-orange-500/20 hover:bg-blue-500/20 transition-all backdrop-blur-xl shadow-lg hover:shadow-xl text-sm"
                   >
                     <span className="flex-1 font-semibold dark:text-gray-100 text-gray-900 truncate pr-2 break-all">
-                      support@neuradhoor.com
+                      Kartikdhoor121@gmail.com
                     </span>
                     <MdShare className="text-lg dark:text-orange-400 text-blue-500 flex-shrink-0" />
-                  </motion.button>
-                  <motion.button
+                  </motion.a>
+                  <motion.a
+                    href="tel:+916280887657"
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center justify-between gap-3 p-4 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-500/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border dark:border-orange-400/40 border-blue-400/40 rounded-xl hover:dark:bg-orange-500/20 hover:bg-blue-500/20 transition-all backdrop-blur-xl shadow-lg hover:shadow-xl text-sm"
                   >
                     <span className="flex-1 font-semibold dark:text-gray-100 text-gray-900 truncate pr-2">
-                      +91 99238 38448
+                      +91 6280887657
                     </span>
                     <MdShare className="text-lg dark:text-orange-400 text-blue-500 flex-shrink-0" />
-                  </motion.button>
+                  </motion.a>
                 </div>
               </motion.div>
 
@@ -224,11 +345,14 @@ export default function Contact() {
                 </motion.div>
                 <div className="space-y-4">
                   <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed font-semibold">
-                    231 AI Tech Avenue
+                    Jalandhar City
                     <br />
-                    Techvilla, 647878
+                    Punjab, 144004, India
                   </p>
-                  <motion.button
+                  <motion.a
+                    href="https://maps.google.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full flex items-center justify-start gap-4 p-6 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-500/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border dark:border-orange-400/40 border-blue-400/40 rounded-2xl hover:dark:bg-orange-500/20 hover:bg-blue-500/20 transition-all backdrop-blur-xl shadow-lg hover:shadow-xl"
@@ -237,7 +361,7 @@ export default function Contact() {
                       Get Directions
                     </span>
                     <MdShare className="text-xl dark:text-orange-400 text-blue-500 shrink-0" />
-                  </motion.button>
+                  </motion.a>
                 </div>
               </motion.div>
 
@@ -260,27 +384,36 @@ export default function Contact() {
                   </h3>
                 </motion.div>
                 <div className="grid grid-cols-3 gap-4">
-                  <motion.button
+                  <motion.a
+                    href="https://www.linkedin.com/in/kartik-56970b247/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-4 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-500/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border dark:border-orange-400/40 border-blue-400/40 rounded-2xl hover:dark:bg-orange-500/20 hover:bg-blue-500/20 transition-all flex items-center justify-center shadow-lg hover:shadow-xl backdrop-blur-xl"
                   >
                     <FaTwitter className="text-2xl dark:text-orange-400 text-blue-500" />
-                  </motion.button>
-                  <motion.button
+                  </motion.a>
+                  <motion.a
+                    href="https://www.linkedin.com/in/kartik-56970b247/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-4 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-500/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border dark:border-orange-400/40 border-blue-400/40 rounded-2xl hover:dark:bg-orange-500/20 hover:bg-blue-500/20 transition-all flex items-center justify-center shadow-lg hover:shadow-xl backdrop-blur-xl"
                   >
                     <FaLinkedinIn className="text-2xl dark:text-orange-400 text-blue-500" />
-                  </motion.button>
-                  <motion.button
+                  </motion.a>
+                  <motion.a
+                    href="https://www.linkedin.com/in/kartik-56970b247/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-4 dark:bg-gradient-to-r dark:from-orange-500/10 dark:to-yellow-500/10 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border dark:border-orange-400/40 border-blue-400/40 rounded-2xl hover:dark:bg-orange-500/20 hover:bg-blue-500/20 transition-all flex items-center justify-center shadow-lg hover:shadow-xl backdrop-blur-xl"
                   >
                     <FaInstagram className="text-2xl dark:text-orange-400 text-blue-500" />
-                  </motion.button>
+                  </motion.a>
                 </div>
               </motion.div>
             </motion.div>

@@ -517,35 +517,233 @@ const sendOtpEmailVerification = async (email, otp) => {
     return false;
   }
 };
-
 const sendOtpForEmailVerification = async (email, otp) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.SENDER_EMAIL, // Now pulls from .env
+      from: process.env.SENDER_EMAIL,
       to: email,
-      subject: "Your OTP Code for Forget Password",
-      replyTo: process.env.ADMIN_EMAIL, // Replies go to your admin email
+      subject: "🔐 Your Neuradhoor Password Reset Code",
+      replyTo: process.env.ADMIN_EMAIL,
       html: `
-        <h2>User Forget Password Otp For NERUADHOOR!</h2>
-        <p>Your OTP code is: <b>${otp}</b></p>
-        <p>This OTP will expire in <b>5 minutes</b>.</p>
-        <p>If you did not request this, please ignore this email.</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Neuradhoor Password Reset OTP</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      margin:0;
+      padding:20px;
+      background:linear-gradient(135deg,#fff5e6 0%,#ffe8cc 100%);
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .container {
+      max-width:600px;
+      margin:0 auto;
+      background:rgba(255,255,255,0.95);
+      box-shadow:0 20px 40px rgba(255,165,0,0.15);
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,0.3);
+      backdrop-filter:blur(20px);
+      overflow:hidden;
+    }
+
+    .header {
+      text-align:center;
+      padding:30px 20px;
+      background:linear-gradient(135deg,rgba(255,193,7,0.1),rgba(255,152,0,0.1));
+      border-radius:20px 20px 0 0;
+      margin:0;
+      border-bottom:1px solid rgba(255,193,7,0.2);
+      box-shadow:0 8px 32px rgba(255,193,7,0.1);
+      backdrop-filter:blur(10px);
+    }
+
+    .otp-card {
+      padding:40px 24px;
+      margin:30px 20px;
+      background:linear-gradient(135deg,rgba(255,255,255,0.8),rgba(255,255,255,0.4));
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,0.5);
+      box-shadow:0 20px 40px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
+      backdrop-filter:blur(20px);
+      text-align:center;
+    }
+
+    .otp-box {
+      background:linear-gradient(135deg,#ffab40,#ff6b35);
+      border-radius:20px;
+      padding:30px 20px;
+      margin:0 0 25px 0;
+      box-shadow:0 16px 32px rgba(255,107,53,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .otp-glow {
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:4px;
+      background:linear-gradient(90deg,transparent,#fff,transparent);
+    }
+
+    .otp-code {
+      font-size:48px;
+      font-weight:800;
+      color:#fff;
+      letter-spacing:8px;
+      margin:0;
+      line-height:1;
+      text-shadow:0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .buttons {
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    .btn-primary, .btn-secondary {
+      padding:12px 28px;
+      border-radius:12px;
+      font-weight:600;
+      font-size:14px;
+      text-decoration:none;
+      display:inline-block;
+      transition:all 0.3s ease;
+    }
+
+    .btn-primary {
+      background:linear-gradient(135deg,rgba(255,255,255,0.9),rgba(255,255,255,0.7));
+      color:#ff6b35;
+      border:1px solid rgba(255,107,53,0.2);
+      box-shadow:0 8px 20px rgba(0,0,0,0.1);
+      backdrop-filter:blur(10px);
+    }
+
+    .btn-secondary {
+      background:transparent;
+      color:#ffab40;
+      border:2px solid rgba(255,171,64,0.4);
+      backdrop-filter:blur(10px);
+    }
+
+    .footer {
+      text-align:center;
+      padding:25px 20px;
+      background:rgba(255,255,255,0.6);
+      border-radius:0 0 20px 20px;
+      border-top:1px solid rgba(255,255,255,0.4);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.8);
+      backdrop-filter:blur(10px);
+    }
+
+    @media screen and (max-width: 600px) {
+      body { padding:10px !important; }
+      .container { margin:10px !important; border-radius:20px !important; }
+      .header { padding:25px 15px !important; }
+      .otp-card {
+        margin:20px 10px !important;
+        padding:30px 20px !important;
+      }
+      .otp-code {
+        font-size:36px !important;
+        letter-spacing:4px !important;
+      }
+      .buttons {
+        flex-direction:column !important;
+        width:100% !important;
+      }
+      .btn-primary, .btn-secondary {
+        width:100% !important;
+        text-align:center;
+        padding:14px 20px !important;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background:linear-gradient(135deg,#1a1a1a,#2d2d2d) !important; }
+      .container { background:rgba(30,30,30,0.95) !important; }
+    }
+
+    .mso-container { width:100% !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <h1 style="color:#ff6b35;font-size:28px;font-weight:700;margin:0 0 10px 0;letter-spacing:-0.5px;">
+        Reset your <span style="background:linear-gradient(135deg,#ff6b35,#ffab40);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Neuradhoor</span> password 🔐
+      </h1>
+      <p style="color:#666;font-size:16px;margin:0;line-height:1.5;">
+        Use the secure code below to continue your password reset
+      </p>
+    </div>
+
+    <div class="otp-card">
+      <div class="otp-box">
+        <div class="otp-glow"></div>
+        <div class="otp-code">${otp}</div>
+        <div style="position:absolute;bottom:8px;right:20px;font-size:12px;color:rgba(255,255,255,0.8);font-weight:500;">
+          Copy code
+        </div>
+      </div>
+
+      <div style="margin:0 0 25px;">
+        <p style="color:#ff6b35;font-size:16px;font-weight:600;margin:0 0 8px 0;">
+          ⏰ Expires in <strong>5 minutes</strong>
+        </p>
+        <p style="color:#888;font-size:14px;margin:0;line-height:1.6;">
+          Enter this code on the Neuradhoor password reset screen to create a new password.
+          For your security, never share this OTP with anyone.
+        </p>
+      </div>
+
+      <div class="buttons">
+        <a href="#" class="btn-primary">🔑 Reset Password</a>
+        <a href="#" class="btn-secondary">Need help?</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p style="color:#999;font-size:13px;margin:0 0 8px 0;">
+        🔒 This is a secure one-time code for password recovery. Only enter it on the official Neuradhoor app or website.
+      </p>
+      <p style="color:#bbb;font-size:12px;margin:0;">
+        Didn't request this? You can safely ignore this email or
+        <a href="#" style="color:#ff8c42;font-weight:500;text-decoration:none;">contact support</a>.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
       `,
     });
 
     if (error) {
-      console.error(" Error sending OTP email:", error.message);
+      console.error("❌ Forgot password OTP email failed:", error.message);
       return false;
     }
 
-    console.log(" OTP sent successfully!", data?.id);
+    console.log("🚀 Forgot password OTP sent successfully!", data?.id);
     return true;
   } catch (error) {
-    console.error(" Unexpected error:", error.message);
+    console.error("❌ Unexpected error sending forgot password OTP:", error.message);
     return false;
   }
 };
-
 const contactAdminTemplate = ({ firstName, lastName, email, phone, message }) => `
 <!DOCTYPE html>
 <html>

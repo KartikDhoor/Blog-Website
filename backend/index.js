@@ -10,7 +10,7 @@ require('dotenv').config();
 
 // ✅ 1. ADD CORS FIRST (Before ANY other middleware or routes)
 const allowedOrigins = [
-  'http://localhost:5174', // local dev
+  'http://localhost:5173', // local dev
   'https://blog-website-to47.vercel.app', // deployed frontend
   'https://neuradhoor.kartikdhoor.com'
 ];

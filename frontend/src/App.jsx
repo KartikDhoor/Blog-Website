@@ -22,7 +22,7 @@ import Profile from './component/pages/Profile'
 import Security from './component/pages/Security'
 import { AuthProvider } from './component/AuthContext'
 import BlogSearch from './component/pages/BlogSearch'
-
+import ForgotPassword from './component/pages/ForgotPassword'
 // ANALYTICS IMPORTS
 import { AnalyticsProvider } from './component/analytics/AnalyticsProvider'
 import AnalyticsDashboard from './component/dashboard/AnalyticsDashboard'
@@ -48,6 +48,7 @@ function App() {
                 <Route path='/contact' element={<Contact/>}></Route>
                 <Route path='/profile' element={<Profile/>}></Route>
                 <Route path='/security' element={<Security/>}></Route>
+
               </Route>
 
               {/* ADMIN DASHBOARD ROUTES */}
@@ -67,6 +68,7 @@ function App() {
               <Route path='/login' element={<Login/>}></Route>
               <Route path='/register' element={<Register/>}></Route>
               <Route path='/otp' element={<OtpConformation/>}></Route>
+              <Route path='/forgot-password' element={<ForgotPassword/>}></Route>
             </Routes>
           </AnalyticsProvider>
         </AuthProvider>

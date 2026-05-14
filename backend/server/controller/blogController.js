@@ -354,23 +354,39 @@ const updateBlog = async (req, res) => {
       if (req.body.introduction) blog.introduction = req.body.introduction;
       if (req.body.slug) blog.slug = req.body.slug;
       if (req.body.category) blog.category = req.body.category;
+      if (req.body.status) blog.status = req.body.status;
+      if (req.body.publishAt) blog.publishAt = req.body.publishAt;
     } catch (err) {
       console.log(err.message);
     }
 
-    // ✅ Safe JSON parsing for sections
+    // ✅ FIX: Retain main blog image if no new file is uploaded
+    if (req.body.existingImage) {
+      blog.image = req.body.existingImage;
+    }
+
+    // ✅ Safe JSON parsing for sections with image retention
     if (req.body.sections) {
       try {
-        blog.sections = typeof req.body.sections === 'string' 
+        let parsedSections = typeof req.body.sections === 'string' 
           ? JSON.parse(req.body.sections) 
           : req.body.sections;
+        
+        // ✅ FIX: Map existing section images back so they don't get deleted
+        blog.sections = parsedSections.map(section => {
+          if (section.existingSectionImage) {
+            section.sectionImage = section.existingSectionImage;
+          }
+          return section;
+        });
+
       } catch (error) {
         return res.status(400).send({ success: false, message: "Invalid JSON in sections" });
       }
     }
 
     // Handle images from the request
-    // 🚀 CLOUDINARY: Handle Cloudinary URLs
+    // 🚀 CLOUDINARY: Handle Cloudinary URLs (This will overwrite the existing ones above if a NEW file is found)
     if (req.cloudinaryFiles) {
       // Main blog image
       const mainImage = req.cloudinaryFiles.find(file => file.fieldname === "image");

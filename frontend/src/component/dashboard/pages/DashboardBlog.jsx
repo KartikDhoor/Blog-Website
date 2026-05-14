@@ -25,10 +25,16 @@ const getEmptyCreateForm = () => ({
   introduction: "",
   slug: "",
   readingTime: 0,
-  publishAt: "", // Will hold standard ISO string
+  publishAt: "",
   status: "draft",
   sections: [getEmptySection()],
 });
+
+const getImagePreviewSrc = (image) => {
+  if (!image) return "";
+  if (typeof image === "string") return image;
+  return URL.createObjectURL(image);
+};
 
 function ModalShell({
   open,
@@ -108,7 +114,6 @@ function ModalShell({
   );
 }
 
-// ✅ FIXED: Added isSubmitting prop to ConfirmDialog
 function ConfirmDialog({
   open,
   title,
@@ -117,7 +122,7 @@ function ConfirmDialog({
   onConfirm,
   onCancel,
   tone = "orange",
-  isSubmitting = false, 
+  isSubmitting = false,
 }) {
   useEffect(() => {
     if (!open) return;
@@ -152,7 +157,7 @@ function ConfirmDialog({
           <button
             type="button"
             onClick={onCancel}
-            disabled={isSubmitting} // ✅ Disabled while loading
+            disabled={isSubmitting}
             className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-white/5 px-4 py-2.5 text-sm font-semibold text-gray-800 dark:text-gray-100 hover:bg-orange-50 dark:hover:bg-white/10 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
@@ -160,10 +165,9 @@ function ConfirmDialog({
           <button
             type="button"
             onClick={onConfirm}
-            disabled={isSubmitting} // ✅ Disabled while loading
+            disabled={isSubmitting}
             className={`rounded-2xl px-4 py-2.5 text-sm font-semibold text-white shadow-md transition disabled:opacity-70 disabled:cursor-not-allowed ${confirmButtonClass}`}
           >
-            {/* ✅ Show Processing text */}
             {isSubmitting ? "Processing..." : confirmLabel}
           </button>
         </div>
@@ -184,6 +188,50 @@ function FieldLabel({ children }) {
 function FieldError({ error }) {
   if (!error) return null;
   return <p className="mt-1 text-xs text-red-500">{error}</p>;
+}
+
+function ImagePreviewCard({ image, label, helperText }) {
+  const src = getImagePreviewSrc(image);
+
+  if (!src) {
+    return (
+      <div className="rounded-2xl border border-dashed border-orange-200 dark:border-white/10 bg-white/60 dark:bg-black/20 p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-orange-500 dark:text-orange-300 mb-1">
+          {label}
+        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          No image selected.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl border border-orange-100 dark:border-white/10 bg-white/80 dark:bg-black/30 p-3">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-orange-500 dark:text-orange-300">
+          {label}
+        </p>
+        <span className="rounded-full bg-orange-50 dark:bg-white/10 px-2 py-1 text-[10px] font-semibold text-orange-600 dark:text-orange-300">
+          {typeof image === "string" ? "Current image" : "New image selected"}
+        </span>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-orange-100 dark:border-white/10">
+        <img
+          src={src}
+          alt={label}
+          className="h-40 w-full object-cover"
+        />
+      </div>
+
+      {helperText ? (
+        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          {helperText}
+        </p>
+      ) : null}
+    </div>
+  );
 }
 
 function SectionEditor({
@@ -263,6 +311,12 @@ function SectionEditor({
             />
           </div>
         </div>
+
+        <ImagePreviewCard
+          image={section.sectionImage}
+          label={`Section ${index + 1} image`}
+          helperText="This image belongs only to this section."
+        />
       </div>
     </div>
   );
@@ -403,6 +457,14 @@ function BlogEditorForm({
             </div>
 
             <div className="sm:col-span-2 xl:col-span-1">
+              <ImagePreviewCard
+                image={data.image}
+                label="Primary cover image"
+                helperText="This is the main image shown on the blog card and blog page."
+              />
+            </div>
+
+            <div className="sm:col-span-2 xl:col-span-1">
               <FieldLabel>Slug</FieldLabel>
               <input
                 type="text"
@@ -516,8 +578,6 @@ export default function DashboardBlog() {
   const [blogUpdate, setBlogUpdate] = useState(false);
   const [createPopup, setCreatePopup] = useState(false);
   const [updatePopup, setUpdatePopup] = useState(false);
-  
-  // ✅ FIXED: Added isSubmitting state
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [blogUpdateFormData, setBlogUpdateFormData] = useState(null);
@@ -608,7 +668,6 @@ export default function DashboardBlog() {
 
   const handleCreateImageChange = (e) => {
     const file = e.target.files[0];
-
     setBlogCreateFormData((prev) => ({
       ...prev,
       image: file,
@@ -671,7 +730,6 @@ export default function DashboardBlog() {
   };
 
   const handleCreateSubmit = async () => {
-    // ✅ FIXED: Enable submitting state
     setIsSubmitting(true);
     const token = localStorage.getItem("blogsite_jwt_token");
     const formData = new FormData();
@@ -723,7 +781,6 @@ export default function DashboardBlog() {
       console.error("Create error:", err);
       toast.error(err?.response?.data?.message || "Failed to create blog");
     } finally {
-      // ✅ FIXED: Reset submitting state
       setIsSubmitting(false);
     }
   };
@@ -801,11 +858,9 @@ export default function DashboardBlog() {
   };
 
   const handleUpdateSubmit = async () => {
-    // ✅ FIXED: Enable submitting state
     setIsSubmitting(true);
     const token = localStorage.getItem("blogsite_jwt_token");
     const formData = new FormData();
-    // console.log("Updating blog with data:", blogUpdateFormData);
 
     formData.append("_id", blogUpdateFormData._id);
     formData.append("title", blogUpdateFormData.title);
@@ -819,10 +874,8 @@ export default function DashboardBlog() {
 
     if (blogUpdateFormData.image) {
       if (typeof blogUpdateFormData.image !== "string") {
-        // New file selected — upload it
         formData.append("image", blogUpdateFormData.image);
       } else {
-        // No new file — send existing URL so backend keeps it
         formData.append("existingImage", blogUpdateFormData.image);
       }
     }
@@ -838,7 +891,10 @@ export default function DashboardBlog() {
             section.sectionImage
           );
         } else {
-          formData.append(`sections[${index}][existingSectionImage]`, section.sectionImage);
+          formData.append(
+            `sections[${index}][existingSectionImage]`,
+            section.sectionImage
+          );
         }
       }
 
@@ -846,16 +902,12 @@ export default function DashboardBlog() {
     });
 
     try {
-      const res = await AxiosInstance.post(
-        "/admin/update/blog",
-        formData,
-        {
-          headers: {
-            authorization: token,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await AxiosInstance.post("/admin/update/blog", formData, {
+        headers: {
+          authorization: token,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (res?.data?.success) {
         toast.success("Blog updated successfully!");
@@ -869,7 +921,6 @@ export default function DashboardBlog() {
       console.error("Update error:", err);
       toast.error(err?.response?.data?.message || "Failed to update blog");
     } finally {
-      // ✅ FIXED: Reset submitting state
       setIsSubmitting(false);
     }
   };
@@ -878,12 +929,9 @@ export default function DashboardBlog() {
     const token = localStorage.getItem("blogsite_jwt_token");
 
     try {
-      const res = await AxiosInstance.delete(
-        `/admin/dashboard/blogs/${blogId}`,
-        {
-          headers: { authorization: token },
-        }
-      );
+      const res = await AxiosInstance.delete(`/admin/dashboard/blogs/${blogId}`, {
+        headers: { authorization: token },
+      });
 
       if (res?.data?.success) {
         toast.success("Blog deleted successfully!");
@@ -1226,7 +1274,6 @@ export default function DashboardBlog() {
         )}
       </ModalShell>
 
-      {/* ✅ FIXED: Passed isSubmitting prop to dialogs */}
       <ConfirmDialog
         open={createPopup}
         title="Create this blog?"
@@ -1234,7 +1281,7 @@ export default function DashboardBlog() {
         confirmLabel="Yes, Create"
         onConfirm={handleCreateSubmit}
         onCancel={() => setCreatePopup(false)}
-        isSubmitting={isSubmitting} 
+        isSubmitting={isSubmitting}
       />
 
       <ConfirmDialog
@@ -1244,7 +1291,7 @@ export default function DashboardBlog() {
         confirmLabel="Yes, Update"
         onConfirm={handleUpdateSubmit}
         onCancel={() => setUpdatePopup(false)}
-        isSubmitting={isSubmitting} 
+        isSubmitting={isSubmitting}
       />
     </>
   );
